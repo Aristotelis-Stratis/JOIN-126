@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DESKTOP TEMPLATE</title>
+    <link rel="icon" type="image/x-icon" href="/assets/img/favicon/JOIN-logo-white.png">
+    <link rel="stylesheet" href="/styles/style.css">
+    <link rel="stylesheet" href="/styles/fonts.css"> <!-- needs to be linked to all htmls-->
+    <script src="/script.js"></script>
+    <script src="/js/templates.js"></script>
+</head>
+
+<body>
+    <section class="main-container">
+        <!-- left part of website fixed menu -->
+        <div class="left-section">
+            <div class="logo-container">
+                <a href="./desktop_template.html"><img class="left-section-logo"
+                        src="/assets/img/favicon/JOIN-logo-white.png" alt="Join Logo"></a>
+                <!--back to summary html-->
+            </div>
+            <div class="menu">
+                <div class="menu-choice">
+                    <div class="menu-container">
+                        <a href="./desktop_template.html"><img src="/assets/img/icons/summary.png"
+                                alt="Summary">Summary</a> <!--Summary html-->
+                    </div>
+                </div>
+                <div class="menu-choice">
+                    <div class="menu-container">
+                        <a href=""><img src="/assets/img/icons/add_task.png" alt="Add Task">Add Task</a>
+                        <!--Add Task html-->
+                    </div>
+                </div>
+                <div class="menu-choice">
+                    <div class="menu-container">
+                        <a href=""><img src="/assets/img/icons/board.png" alt="Board">Board</a> <!--Board html-->
+                    </div>
+                </div>
+                <div class="menu-choice">
+                    <div class="menu-container">
+                        <a href="../../contacts.html"><img src="/assets/img/icons/contacts.png"
+                                alt="Contacts">Contacts</a> <!--Contacts html-->
+                    </div>
+                </div>
+            </div>
+            <div class="imprint">
+                <div class="menu-choice">
+                    <div class="menu-container">
+                        <a class="imprint-link" href="./privacy_template.html">Privacy Policy</a>
+                        <!--privacy policy html-->
+                    </div>
+                </div>
+                <div class="menu-choice">
+                    <div class="menu-container">
+                        <a class="imprint-link" href="./legal_template.html">Legal notice</a> <!--legal notice html-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--right part of website (content) -->
+        <div class="right-section">
+            <!-- top navbar -->
+            <div class="navbar">
+                <a href="./desktop_template.html"><img class="mobile-logo" src="/assets/img/favicon/JOIN-logo-dark.png"
+                        alt="JOIN Logo"></a>
+                <span class="navbar-title">Kanban Project Management Tool</span>
+                <div class="profile-container">
+                    <img class="help-img" src="/assets/img/help/help_icon_big.png" onclick="showHelp()" alt="help">
+                    <div class="profile" id="profile-button" onclick="openSubMenu()">
+                        <span>S</span><span>M</span> <!--Initial Letters of Accountname -->
+                    </div>
+                </div>
+            </div>
+
+                <!-- onclick user menu -->
+                <div class="sub-menu d-none" id="user-sub-menu">
+                    <div class="sub-menu-choice"><a class="imprint-link"href="./legal_template.html">Legal Notice</a></div>
+                    <div class="sub-menu-choice"><a class="imprint-link"href="./privacy_template.html">Privacy Policy</a></div>
+                    <div class="sub-menu-choice"><a class="imprint-link"href="./index.html">Logout</a></div>
+                </div>
+
+            <div class="content" id="main-content">
+                <div class="content-container" id="text-content">
+
+                    <!--render content here-->
+                    <div class="help">
+                        <h1>Help</h1>
+                        <p>Welcome to the help page for <span class="join-blue">Join</span>, your guide to using our
+                            kanban project management tool. Here, we'll provide an overview of what <span
+                                class="join-blue">Join</span> is, how it can benefit you, and how to use it.</p>
+                        <h2>What is Join?</h2>
+                        <br>
+                        <p><span class="join-blue">Join</span> is a kanban-based project management tool designed and
+                            built by a group of dedicated students as part of their web development bootcamp at the
+                            <span class="join-blue">Developer Akademie</span>.
+                        </p>
+                        <br>
+                        <p>Kanban, a Japanese term meaning "billboard", is a highly effective method to visualize work,
+                            limit work-in-progress, and maximize efficiency (or flow). <span
+                                class="join-blue">Join</span> leverages the principles of
+                            kanban to help users manage their tasks and projects in an intuitive, visual interface.</p>
+                        <br>
+                        <p>
+                            It is important to note that <span class="join-blue">Join</span> is designed as an
+                            educational exercise and is not intended for extensive business usage. While we strive to
+                            ensure the best possible user experience, we cannot guarantee consistent availability,
+                            reliability, accuracy, or other aspects of quality regarding <span
+                                class="join-blue">Join</span>.
+                        </p>
+                        <h2>How to use it</h2>
+                        <br>
+                        <p>Here is a step-by-step guide on how to use <span class="join-blue">Join:</span></p>
+                        <ol>
+                            <li>
+                                <h3>Exploring the Board</h3>
+                                <p>When you log in to <span class="join-blue">Join</span>, you'll find a default board.
+                                    This board represents your
+                                    project and contains four default lists: "To Do", "In Progress", “Await feedback”
+                                    and "Done".
+                                </p>
+                            </li>
+                            <br>
+                            <li>
+                                <h3>Creating Cards</h3>
+                                <p>In <span class="join-blue">Join</span>, you can add contacts to collaborate on your
+                                    projects. Go to the "Contacts"
+                                    section, click on "New contact", and fill in the required information. Once added,
+                                    these contacts can be assigned tasks and they can interact with the tasks on the
+                                    board.
+                                </p>
+                            </li>
+                            <br>
+                            <li>
+                                <h3>Adding Cards</h3>
+                                <p>Now that you've added your contacts, you can start adding cards. Cards represent
+                                    individual tasks. Click the "+" button under the appropriate list to create a new
+                                    card. Fill in the task details in the card, like task name, description, due date,
+                                    assignees, etc.
+                                </p>
+                            </li>
+                            <br>
+                            <li>
+                                <h3>Moving Cards</h3>
+                                <p>Moving Cards
+                                    As the task moves from one stage to another, you can reflect that on the board by
+                                    dragging and dropping the card from one list to another.</p>
+                            </li>
+                            <br>
+                            <li>
+                                <h3>Deleting Cards</h3>
+                                <p>Deleting Cards
+                                    Once a task is completed, you can either move it to the "Done" list or delete it.
+                                    Deleting a card will permanently remove it from the board. Please exercise caution
+                                    when deleting cards, as this action is irreversible.
+                                    <br>
+                                    Remember that using <span class="join-blue">Join</span> effectively requires
+                                    consistent updates from you and your
+                                    team to ensure the board reflects the current state of your project.
+                                    <br>
+                                    Have more questions about <span class="join-blue">Join</span>? Feel free to contact
+                                    us at <span class="join-blue">join75@da.net</span>. We're here to help you!
+                                </p>
+                            </li>
+                        </ol>
+                        <h2>Enjoy using Join!
+                        </h2>
+                    </div>
+
+                </div>
+            </div>
+    </section>
+</body>
+
+</html>

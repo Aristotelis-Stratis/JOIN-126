@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONTACTS HTML</title>
+    <link rel="icon" type="image/x-icon" href="/assets/img/favicon/JOIN-logo-white.png">
+    <link rel="stylesheet" href="/styles/style.css">
+    <link rel="stylesheet" href="/styles/fonts.css">
+    <script src="/script.js"></script>
+    <script src="/js/templates.js"></script>
+    <script src="/js/contacts.js"></script>
+    <script src="/js/contacts.template.js"></script>
+    <script src="/js/storage.js"></script>
+
+    <!-- needs to be linked to all htmls-->
+</head>
+
+<body onload="init()">
+    <section class="main-container">
+        <!-- left part of website fixed menu -->
+        <div class="left-section">
+            <div class="logo-container">
+                <a href="assets/templates/desktop_template.html"><img class="left-section-logo"
+                        src="/assets/img/favicon/JOIN-logo-white.png" alt="Join Logo"></a>
+                <!--back to summary html-->
+            </div>
+            <div class="menu">
+                <div class="menu-choice">
+                    <div class="menu-container">
+                        <a href="/assets/templates/desktop_template.html"><img src="/assets/img/icons/summary.png"
+                                alt="Summary">Summary</a> <!--Summary html-->
+                    </div>
+                </div>
+                <div class="menu-choice">
+                    <div class="menu-container">
+                        <a href="../../add_task.html"><img src="/assets/img/icons/add_task.png" alt="Add Task">Add Task</a>
+                        <!--Add Task html-->
+                    </div>
+                </div>
+                <div class="menu-choice">
+                    <div class="menu-container">
+                        <a href="../../board.html"><img src="/assets/img/icons/board.png" alt="Board">Board</a> <!--Board html-->
+                    </div>
+                </div>
+                <div class="menu-choice active">
+                    <div class="menu-container">
+                        <a href="../../contacts.html"><img src="/assets/img/icons/contacts.png"
+                                alt="Contacts">Contacts</a> <!--Contacts html-->
+                    </div>
+                </div>
+            </div>
+            <div class="imprint">
+                <div class="menu-choice">
+                    <div class="menu-container">
+                        <a class="imprint-link" href="assets/templates/privacy_template.html">Privacy Policy</a>
+                        <!--privacy policy html-->
+                    </div>
+                </div>
+                <div class="menu-choice">
+                    <div class="menu-container">
+                        <a class="imprint-link" href="assets/templates/legal_template.html">Legal notice</a>
+                        <!--legal notice html-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--right part of website (content) -->
+        <div class="right-section">
+
+            <div class="navbar">
+                <a href="./desktop_template.html"><img class="mobile-logo" src="/assets/img/favicon/JOIN-logo-dark.png"
+                        alt="JOIN Logo"></a>
+                <span class="navbar-title">Kanban Project Management Tool</span>
+                <div class="profile-container">
+                    <a href="assets/templates/help.template.html"><img class="help-img"
+                            src="/assets/img/help/help_icon_big.png" alt="help"></a>
+                    <div class="profile" id="profile-button" onclick="openSubMenu()">
+                        <span>S</span><span>M</span> <!--Initial Letters of Accountname -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- onclick user menu -->
+            <div class="sub-menu d-none" id="user-sub-menu">
+                <div class="sub-menu-choice"><a class="imprint-link" href="assets/templates/legal_template.html">Legal
+                        Notice</a></div>
+                <div class="sub-menu-choice"><a class="imprint-link"
+                        href="assets/templates/privacy_template.html">Privacy Policy</a></div>
+                <div class="sub-menu-choice"><a class="imprint-link" href="./index.html">Logout</a></div>
+            </div>
+
+            <div class="contacts-content" id="main-content">
+
+                <div class="contact-list" id="contact-list">
+                    <div class="add-contact">
+                        <button class="add-contact-button" onclick="addNewContact()">
+                            Add new contact
+                            <img src="assets/img/icons/contact_add.png" alt="">
+                        </button>
+                    </div>
+                    <div class="list-container" id="contact-container"></div>
+
+                    <button class="add-contact-mobile" onclick="addNewContact()">
+                        <img src="assets/img/icons/contact_add.png" alt="Add Contact">
+                    </button>
+                </div>
+
+                <div class="contacts-text" id="text-content"> <!--render content here-->
+                    <div class="arrow-back" onclick="closeContactDetails()">
+                        <img src="assets/img/icons/arrow_blue.png" alt="Back">
+                    </div>
+                    <div class="contact-view" id="contact-details">
+                        <div class="contacts-title-bar">
+                            <h1>Contacts</h1>
+                            <div class="seperator-vertical"></div>
+                            <span>Better with a team</span>
+                            <div class="seperator-mobile"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="confirmation-container" style="display:none;" id="confirmation">
+                <span></span>
+            </div>
+        </div>
+        </div>
+
+        <div class="overlay" id="aco" style="display:none;">
+            <div class="add-contact-overlay" id="fly-in-overlay">
+                <div class="aco-left">
+                    <div class="aco-left-container">
+                        <img src="assets/img/favicon/JOIN-logo-white.png" alt="Join Logo">
+                        <span id="headline">Add contact</span>
+                        <p id="sub-headline">Tasks are better with a team!</p>
+                        <div class="seperator-overlay"></div>
+                    </div>
+                </div>
+
+                <div class="aco-right">
+                    <div class="aco-right-icon" id="aco-icon">
+                        <img src="assets/img/icons/aco_person.png" alt="Avatar">
+                    </div>
+
+                    <form onsubmit="closeContactOverlay(); return false" method="post">
+                        <div class="aco-right-input-container">
+                            <input class="aco-input input-bg-1" minlength="2" maxlength="30" type="text"
+                                placeholder="Name" id="inputName" required>
+                        </div>
+                        <div class="aco-right-input-container">
+                            <input class="aco-input input-bg-2" type="Email" placeholder="Email" id="inputEmail"
+                                required>
+                        </div>
+                        <div class="aco-right-input-container">
+                            <input class="aco-input input-bg-3 " minlength="4" maxlength="27" type="tel"
+                                placeholder="Phone" id="inputNumber" required>
+                        </div>
+                        <div class="aco-button-container">
+                            <button class="fb lb" id="lb" onclick="closeContactOverlay()">Cancel <img
+                                    src="assets/img/icons/x.png" alt="Cancel"></button>
+                            <button class="fb rb"  id="rb">Create
+                                contact <img src="assets/img/icons/check.png" alt="Create Contact"></button>
+                        </div>
+                    </form>
+
+                    <div class="aco-close" onclick="closeContactOverlay()">
+                        <img src="assets/img/icons/x.png" alt="Close Overlay">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

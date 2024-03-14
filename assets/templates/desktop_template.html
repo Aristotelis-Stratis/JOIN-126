@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DESKTOP TEMPLATE</title>
+    <link rel="icon" type="image/x-icon" href="/assets/img/favicon/JOIN-logo-white.png">
+    <link rel="stylesheet" href="/styles/style.css">
+    <link rel="stylesheet" href="/styles/fonts.css"> <!-- needs to be linked to all htmls-->
+    <script src="/script.js"></script>
+    <script src="/js/templates.js"></script>
+</head>
+
+<body>
+    <section class="main-container">
+        <!-- left part of website fixed menu -->
+        <div class="left-section">
+            <div class="logo-container">
+                <a href="./desktop_template.html"><img class="left-section-logo"
+                        src="/assets/img/favicon/JOIN-logo-white.png" alt="Join Logo"></a>
+                <!--back to summary html-->
+            </div>
+            <div class="menu">
+                <div class="menu-choice active">
+                    <div class="menu-container">
+                        <a href="./desktop_template.html"><img src="/assets/img/icons/summary.png" alt="Summary">Summary</a> <!--Summary html-->
+                    </div>
+                </div>
+                <div class="menu-choice">
+                    <div class="menu-container">
+                        <a href=""><img src="/assets/img/icons/add_task.png" alt="Add Task">Add Task</a> <!--Add Task html-->
+                    </div>
+                </div>
+                <div class="menu-choice">
+                    <div class="menu-container">
+                        <a href=""><img src="/assets/img/icons/board.png" alt="Board">Board</a> <!--Board html-->
+                    </div>
+                </div>
+                <div class="menu-choice">
+                    <div class="menu-container">
+                        <a href="../../contacts.html"><img src="/assets/img/icons/contacts.png" alt="Contacts">Contacts</a> <!--Contacts html-->
+                    </div>
+                </div>
+            </div>
+            <div class="imprint">
+                <div class="menu-choice">
+                    <div class="menu-container">
+                        <a class="imprint-link" href="./privacy_template.html">Privacy Policy</a>
+                        <!--privacy policy html-->
+                    </div>
+                </div>
+                <div class="menu-choice">
+                    <div class="menu-container">
+                        <a class="imprint-link" href="./legal_template.html">Legal notice</a> <!--legal notice html-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--right part of website (content) -->
+        <div class="right-section">
+            <!-- top navbar -->
+            <div class="navbar">
+                <a href="./desktop_template.html"><img class="mobile-logo" src="/assets/img/favicon/JOIN-logo-dark.png"
+                        alt="JOIN Logo"></a>
+                <span class="navbar-title">Kanban Project Management Tool</span>
+                <div class="profile-container">
+                    <a href="./help.template.html"><img class="help-img" src="/assets/img/help/help_icon_big.png"  alt="help"></a>
+                    <div class="profile" id="profile-button" onclick="openSubMenu()">
+                        <span>S</span><span>M</span> <!--Initial Letters of Accountname -->
+                    </div>
+                </div>
+            </div>
+
+                <!-- onclick user menu -->
+                <div class="sub-menu d-none" id="user-sub-menu">
+                    <div class="sub-menu-choice"><a class="imprint-link"href="./legal_template.html">Legal Notice</a></div>
+                    <div class="sub-menu-choice"><a class="imprint-link"href="./privacy_template.html">Privacy Policy</a></div>
+                    <div class="sub-menu-choice"><a class="imprint-link"href="./index.html">Logout</a></div>
+                </div>
+
+            <div class="content" id="main-content">
+                <div class="content-container" id="text-content"> 
+                    
+                    <!--render content here-->
+
+
+                </div>
+            </div>
+    </section>
+</body>
+
+</html>

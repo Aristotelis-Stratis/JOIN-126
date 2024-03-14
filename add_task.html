@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADD TASK</title>
+    <link rel="stylesheet" href="/styles/style.css">
+    <link rel="stylesheet" href="/styles/fonts.css">
+    <link rel="stylesheet" href="/styles/task.css">
+    <!-- needs to be linked to all htmls-->
+    <script src="/script.js"></script>
+    <script src="/js/board.js"></script>
+    <script src="/js/templates.js"></script>
+</head>
+
+<body>
+    <section class="main-container">
+        <!-- left part of website fixed menu -->
+        <div class="left-section">
+            <div class="logo-container">
+                <a href="./desktop_template.html"><img class="left-section-logo"
+                        src="/assets/img/favicon/JOIN-logo-white.png" alt="Join Logo"></a>
+                <!--back to summary html-->
+            </div>
+            <div class="menu">
+                <div class="menu-choice active">
+                    <div class="menu-container">
+                        <a href="./desktop_template.html"><img src="/assets/img/icons/summary.png" alt="Summary">Summary</a>
+                        <!--Summary html-->
+                    </div>
+                </div>
+                <div class="menu-choice">
+                    <div class="menu-container">
+                        <a href=""><img src="/assets/img/icons/add_task.png" alt="Add Task">Add Task</a>
+                        <!--Add Task html-->
+                    </div>
+                </div>
+                <div class="menu-choice">
+                    <div class="menu-container">
+                        <a href=""><img src="/assets/img/icons/board.png" alt="Board">Board</a>
+                        <!--Board html-->
+                    </div>
+                </div>
+                <div class="menu-choice">
+                    <div class="menu-container">
+                        <a href="../../contacts.html"><img src="/assets/img/icons/contacts.png" alt="Contacts">Contacts</a>
+                        <!--Contacts html-->
+                    </div>
+                </div>
+            </div>
+            <div class="imprint">
+                <div class="menu-choice">
+                    <div class="menu-container">
+                        <a class="imprint-link" href="./privacy_template.html">Privacy Policy</a>
+                        <!--privacy policy html-->
+                    </div>
+                </div>
+                <div class="menu-choice">
+                    <div class="menu-container">
+                        <a class="imprint-link" href="./legal_template.html">Legal notice</a>
+                        <!--legal notice html-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--right part of website (content) -->
+        <div class="right-section">
+            <!-- top navbar -->
+            <div class="navbar">
+                <a href="./desktop_template.html"><img class="mobile-logo" src="/assets/img/favicon/JOIN-logo-dark.png"
+                        alt="JOIN Logo"></a>
+                <span class="navbar-title">Kanban Project Management Tool</span>
+                <div class="profile-container">
+                    <img class="help-img" src="/assets/img/help/help_icon_big.png" onclick="showHelp()" alt="help">
+                    <div class="profile" id="profile-button" onclick="openSubMenu()">
+                        <span>S</span><span>M</span>
+                        <!--Initial Letters of Accountname -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- onclick user menu -->
+            <div class="profile-sub-menu d-none" id="user-sub-menu">
+                <div class="sub-menu-choice"><a href="./legal_template.html">Legal Notice</a></div>
+                <div class="sub-menu-choice"><a href="./privacy_template.html">Privacy Policy</a></div>
+                <div class="sub-menu-choice"><a href="./index.html">Logout</a></div>
+            </div>
+
+            <div class="contentTask" id="main-content">
+                <h1>ADD TASK</h1>
+                <form action="#">
+                    <div class="container">
+                        <div class="right">
+                            <div class="form-group">
+                                <label for="title">Title</label>
+                                <input type="text" id="title" name="title" placeholder="Geben Sie einen Titel ein">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <textarea id="description" name="description"
+                                    placeholder="Geben Sie eine Beschreibung ein"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="assigned-to">Assigned to</label>
+                                <select id="assigned-to" name="assigned-to">
+                                    <option value="">Select contacts to assign</option>
+                                    <option value="1">Anna</option>
+                                    <option value="2">Max</option>
+                                    <option value="3">Lukas</option>
+                                </select>
+                            </div>
+
+                        </div>
+                        <div class="left">
+                            <div class="form-group">
+                                <label for="due-date">Due date</label>
+                                <input type="date" id="due-date" name="due-date">
+                            </div>
+                            <div class="form-group">
+                                <label for="prio">Prio</label>
+                                <select id="prio" name="prio">
+                                    <option value="urgent">Urgent</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="low">Low</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="category">Category</label>
+                                <select id="category" name="category">
+                                    <option value="">Select task category</option>
+                                    <option value="Arbeit">Arbeit</option>
+                                    <option value="Privat">Privat</option>
+                                    <option value="Sonstiges">Sonstiges</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="subtasks">Subtasks</label>
+                                <ul id="subtasks">
+                                    <li>
+                                        <input type="text" name="subtask-1"
+                                            placeholder="Geben Sie eine Unteraufgabe ein">
+                                        <button type="button" id="add-subtask">+</button>
+                                    </li>
+                                </ul>
+
+                            </div>
+                            <button type="submit">Create task</button>
+                        </div>
+                </form>
+            </div>
+        </div>
+        <!--render content here-->
+        </div>
+    </section>
+</body>
+
+</html>
