@@ -1,209 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Board</title>
-    <link rel="stylesheet" href="/styles/style.css" />
-    <link rel="stylesheet" href="/styles/fonts.css" />
-    <link rel="stylesheet" href="styles/board.css" />
-    <!-- needs to be linked to all htmls-->
-    <script src="/script.js"></script>
-    <script src="/js/board.js"></script>
-    <script src="/js/templates.js"></script>
-  </head>
 
-  <body>
-    <section class="main-container">
-      <!-- left part of website fixed menu -->
-      <div class="left-section">
-        <div class="logo-container">
-          <a href="./desktop_template.html"
-            ><img
-              class="left-section-logo"
-              src="/assets/img/favicon/JOIN-logo-white.png"
-              alt="Join Logo"
-          /></a>
-          <!--back to summary html-->
-        </div>
-        <div class="menu">
-          <div class="menu-choice active">
-            <div class="menu-container">
-              <a href="./desktop_template.html"
-                ><img
-                  src="/assets/img/icons/summary.png"
-                  alt="Summary"
-                />Summary</a
-              >
-              <!--Summary html-->
-            </div>
-          </div>
-          <div class="menu-choice">
-            <div class="menu-container">
-              <a href=""
-                ><img src="/assets/img/icons/add_task.png" alt="Add Task" />Add
-                Task</a
-              >
-              <!--Add Task html-->
-            </div>
-          </div>
-          <div class="menu-choice">
-            <div class="menu-container">
-              <a href="board.html"
-                ><img src="/assets/img/icons/board.png" alt="Board" />Board</a
-              >
-              <!--Board html-->
-            </div>
-          </div>
-          <div class="menu-choice">
-            <div class="menu-container">
-              <a href="../../contacts.html"
-                ><img
-                  src="/assets/img/icons/contacts.png"
-                  alt="Contacts"
-                />Contacts</a
-              >
-              <!--Contacts html-->
-            </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Board</title>
+  <link rel="stylesheet" href="/styles/style.css" />
+  <link rel="stylesheet" href="/styles/fonts.css" />
+  <link rel="stylesheet" href="styles/board.css" />
+  <!-- needs to be linked to all htmls-->
+  <script src="/script.js"></script>
+  <script src="/js/board.js"></script>
+  <script src="/js/templates.js"></script>
+</head>
+
+<body>
+  <section class="main-container">
+    <!-- left part of website fixed menu -->
+    <div class="left-section">
+      <div class="logo-container">
+        <a href="../../summary.html"><img class="left-section-logo" src="/assets/img/favicon/JOIN-logo-white.png"
+            alt="Join Logo" /></a>
+        <!--back to summary html-->
+      </div>
+      <div class="menu">
+        <div class="menu-choice">
+          <div class="menu-container">
+            <a href="../../summary.html"><img src="/assets/img/icons/summary.png" alt="Summary">Summary</a>
+            <!--Summary html-->
           </div>
         </div>
-        <div class="imprint">
-          <div class="menu-choice">
-            <div class="menu-container">
-              <a class="imprint-link" href="./privacy_template.html"
-                >Privacy Policy</a
-              >
-            </div>
+        <div class="menu-choice">
+          <div class="menu-container">
+            <a href="../../add_task.html"><img src="/assets/img/icons/add_task.png" alt="Add Task">Add Task</a>
+            <!--Add Task html-->
           </div>
-          <div class="menu-choice">
-            <div class="menu-container">
-              <a class="imprint-link" href="./legal_template.html"
-                >Legal notice</a
-              >
-            </div>
+        </div>
+        <div class="menu-choice active">
+          <div class="menu-container">
+            <a href="../../board.html"><img src="/assets/img/icons/board.png" alt="Board">Board</a> <!--Board html-->
+          </div>
+        </div>
+        <div class="menu-choice">
+          <div class="menu-container">
+            <a href="../../contacts.html"><img src="/assets/img/icons/contacts.png" alt="Contacts">Contacts</a>
+            <!--Contacts html-->
           </div>
         </div>
       </div>
-      <!--right part of website (content) -->
-      <div class="right-section">
-        <!-- top navbar -->
-        <div class="navbar">
-          <a href="./desktop_template.html"
-            ><img
-              class="mobile-logo"
-              src="/assets/img/favicon/JOIN-logo-dark.png"
-              alt="JOIN Logo"
-          /></a>
-          <span class="navbar-title">Kanban Project Management Tool</span>
-          <div class="profile-container">
-            <img
-              class="help-img"
-              src="/assets/img/help/help_icon_big.png"
-              onclick="showHelp()"
-              alt="help"
-            />
-            <div class="profile" id="profile-button" onclick="openSubMenu()">
-              <span>S</span><span>M</span>
-              <!--Initial Letters of Accountname -->
-            </div>
+      <div class="imprint">
+        <div class="menu-choice">
+          <div class="menu-container">
+            <a class="imprint-link" href="./assets/templates/privacy_template.html">Privacy Policy</a>
+            <!--privacy policy html-->
           </div>
         </div>
-
-        <!-- onclick user menu -->
-        <div class="profile-sub-menu d-none" id="user-sub-menu">
-          <div class="sub-menu-choice">
-            <a href="./legal_template.html">Legal Notice</a>
-          </div>
-          <div class="sub-menu-choice">
-            <a href="./privacy_template.html">Privacy Policy</a>
-          </div>
-          <div class="sub-menu-choice"><a href="./index.html">Logout</a></div>
-        </div>
-
-        <div class="content" id="main-content">
-          <div class="container">
-            <header>
-              <h1>Projektmanagement</h1>
-              <div class="header-right">
-                <button class="add-task-button">Neue Aufgabe hinzufügen</button>
-              </div>
-            </header>
-            <main>
-              <div class="boards">
-                <div class="board">
-                  <h2>Zu erledigen</h2>
-                  <ul class="tasks">
-                    <li class="task">
-                      <input type="checkbox" id="task-1" />
-                      <label for="task-1"
-                        >Erstellung einer Kontaktformular-Seite</label
-                      >
-                      <span class="details">
-                        <span class="due-date">15.03.2024</span>
-                        <span class="priority">Mittel</span>
-                        <span class="assigned-to">Anna</span>
-                      </span>
-                    </li>
-                    <li class="task">
-                      <input type="checkbox" id="task-2" />
-                      <label for="task-2"
-                        >Erstellung eines HTML-Grundgerüsts</label
-                      >
-                      <span class="details">
-                        <span class="due-date">17.03.2024</span>
-                        <span class="priority">Hoch</span>
-                        <span class="assigned-to">Lukas</span>
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-                <div class="board">
-                  <h2>In Bearbeitung</h2>
-                  <ul class="tasks">
-                    <li class="task">
-                      <input type="checkbox" id="task-3" />
-                      <label for="task-3">Design der Website</label>
-                      <span class="details">
-                        <span class="due-date">20.03.2024</span>
-                        <span class="priority">Mittel</span>
-                        <span class="assigned-to">Max</span>
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-                <div class="board">
-                  <h2>Warten auf Feedback</h2>
-                  <ul class="tasks">
-                    <li class="task">
-                      <input type="checkbox" id="task-4" />
-                      <label for="task-4">Überprüfung des Contents</label>
-                      <span class="details">
-                        <span class="due-date">22.03.2024</span>
-                        <span class="priority">Hoch</span>
-                        <span class="assigned-to">Anna</span>
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-                <div class="board">
-                  <h2>Erledigt</h2>
-                  <ul class="tasks">
-                    <li class="task">
-                      <input type="checkbox" id="task-5" checked />
-                      <label for="task-5">Testtask</label>
-                      <span class="details">
-                        <span class="due-date">25.03.2024</span>
-                        <span class="priority">Niedrig</span>
-                        <span class="assigned-to">Markus</span>
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </main>
+        <div class="menu-choice">
+          <div class="menu-container">
+            <a class="imprint-link" href="./assets/templates/legal_template.html">Legal notice</a>
+            <!--legal notice html-->
           </div>
         </div>
       </div>
-    </section>
-  </body>
+    </div>
+    <!--right part of website (content) -->
+    <div class="right-section">
+      <!-- top navbar -->
+      <div class="navbar">
+        <a href="./summary.html"><img class="mobile-logo" src="/assets/img/favicon/JOIN-logo-dark.png"
+            alt="JOIN Logo"></a>
+        <span class="navbar-title">Kanban Project Management Tool</span>
+        <div class="profile-container">
+          <a href="./assets/templates/help.template.html"><img class="help-img" src="/assets/img/help/help_icon_big.png"
+              alt="help"></a>
+          <div class="profile" id="profile-button" onclick="openSubMenu()">
+            <span>S</span><span>M</span> <!--Initial Letters of Accountname -->
+          </div>
+        </div>
+      </div>
+
+      <!-- onclick user menu -->
+      <div class="sub-menu d-none" id="user-sub-menu">
+        <div class="sub-menu-choice"><a class="imprint-link" href="./assets/templates/legal_template.html">Legal
+            Notice</a></div>
+        <div class="sub-menu-choice"><a class="imprint-link" href="./assets/templates/privacy_template.html">Privacy
+            Policy</a></div>
+        <div class="sub-menu-choice"><a class="imprint-link" href="./index.html">Logout</a></div>
+      </div>
+
+      <div class="content" id="main-content">
+        <div class="container">
+          <header>
+            <h1>Projektmanagement</h1>
+            <div class="header-right">
+              <button class="add-task-button">Neue Aufgabe hinzufügen</button>
+            </div>
+          </header>
+          <main>
+            <div class="boards">
+              <div class="board">
+                <h2>Zu erledigen</h2>
+                <ul class="tasks">
+                  <li class="task">
+                    <input type="checkbox" id="task-1" />
+                    <label for="task-1">Erstellung einer Kontaktformular-Seite</label>
+                    <span class="details">
+                      <span class="due-date">15.03.2024</span>
+                      <span class="priority">Mittel</span>
+                      <span class="assigned-to">Anna</span>
+                    </span>
+                  </li>
+                  <li class="task">
+                    <input type="checkbox" id="task-2" />
+                    <label for="task-2">Erstellung eines HTML-Grundgerüsts</label>
+                    <span class="details">
+                      <span class="due-date">17.03.2024</span>
+                      <span class="priority">Hoch</span>
+                      <span class="assigned-to">Lukas</span>
+                    </span>
+                  </li>
+                </ul>
+              </div>
+              <div class="board">
+                <h2>In Bearbeitung</h2>
+                <ul class="tasks">
+                  <li class="task">
+                    <input type="checkbox" id="task-3" />
+                    <label for="task-3">Design der Website</label>
+                    <span class="details">
+                      <span class="due-date">20.03.2024</span>
+                      <span class="priority">Mittel</span>
+                      <span class="assigned-to">Max</span>
+                    </span>
+                  </li>
+                </ul>
+              </div>
+              <div class="board">
+                <h2>Warten auf Feedback</h2>
+                <ul class="tasks">
+                  <li class="task">
+                    <input type="checkbox" id="task-4" />
+                    <label for="task-4">Überprüfung des Contents</label>
+                    <span class="details">
+                      <span class="due-date">22.03.2024</span>
+                      <span class="priority">Hoch</span>
+                      <span class="assigned-to">Anna</span>
+                    </span>
+                  </li>
+                </ul>
+              </div>
+              <div class="board">
+                <h2>Erledigt</h2>
+                <ul class="tasks">
+                  <li class="task">
+                    <input type="checkbox" id="task-5" checked />
+                    <label for="task-5">Testtask</label>
+                    <span class="details">
+                      <span class="due-date">25.03.2024</span>
+                      <span class="priority">Niedrig</span>
+                      <span class="assigned-to">Markus</span>
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+
 </html>
