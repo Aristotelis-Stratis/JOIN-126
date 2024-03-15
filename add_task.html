@@ -12,6 +12,7 @@
     <script src="/script.js"></script>
     <script src="/js/board.js"></script>
     <script src="/js/templates.js"></script>
+    <script src="/js/add_task.js"></script>
 </head>
 
 <body>
@@ -26,14 +27,14 @@
             <div class="menu">
                 <div class="menu-choice">
                     <div class="menu-container">
-                        <a href="./summary.html"><img src="/assets/img/icons/summary.png"
-                                alt="Summary">Summary</a>
+                        <a href="./summary.html"><img src="/assets/img/icons/summary.png" alt="Summary">Summary</a>
                         <!--Summary html-->
                     </div>
                 </div>
                 <div class="menu-choice active">
                     <div class="menu-container">
-                        <a href="../../add_task.html""><img src="/assets/img/icons/add_task.png" alt="Add Task">Add Task</a>
+                        <a href="../../add_task.html""><img src=" /assets/img/icons/add_task.png" alt="Add Task">Add
+                            Task</a>
                         <!--Add Task html-->
                     </div>
                 </div>
@@ -70,89 +71,101 @@
         <div class="right-section">
             <!-- top navbar -->
             <div class="navbar">
-                <a href="./summary.html"><img class="mobile-logo" src="/assets/img/favicon/JOIN-logo-dark.png"
+                <a href="../../summary.html"><img class="mobile-logo" src="/assets/img/favicon/JOIN-logo-dark.png"
                         alt="JOIN Logo"></a>
                 <span class="navbar-title">Kanban Project Management Tool</span>
                 <div class="profile-container">
-                    <img class="help-img" src="/assets/img/help/help_icon_big.png" onclick="showHelp()" alt="help">
+                    <a href="./assets/templates/help.template.html"><img class="help-img"
+                            src="/assets/img/help/help_icon_big.png" alt="help"></a>
                     <div class="profile" id="profile-button" onclick="openSubMenu()">
-                        <span>S</span><span>M</span>
-                        <!--Initial Letters of Accountname -->
+                        <span>S</span><span>M</span> <!--Initial Letters of Accountname -->
                     </div>
                 </div>
             </div>
 
             <!-- onclick user menu -->
-            <div class="profile-sub-menu d-none" id="user-sub-menu">
-                <div class="sub-menu-choice"><a href="./legal_template.html">Legal Notice</a></div>
-                <div class="sub-menu-choice"><a href="./assets/templates/privacy_template.html">Privacy Policy</a></div>
-                <div class="sub-menu-choice"><a href="./index.html">Logout</a></div>
+            <div class="sub-menu d-none" id="user-sub-menu">
+                <div class="sub-menu-choice"><a class="imprint-link" href="./assets/templates/legal_template.html">Legal
+                        Notice</a></div>
+                <div class="sub-menu-choice"><a class="imprint-link"
+                        href="./assets/templates/privacy_template.html">Privacy Policy</a></div>
+                <div class="sub-menu-choice"><a class="imprint-link" href="./index.html">Logout</a></div>
             </div>
 
             <div class="contentTask" id="main-content">
                 <div class="content-container" id="text-content">
-                    <h1>ADD TASK</h1>
-                    <form action="#">
-                        <div class="container">
-                            <div class="right">
-                                <div class="form-group">
-                                    <label for="title">Title</label>
-                                    <input type="text" id="title" name="title" placeholder="Geben Sie einen Titel ein">
-                                </div>
 
+                    <div class="form-container">
+
+                        <div class="task-title">
+                            <h1>Add Task</h1>
+                        </div>
+                        <form class="task-form" id="taskForm">
+                            <!-- left form side -->
+                            <div class="form-left">
+                                <div class="form-group">
+                                    <label for="title">Title<span class="form-required-color">*</span></label>
+                                    <input type="text" id="title" required placeholder="Enter a title">
+                                    <span class="error-message">This field is required</span>
+                                </div>
                                 <div class="form-group">
                                     <label for="description">Description</label>
-                                    <textarea id="description" name="description"
-                                        placeholder="Geben Sie eine Beschreibung ein"></textarea>
+                                    <textarea id="description" placeholder="Enter a Description"></textarea>
                                 </div>
                                 <div class="form-group">
-                                    <label for="assigned-to">Assigned to</label>
-                                    <select id="assigned-to" name="assigned-to">
-                                        <option value="">Select contacts to assign</option>
-                                        <option value="1">Anna</option>
-                                        <option value="2">Max</option>
-                                        <option value="3">Lukas</option>
+                                    <label for="assignedTo">Assigned to</label>
+                                    <select id="assignedTo">
+                                        <option>Select contacts to assign</option>
+                                        <!-- Add options here -->
                                     </select>
                                 </div>
-
                             </div>
-                            <div class="left">
+
+                            <!-- middle seperator in form -->
+                            <div class="task-form-seperator"></div>
+
+                            <!-- right form side -->
+                            <div class="form-right">
                                 <div class="form-group">
-                                    <label for="due-date">Due date</label>
-                                    <input type="date" id="due-date" name="due-date">
+                                    <label for="dueDate">Due date<span class="form-required-color">*</span></label>
+                                    <input type="date" id="dueDate" required>
+                                    <span class="error-message">This field is required</span>
+                                </div>
+                                <div class="form-group priority">
+                                    <label>Prio</label>
+                                    <div class="priority-button-container">
+                                        <button class="priority-button" type="button">Urgent <img
+                                                src="assets/img/icons/urgent.png" alt=""></button>
+                                        <button class="priority-button" type="button">Medium <img
+                                                src="assets/img/icons/medium.png" alt=""></button>
+                                        <button class="priority-button" type="button">Low <img
+                                                src="assets/img/icons/low.png" alt=""></button>
+                                    </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="prio">Prio</label>
-                                    <select id="prio" name="prio">
-                                        <option value="urgent">Urgent</option>
-                                        <option value="medium">Medium</option>
-                                        <option value="low">Low</option>
+                                    <label for="category">Category<span class="form-required-color">*</span></label>
+                                    <select id="category" required>
+                                        <option>Select task category</option>
+                                        <!-- Add options here -->
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="category">Category</label>
-                                    <select id="category" name="category">
-                                        <option value="">Select task category</option>
-                                        <option value="Arbeit">Arbeit</option>
-                                        <option value="Privat">Privat</option>
-                                        <option value="Sonstiges">Sonstiges</option>
-                                    </select>
+                                    <label>Subtasks</label>
+                                    <input type="text" id="subTasks" placeholder="Add new subtask">
                                 </div>
-
-                                <div class="form-group">
-                                    <label for="subtasks">Subtasks</label>
-                                    <ul id="subtasks">
-                                        <li>
-                                            <input type="text" name="subtask-1"
-                                                placeholder="Geben Sie eine Unteraufgabe ein">
-                                            <button type="button" id="add-subtask">+</button>
-                                        </li>
-                                    </ul>
-
-                                </div>
-                                <button type="submit">Create task</button>
                             </div>
-                    </form>
+                        </form>
+                    </div>
+                    <div class="form-below">
+                        <div class="aco-button-container">
+                            <button class="fb lb">Clear <img src="assets/img/icons/x.png" alt="Clear"></button>
+                            <button class="fb rb">Create Task <img src="assets/img/icons/check.png"
+                                    alt="Create Task"></button>
+                        </div>
+                    </div>
+                    <div class="form-info">
+                        <span><span class="form-required-color">*</span>This field is required</span>
+                    </div>
                 </div>
             </div>
             <!--render content here-->

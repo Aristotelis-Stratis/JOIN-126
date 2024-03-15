@@ -1,25 +1,33 @@
-// Function to handle form submission
-function handleFormSubmission(event) {
-    event.preventDefault(); // Prevent form from submitting
-
-    // Get form values
-    const title = document.getElementById('title').value;
-    const description = document.getElementById('description').value;
-    const category = document.getElementById('category').value;
-    const priority = document.getElementById('priority').value;
-    const dueDate = document.getElementById('due-date').value;
-    const assignedTo = Array.from(document.getElementById('assigned-to').selectedOptions).map(option => option.value);
-
-    // Perform validation and add task logic here
-
-    // Clear form fields
-    document.getElementById('title').value = '';
-    document.getElementById('description').value = '';
-    document.getElementById('category').value = '';
-    document.getElementById('priority').value = '';
-    document.getElementById('due-date').value = '';
-    Array.from(document.getElementById('assigned-to').options).forEach(option => option.selected = false);
+// Funktion zum Hinzufügen der Fehlermeldung, wenn das Eingabefeld leer ist
+function validateInput(input) {
+    if (input.value.trim() === '') {
+        input.classList.add('input-error');
+        input.nextElementSibling.style.display = 'block'; // Zeigt die Fehlermeldung an
+    } else {
+        input.classList.remove('input-error');
+        input.nextElementSibling.style.display = 'none'; // Verbirgt die Fehlermeldung
+    }
 }
 
-// Add event listener to form submission
-document.getElementById('add-task-form').addEventListener('submit', handleFormSubmission);
+// Funktion zum Initialisieren der Validierung
+function initValidation() {
+    const inputs = document.querySelectorAll('input[type=text], input[type=date], textarea');
+    
+    inputs.forEach(input => {
+        // Prüfe den Input beim Verlassen des Feldes (onblur)
+        input.onblur = function() {
+            validateInput(input);
+        };
+
+        // Entferne die Fehlermeldung beim Fokussieren, wenn der Benutzer anfängt zu tippen
+        input.oninput = function() {
+            if (input.value.trim() !== '') {
+                input.classList.remove('input-error');
+                input.nextElementSibling.style.display = 'none';
+            }
+        };
+    });
+}
+
+// Initialisiere die Validierung, wenn das Dokument geladen ist
+document.addEventListener('DOMContentLoaded', initValidation);

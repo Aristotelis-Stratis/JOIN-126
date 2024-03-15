@@ -1,3 +1,7 @@
+* {
+    font-family: 'Inter';
+}
+
 html,
 body {
     margin: 0;
@@ -1093,6 +1097,190 @@ h3 {
 }
 
 /*CONTACTS HTML END*/
+
+/*ADD TASK START*/
+.form-container {
+    width: 100%;
+    margin-bottom: 100px;
+}
+
+.task-title h1 {
+    font-size: 61px;
+}
+
+.task-form {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.form-left {
+    border-right: 1px solid rgb(226, 226, 226);
+    padding-right: 64px;
+}
+
+.form-right {
+    padding-left: 64px;
+}
+
+.form-left,
+.form-right {
+    width: 45%;
+}
+
+.form-group textarea {
+    height: 120px;
+}
+
+input[type=text],
+input[type=date],
+textarea {
+    font-weight: 400;
+    color: rgba(209, 209, 209, 1);
+    resize: none;
+}
+
+.form-group {
+    margin-bottom: 30px;
+}
+
+.form-required-color {
+    color: red;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type=text],
+input[type=date],
+textarea,
+select {
+    font-size: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 21px;
+    border: 1px solid rgba(209, 209, 209, 1);
+    border-radius: 10px;
+    background-color: white;
+    transition: border-color 0.3s;
+}
+
+input[type=text]:focus,
+input[type=date]:focus,
+textarea:focus {
+    border-color: rgba(41, 171, 226, 1);
+    outline: none;
+}
+
+.error-message {
+    color: red;
+    box-sizing: border-box;
+    padding: 5px 0px;
+    font-size: 12px;
+    display: none;
+}
+
+.input-error {
+    border-color: red !important;
+}
+
+input[type=text],
+input[type=date],
+textarea {
+    font-weight: 400;
+    color: black;
+    resize: none;
+}
+
+input::placeholder,
+textarea::placeholder,
+select::placeholder {
+    color: rgb(209, 209, 209);
+}
+
+.priority {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.priority-button-container {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.priority-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    font-family: 'Inter' !important;
+    padding: 16px 10px;
+    font-size: 21px;
+    font-weight: 400;
+    width: 136px;
+    border: none;
+    background-color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.priority-button-container .priority-button:nth-child(1) {
+    color: black;
+}
+
+.priority-button-container .priority-button:nth-child(2) {
+    color: black;
+}
+
+.priority-button-container .priority-button:nth-child(3) {
+    color: black;
+}
+
+.priority-button-container .priority-button:hover {
+    background-color: #cccccc;
+}
+
+.form-below {
+    display: flex;
+    align-items: end;
+    flex-direction: row;
+    justify-content: end;
+    height: 56px;
+}
+
+.form-info {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+}
+
+input[type=submit] {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: #5cb85c;
+    color: white;
+    cursor: pointer;
+}
+
+input[type=submit]:hover {
+    background-color: #4cae4c;
+}
+
+
+/*ADD TASK END*/
+
+
+
 
 /*RESPONSIVE*/
 
