@@ -312,6 +312,7 @@ body {
 
 .content-container {
     /* border: 2px solid red; */
+    max-width: 1208px;
     padding-top: 50px;
     padding-right: 100px;
     padding-bottom: 50px;
@@ -421,6 +422,7 @@ h3 {
 
 .contacts-content {
     width: 100%;
+    max-width: 1208px;
     height: calc(100% - 96px);
     position: sticky;
     overflow-y: hidden;
@@ -691,7 +693,7 @@ h3 {
 }
 
 .details-1-name {
-    font-size: 47px;
+    font-size: 40px;
     font-weight: 700;
     line-height: 56px;
     letter-spacing: 0em;
@@ -1099,6 +1101,11 @@ h3 {
 /*CONTACTS HTML END*/
 
 /*ADD TASK START*/
+.contentTask {
+    overflow-x: hidden;
+    height: calc(100% - 96px);
+}
+
 .form-container {
     width: 100%;
     margin-bottom: 100px;
@@ -1106,6 +1113,7 @@ h3 {
 
 .task-title h1 {
     font-size: 61px;
+    margin-block-start: 0;
 }
 
 .task-form {
@@ -1113,6 +1121,42 @@ h3 {
     width: 100%;
     flex-direction: row;
     justify-content: space-between;
+    position: relative;
+}
+
+.task-assign,
+.task-category {
+    cursor: pointer;
+}
+
+.subtask::placeholder {
+    color: rgb(209, 209, 209) !important;
+}
+
+.drop-down-menu-container {
+    position: relative;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.drop-down-image-container {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    border-radius: 10px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.drop-down-image-container:hover {
+    background-color: #ebeaec;
+}
+
+.drop-down-menu-container input::placeholder {
+    color: black;
 }
 
 .form-left {
@@ -1145,6 +1189,18 @@ textarea {
     margin-bottom: 30px;
 }
 
+.assign-dropdown-menu {
+    display: none;
+    position: absolute;
+    width: 400px;
+    height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ced4da;
+    border-radius: 10px;
+    background-color: #fff;
+    z-index: 1;
+}
+
 .form-required-color {
     color: red;
 }
@@ -1156,8 +1212,7 @@ label {
 
 input[type=text],
 input[type=date],
-textarea,
-select {
+textarea {
     font-size: 20px;
     width: 100%;
     box-sizing: border-box;
@@ -1196,8 +1251,7 @@ textarea {
 }
 
 input::placeholder,
-textarea::placeholder,
-select::placeholder {
+textarea::placeholder {
     color: rgb(209, 209, 209);
 }
 
@@ -1210,10 +1264,9 @@ select::placeholder {
 .priority-button-container {
     display: flex;
     flex-direction: row;
-    gap: 15px;
+    gap: 16px;
     border: none;
     border-radius: 4px;
-    cursor: pointer;
 }
 
 .priority-button {
@@ -1230,23 +1283,25 @@ select::placeholder {
     background-color: white;
     border-radius: 10px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
 }
 
-.priority-button-container .priority-button:nth-child(1) {
-    color: black;
+.priority-button.active[data-priority="urgent"] {
+    background-color: rgba(255, 61, 0, 1);
+    color: white;
 }
 
-.priority-button-container .priority-button:nth-child(2) {
-    color: black;
+.priority-button.active[data-priority="medium"] {
+    background-color: rgba(255, 168, 0, 1);
+    color: white;
 }
 
-.priority-button-container .priority-button:nth-child(3) {
-    color: black;
+.priority-button.active[data-priority="low"] {
+    background-color: rgba(122, 226, 41, 1);
+    color: white;
 }
 
-.priority-button-container .priority-button:hover {
-    background-color: #cccccc;
+.priority-button.active img {
+    filter: brightness(0) invert(1);
 }
 
 .form-below {
@@ -1274,6 +1329,17 @@ input[type=submit] {
 
 input[type=submit]:hover {
     background-color: #4cae4c;
+}
+
+.add-task-wrapper {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: end;
+}
+
+.mb {
+    display: block;
 }
 
 
@@ -1340,6 +1406,27 @@ input[type=submit]:hover {
     .edit-mobile {
         display: flex;
     }
+
+    .contentTask {
+        overflow-y: scroll;
+    }
+
+    .task-form {
+        flex-direction: column;
+    }
+
+    .form-left,
+    .form-right {
+        border: none;
+        padding: 0;
+        width: 100%;
+    }
+
+    .form-container {
+        margin-bottom: 50px;
+        box-sizing: border-box;
+    }
+
 }
 
 @media (max-width: 1050px) {
@@ -1504,8 +1591,8 @@ input[type=submit]:hover {
     }
 
     .content-container {
-        padding-left: 16px;
-        padding-right: 16px;
+        padding-right: 50px;
+        padding-left: 50px;
         padding-bottom: 140px;
     }
 
@@ -1516,6 +1603,28 @@ input[type=submit]:hover {
 
     .letter-container {
         margin-top: 15px;
+    }
+
+    .add-task-wrapper {
+        position: fixed;
+        background-color: #f6f7f8;
+        height: 70px;
+        box-sizing: border-box;
+        padding: 0px 50px;
+        width: 100%;
+        bottom: 80px;
+        left: 0px;
+        box-shadow: 0px 0 6px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .form-below,
+    .form-info {
+        height: 100%;
+        align-items: center;
+    }
+
+    .mb {
+        display: none;
     }
 }
 
@@ -1689,6 +1798,50 @@ input[type=submit]:hover {
 
     .menu-container img {
         width: 25px;
+    }
+
+    .task-title h1,
+    .privacy-policy h1,
+    .legal-notice h1 {
+        font-size: 44px;
+    }
+
+    .privacy-policy h2,
+    .legal-notice h2 {
+        font-size: 21px;
+    }
+
+    .priority-button span {
+        display: none;
+    }
+
+    h3 {
+        padding-left: 0;
+    }
+
+    .priority-button {
+        padding: 16px;
+    }
+
+    .priority-button img {
+        display: block;
+    }
+
+    input[type=text],
+    input[type=date],
+    textarea,
+    select {
+        font-size: 16px;
+    }
+
+    .content-container,
+    .add-task-wrapper {
+        padding-right: 16px;
+        padding-left: 16px;
+    }
+
+    .form-info span {
+        font-size: 14px;
     }
 }
 

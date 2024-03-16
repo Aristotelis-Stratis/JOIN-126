@@ -101,7 +101,6 @@
                             <h1>Add Task</h1>
                         </div>
                         <form class="task-form" id="taskForm">
-                            <!-- left form side -->
                             <div class="form-left">
                                 <div class="form-group">
                                     <label for="title">Title<span class="form-required-color">*</span></label>
@@ -110,65 +109,102 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="description">Description</label>
-                                    <textarea id="description" placeholder="Enter a Description"></textarea>
+                                    <textarea class="no-validate" id="description"
+                                        placeholder="Enter a Description"></textarea>
+                                    <span class="error-message">This field is required</span>
                                 </div>
+
+                                <!-- assign to list -->
                                 <div class="form-group">
                                     <label for="assignedTo">Assigned to</label>
-                                    <select id="assignedTo">
-                                        <option>Select contacts to assign</option>
-                                        <!-- Add options here -->
-                                    </select>
+                                    <div class="drop-down-menu-container">
+                                        <div class="drop-down-image-container"><img
+                                                src="assets/img/icons/arrow_drop_down.png" alt="">
+                                        </div>
+                                        <input class="no-validate task-assign" type="text" id="assignedTo"
+                                            placeholder="Select contacts to assign" readonly>
+                                    </div>
+                                    <div id="assign-dropdown-menu" class="assign-dropdown-menu">
+                                        <!-- render contact list here -->
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- middle seperator in form -->
-                            <div class="task-form-seperator"></div>
 
-                            <!-- right form side -->
                             <div class="form-right">
+                                <!-- Date -->
                                 <div class="form-group">
                                     <label for="dueDate">Due date<span class="form-required-color">*</span></label>
                                     <input type="date" id="dueDate" required>
                                     <span class="error-message">This field is required</span>
                                 </div>
+
+                                <!-- priority buttons -->
                                 <div class="form-group priority">
                                     <label>Prio</label>
                                     <div class="priority-button-container">
-                                        <button class="priority-button" type="button">Urgent <img
-                                                src="assets/img/icons/urgent.png" alt=""></button>
-                                        <button class="priority-button" type="button">Medium <img
-                                                src="assets/img/icons/medium.png" alt=""></button>
-                                        <button class="priority-button" type="button">Low <img
-                                                src="assets/img/icons/low.png" alt=""></button>
+                                        <button class="priority-button" data-priority="urgent"
+                                            onclick="togglePriority(this, 'urgent')"><span>Urgent</span> <img
+                                                src="assets/img/icons/urgent.png" alt="Urgent Priority"></button>
+                                        <button class="priority-button" data-priority="medium"
+                                            onclick="togglePriority(this, 'medium')"><span>Medium</span> <img
+                                                src="assets/img/icons/medium.png" alt="Medium Priority"></button>
+                                        <button class="priority-button" data-priority="low"
+                                            onclick="togglePriority(this, 'low')"><span>Low</span> <img
+                                                src="assets/img/icons/low.png" alt="Low Priority"></button>
                                     </div>
                                 </div>
+
+                                <!-- category selection -->
                                 <div class="form-group">
                                     <label for="category">Category<span class="form-required-color">*</span></label>
-                                    <select id="category" required>
-                                        <option>Select task category</option>
-                                        <!-- Add options here -->
-                                    </select>
+                                    <div class="drop-down-menu-container">
+                                        <div class="drop-down-image-container"><img
+                                                src="assets/img/icons/arrow_drop_down.png" alt="">
+                                        </div>
+                                        <input class="no-validate task-category" type="text" id="assignedTo"
+                                            placeholder="Select task category" readonly>
+                                    </div>
+                                    <!-- drop-down-menu -->
+                                    <div id="assign-dropdown-menu" class="assign-dropdown-menu">
+                                        <!-- category list -->
+                                    </div>
                                 </div>
+
+                                <!-- subtasks -->
                                 <div class="form-group">
                                     <label>Subtasks</label>
-                                    <input type="text" id="subTasks" placeholder="Add new subtask">
+                                    <div class="drop-down-menu-container">
+                                        <div class="drop-down-image-container"><img
+                                                src="assets/img/icons/arrow_drop_down.png" alt="">
+                                        </div>
+                                        <input class="no-validate subtask" type="text" id="subTask"
+                                            placeholder="Add new subtask">
+                                    </div>
+                                    <!-- drop-down-menu -->
+                                    <div id="assign-dropdown-menu" class="assign-dropdown-menu">
+                                        <!-- subtask list -->
+                                    </div>
                                 </div>
                             </div>
                         </form>
                     </div>
-                    <div class="form-below">
-                        <div class="aco-button-container">
-                            <button class="fb lb">Clear <img src="assets/img/icons/x.png" alt="Clear"></button>
-                            <button class="fb rb">Create Task <img src="assets/img/icons/check.png"
-                                    alt="Create Task"></button>
+
+                    <!-- wrapper -->
+                    <div class="add-task-wrapper">
+                        <div class="form-below">
+                            <div class="aco-button-container">
+                                <button class="fb lb mb">Clear <img src="assets/img/icons/x.png" alt="Clear"></button>
+                                <button class="fb rb">Create Task <img src="assets/img/icons/check.png"
+                                        alt="Create Task"></button>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-info">
-                        <span><span class="form-required-color">*</span>This field is required</span>
+                        <div class="form-info">
+                            <span><span class="form-required-color">*</span>This field is required</span>
+                        </div>
                     </div>
                 </div>
             </div>
-            <!--render content here-->
         </div>
     </section>
 </body>

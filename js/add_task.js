@@ -1,25 +1,24 @@
-// Funktion zum Hinzufügen der Fehlermeldung, wenn das Eingabefeld leer ist
 function validateInput(input) {
+    if (input.classList.contains('no-validate')) {
+        return;
+    }
+
     if (input.value.trim() === '') {
         input.classList.add('input-error');
-        input.nextElementSibling.style.display = 'block'; // Zeigt die Fehlermeldung an
+        input.nextElementSibling.style.display = 'block';
     } else {
         input.classList.remove('input-error');
-        input.nextElementSibling.style.display = 'none'; // Verbirgt die Fehlermeldung
+        input.nextElementSibling.style.display = 'none';
     }
 }
 
-// Funktion zum Initialisieren der Validierung
 function initValidation() {
     const inputs = document.querySelectorAll('input[type=text], input[type=date], textarea');
-    
     inputs.forEach(input => {
-        // Prüfe den Input beim Verlassen des Feldes (onblur)
         input.onblur = function() {
             validateInput(input);
         };
 
-        // Entferne die Fehlermeldung beim Fokussieren, wenn der Benutzer anfängt zu tippen
         input.oninput = function() {
             if (input.value.trim() !== '') {
                 input.classList.remove('input-error');
@@ -29,5 +28,19 @@ function initValidation() {
     });
 }
 
-// Initialisiere die Validierung, wenn das Dokument geladen ist
+function togglePriority(element, priority) {
+    var priorityButtons = document.getElementsByClassName('priority-button');
+    
+    for (var i = 0; i < priorityButtons.length; i++) {
+        priorityButtons[i].classList.remove('active');
+    }
+
+    element.classList.add('active');
+
+    // Optional: Führe weitere Aktionen basierend auf der Priorität aus
+    // (z.B. Werte in einem versteckten Formularfeld speichern)
+}
+
+// Init
 document.addEventListener('DOMContentLoaded', initValidation);
+
