@@ -1134,6 +1134,7 @@ h3 {
 }
 
 .drop-down-menu-container {
+    display: block;
     position: relative;
     border-radius: 10px;
     cursor: pointer;
@@ -1149,6 +1150,49 @@ h3 {
     display: flex;
     align-items: center;
     justify-content: center;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.drop-down-image-container img {
+    transition: all 0.2s ease-in-out;
+}
+
+.dropdown-menu {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    width: 100%;
+    overflow-y: auto;
+    border: 1px solid #ced4da;
+    border-radius: 10px;
+    background-color: #fff;
+    z-index: 1;
+    gap: 12px
+}
+
+.dropdown-menu.visible {
+    display: flex;
+}
+
+.rotate-180 {
+    transform: rotate(180deg);
+}
+
+.dropdown-category {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 400;
+    box-sizing: border-box;
+    padding: 12px 21px;
+}
+
+.dropdown-category:hover,
+.task-contact-item:hover {
+    background-color: #eeefef;
 }
 
 .drop-down-image-container:hover {
@@ -1187,18 +1231,6 @@ textarea {
 
 .form-group {
     margin-bottom: 30px;
-}
-
-.assign-dropdown-menu {
-    display: none;
-    position: absolute;
-    width: 400px;
-    height: 200px;
-    overflow-y: auto;
-    border: 1px solid #ced4da;
-    border-radius: 10px;
-    background-color: #fff;
-    z-index: 1;
 }
 
 .form-required-color {
@@ -1278,11 +1310,15 @@ textarea::placeholder {
     padding: 16px 10px;
     font-size: 21px;
     font-weight: 400;
-    width: 136px;
+    width: 33.3%;
     border: none;
     background-color: white;
     border-radius: 10px;
     cursor: pointer;
+}
+
+.priority-button:hover {
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 }
 
 .priority-button.active[data-priority="urgent"] {
@@ -1342,6 +1378,31 @@ input[type=submit]:hover {
     display: block;
 }
 
+.task-contact-list {
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.task-contact-item {
+    width: 100%;
+    border-radius: 10px;
+    box-sizing: border-box;
+    padding: 5px;
+    gap: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    user-select: none;
+    transition: 225ms ease-in-out;
+    cursor: pointer;
+}
+
+.task-contact-checkbox {
+    position: absolute;
+    right: 20px;
+}
 
 /*ADD TASK END*/
 

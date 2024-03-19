@@ -87,7 +87,6 @@ function renderContacts() {
     }
 }
 
-
 /**
  * Opens the details of a contact in a dedicated section of the UI.
  * @param {number} index - The index of the contact in the allContacts array.
