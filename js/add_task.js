@@ -1,20 +1,12 @@
 let allContacts = [];
 let selectedContacts = [];
 
-async function init() {
-    await loadContactsToTasks();
-    initValidation();
-    console.log(allContacts);
-    console.log(selectedContacts);
-    renderTaskContactList();
-}
-
-
 /**
  * Initializes the application by loading contacts and rendering them.
  */
 async function init() {
     await loadContactsToTasks();
+    initValidation();
     console.log(allContacts);
     console.log(selectedContacts);
     renderTaskContactList();

@@ -825,6 +825,16 @@ h3 {
     animation-fill-mode: both;
 }
 
+.add-contact-overlay.closing {
+    animation-name: slideOutRight;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-in-out;
+    animation-delay: 0s;
+    animation-iteration-count: 1;
+    animation-direction: normal;
+    animation-fill-mode: both;
+}
+
 .aco-left {
     border-top-left-radius: 25px;
     border-bottom-left-radius: 25px;
@@ -1059,16 +1069,6 @@ h3 {
         transform: translateY(100%);
         opacity: 0;
     }
-}
-
-.add-contact-overlay.closing {
-    animation-name: slideOutRight;
-    animation-duration: 0.5s;
-    animation-timing-function: ease-in-out;
-    animation-delay: 0s;
-    animation-iteration-count: 1;
-    animation-direction: normal;
-    animation-fill-mode: both;
 }
 
 .confirmation-container {
@@ -1917,9 +1917,18 @@ input[type=submit]:hover {
         left: 135px;
         bottom: 540px;
     }
+
+    .contact-name {
+        font-size: 16px;
+    }
+
+    .contact-email {
+        font-size: 12px;
+    }
+
 }
 
-@media (max-width < 375px) {
+@media (max-width:350px) {
     .menu {
         gap: 0px;
     }
