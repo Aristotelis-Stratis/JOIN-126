@@ -1168,14 +1168,15 @@ select {
     position: relative;
     border-radius: 10px;
     cursor: pointer;
+    margin-bottom: 4px;
 }
 
 .drop-down-image-container {
     position: absolute;
     right: 20px;
     top: 15px;
-    border-radius: 10px;
     width: 20px;
+    border-radius: 10px;
     height: 20px;
     display: flex;
     align-items: center;
@@ -1437,6 +1438,76 @@ input[type=submit]:hover {
     position: absolute;
     right: 20px;
 }
+
+.subtask-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.subtask-item {
+    font-size: 16px;
+    box-sizing: border-box;
+    padding: 4px 21px;
+    border-radius: 10px;
+    width: 100%;
+    height: 35px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.subtask-item img {
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+}
+
+.subtask-item-icon {
+    padding-right: 3px;
+}
+
+.sub-image-container {
+    position: absolute;
+    right: 20px;
+    border-radius: 10px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    flex-direction: row-reverse;
+    gap: 4px;
+}
+
+.sub-image-container img:hover,
+.subtask-item:hover {
+    background-color: #ebeaec;
+}
+
+.sub-image-container img {
+    cursor: pointer;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+}
+
+.subtask-seperator {
+    height: 50%;
+    width: 1px;
+    background-color: rgba(209, 209, 209, 1);
+    border-radius: 50%;
+}
+
+.subtask-item-icons {
+    display: none;
+}
+
+.subtask-item-icons {
+    display: block;
+}
+
+
 
 /*ADD TASK END*/
 

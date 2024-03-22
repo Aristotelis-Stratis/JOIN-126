@@ -181,53 +181,27 @@
 
 
 
-                                
 
 
-                                
-
-
-
-
-                                
-
-
-
-
-
-
-
-
-
-                                <!-- subtasks -->
                                 <div class="form-group">
                                     <label>Subtasks</label>
                                     <div class="drop-down-menu-container">
-                                        <div class="drop-down-image-container" onclick="toggleSubtaskDropdownMenu()">
-                                            <img src="assets/img/icons/arrow_drop_down.png" alt="">
+
+                                        <div class="sub-image-container" id="image-container">
+                                            <img id="addBtn" src="assets/img/icons/add.png" alt="">
+                                            <div id="sub-seperator" class="subtask-seperator" style="display:none;">
+                                            </div>
+                                            <img id="closeBtn" src="assets/img/icons/close.png" onclick="clearInputField(), toggleAddButtonImage()" alt=""
+                                                style="display:none;">
                                         </div>
-                                        <input class="no-validate subtask" type="text" id="subTask"
-                                            placeholder="Add new subtask">
-                                        <!-- drop-down-menu -->
-                                        <div id="subtask-dropdown-menu" class="dropdown-menu">
-                                            <!-- subtask list -->
-                                        </div>
+
+                                        <input class="no-validate subtask" type="text" id="subTaskInput"
+                                            placeholder="Add new subtask" oninput="toggleAddButtonImage()">
+                                    </div>
+                                    <div class="subtask-container" id="subtaskContainer">
+                                        <!-- Hier werden die Subtasks gerendert -->
                                     </div>
                                 </div>
-
-
-
-
-
-                                
-
-
-
-
-
-
-                                
-
 
 
 

@@ -17,3 +17,18 @@ function generateContactHTML(contact, index) {
         </div>
     `;
 }
+
+
+function createSubtaskTemplate(subtaskText, subtaskIndex) {
+    return `
+        <div class="subtask-item" data-index="${subtaskIndex}">
+            <div>
+                &#8226; <span>${subtaskText}</span>
+            </div>
+            <div class="subtask-item-icons">
+                <img class="subtask-item-icon" style="border-right: 1px solid rgba(209, 209, 209, 1);" src="assets/img/icons/edit_dark.png" alt="">
+                <img class="subtask-item-icon" src="assets/img/icons/trash.png" alt="" onclick="deleteSubtask(${subtaskIndex})">
+            </div>
+        </div>
+    `;
+}

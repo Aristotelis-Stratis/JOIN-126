@@ -1,5 +1,6 @@
 let allContacts = [];
 let selectedContacts = [];
+let subtasks = [];
 
 /**
  * Initializes the application by loading contacts and rendering them.
@@ -177,69 +178,63 @@ function toggleAssignDropdownMenu() {
 }
 
 
+function addSubtask() {
+    let subtaskInput = document.getElementById('subTaskInput');
+    let subtaskText = subtaskInput.value;
 
-
-
-
-
-
-
-
-
-
-
-
-
-/**
- * Toggles the visibility of the subtask dropdown menu.
- */
-function toggleSubtaskDropdownMenu() {
-    let dropdownMenu = document.getElementById('subtask-dropdown-menu');
-    dropdownMenu.classList.toggle('visible');
+    if (subtaskText !== '') {
+        subtasks.push(subtaskText);
+        renderSubtasks();
+        clearInputField();
+    }
 }
 
 
+function deleteSubtask(subtaskIndex) {
+    subtasks.splice(subtaskIndex, 1);
+    renderSubtasks();
+}
 
 
+function renderSubtasks() {
+    let subtaskContainer = document.getElementById('subtaskContainer');
+    subtaskContainer.innerHTML = '';
+
+    for (let index = 0; index < subtasks.length; index++) {
+        const subtaskText = subtasks[index];
+        const subtaskItemHTML = createSubtaskTemplate(subtaskText, index);
+        subtaskContainer.insertAdjacentHTML('beforeend', subtaskItemHTML);
+    }
+}
 
 
+function clearInputField() {
+    const subtaskInput = document.getElementById('subTaskInput');
+    subtaskInput.value = '';
+    toggleAddButtonImage();
+}
 
 
+function toggleAddButtonImage() {
+    const subtaskInput = document.getElementById('subTaskInput');
+    const addButtonImage = document.getElementById('addBtn');
+    const closeButtonImage = document.getElementById('closeBtn');
+    const seperator = document.getElementById('sub-seperator');
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    if (subtaskInput.value.trim() !== '') {
+        addButtonImage.src = 'assets/img/icons/check_blue.png';
+        addButtonImage.style.display = 'block';
+        addButtonImage.onclick = addSubtask;
+        closeButtonImage.style.display = 'block';
+        seperator.style.display = 'block';
+    } else {
+        addButtonImage.src = 'assets/img/icons/add.png';
+        addButtonImage.style.display = 'block';
+        addButtonImage.onclick = null;
+        closeButtonImage.style.display = 'none';
+        seperator.style.display = 'none';
+    }
+}
 
 
 function assignSelectedContact() { }
