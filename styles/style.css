@@ -1101,6 +1101,35 @@ h3 {
 /*CONTACTS HTML END*/
 
 /*ADD TASK START*/
+
+.select-container {
+    position: relative;
+}
+
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.select-dropdown {
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.dropdown-category {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.dropdown-category:hover {
+    background-color: #f0f0f0;
+}
+
+.select-img {
+    top: 40px !important;
+}
+
 .contentTask {
     overflow-x: hidden;
     height: calc(100% - 96px);
@@ -1125,7 +1154,8 @@ h3 {
 }
 
 .task-assign,
-.task-category {
+.task-category,
+.task-date {
     cursor: pointer;
 }
 
@@ -1164,6 +1194,7 @@ h3 {
     flex-direction: column;
     position: absolute;
     width: 100%;
+    left: 0;
     overflow-y: auto;
     border: 1px solid #ced4da;
     border-radius: 10px;
@@ -1244,7 +1275,8 @@ label {
 
 input[type=text],
 input[type=date],
-textarea {
+textarea,
+.select-dropdown {
     font-size: 20px;
     width: 100%;
     box-sizing: border-box;
@@ -1257,7 +1289,8 @@ textarea {
 
 input[type=text]:focus,
 input[type=date]:focus,
-textarea:focus {
+textarea:focus,
+select:focus {
     border-color: rgba(41, 171, 226, 1);
     outline: none;
 }
@@ -1276,7 +1309,8 @@ textarea:focus {
 
 input[type=text],
 input[type=date],
-textarea {
+textarea,
+select {
     font-weight: 400;
     color: black;
     resize: none;
@@ -1890,8 +1924,7 @@ input[type=submit]:hover {
 
     input[type=text],
     input[type=date],
-    textarea,
-    select {
+    textarea {
         font-size: 16px;
     }
 

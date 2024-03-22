@@ -6,7 +6,6 @@ let selectedContacts = [];
  */
 async function init() {
     await loadContactsToTasks();
-    initValidation();
     console.log(allContacts);
     console.log(selectedContacts);
     renderTaskContactList();
@@ -144,22 +143,24 @@ function resetItemStyle(item) {
  * Toggles the visibility of the category dropdown menu and the rotation of the arrow icon.
  */
 function toggleCategoryDropdownMenu() {
-    let dropdownMenu = document.getElementById('category-dropdown-menu');
-    let arrow = document.getElementById('arrow-category');
-    dropdownMenu.classList.toggle('visible');
-    arrow.classList.toggle('rotate-180');
+    var dropdownMenu = document.getElementById("category-dropdown-menu");
+    var arrow = document.getElementById("arrow-category");
+    
+    if (dropdownMenu.style.display === "block") {
+        dropdownMenu.style.display = "none";
+        arrow.style.transform = "rotate(0deg)";
+    } else {
+        dropdownMenu.style.display = "block";
+        arrow.style.transform = "rotate(180deg)";
+    }
 }
 
 
-/**
- * Sets the selected category based on the provided index.
- * @param {number} index - The index of the selected category.
- */
 function setSelectedCategory(index) {
-    const categoryNames = ['Technical Task', 'User Story'];
-    const categoryName = categoryNames[index - 1];
-    document.getElementById('category').value = categoryName;
-    toggleCategoryDropdownMenu();
+    var categoryNames = ['Technical Task', 'User Story'];
+    var selectedCategory = categoryNames[index - 1];
+    document.getElementById("selected-option").innerText = selectedCategory;
+    document.getElementById("category-todo").value = selectedCategory;
 }
 
 
@@ -176,6 +177,19 @@ function toggleAssignDropdownMenu() {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 /**
  * Toggles the visibility of the subtask dropdown menu.
  */
@@ -184,39 +198,68 @@ function toggleSubtaskDropdownMenu() {
     dropdownMenu.classList.toggle('visible');
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function assignSelectedContact() { }
 
 
-//Input Validation
-function validateInput(input) {
-    if (input.classList.contains('no-validate')) {
-        return;
-    }
+// // Input Validation
+// function validateInput(input) {
+//     const isNotValid = input.value.trim() === '';
+//     input.classList.toggle('input-error', isNotValid);
+//     input.nextElementSibling.style.display = isNotValid ? 'block' : 'none';
+// }
 
-    if (input.value.trim() === '') {
-        input.classList.add('input-error');
-        input.nextElementSibling.style.display = 'block';
-    } else {
-        input.classList.remove('input-error');
-        input.nextElementSibling.style.display = 'none';
-    }
-}
-
-function initValidation() {
-    const inputs = document.querySelectorAll('input[type=text], input[type=date], textarea');
-    inputs.forEach(input => {
-        input.onblur = function () {
-            validateInput(input);
-        };
-
-        input.oninput = function () {
-            if (input.value.trim() !== '') {
-                input.classList.remove('input-error');
-                input.nextElementSibling.style.display = 'none';
-            }
-        };
-    });
-}
+// function initValidation() {
+//     document.querySelectorAll('input[type=text], input[type=date], textarea').forEach(input => {
+//         if (!input.classList.contains('no-validate')) {
+//             input.onblur = () => validateInput(input);
+//             input.oninput = () => input.value.trim() && validateInput(input);
+//         }
+//     });
+// }
 
 
 //Button priority

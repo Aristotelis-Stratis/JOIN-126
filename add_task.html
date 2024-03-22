@@ -33,7 +33,7 @@
                 </div>
                 <div class="menu-choice active">
                     <div class="menu-container">
-                        <a href="../../add_task.html""><img src=" /assets/img/icons/add_task.png" alt="Add Task">Add
+                        <a href="../../add_task.html"><img src=" /assets/img/icons/add_task.png" alt="Add Task">Add
                             Task</a>
                         <!--Add Task html-->
                     </div>
@@ -119,13 +119,13 @@
                                     <label for="assignedTo">Assigned to</label>
                                     <div class="drop-down-menu-container">
                                         <div class="drop-down-image-container" onclick="toggleAssignDropdownMenu()">
-                                            <img id="arrow-assign-to"src="assets/img/icons/arrow_drop_down.png" alt="">
+                                            <img id="arrow-assign-to" src="assets/img/icons/arrow_drop_down.png" alt="">
                                         </div>
                                         <input class="no-validate task-assign" type="text" id="assignedTo"
                                             placeholder="Select contacts to assign" readonly>
                                         <div id="assign-dropdown-menu" class="dropdown-menu">
                                             <!-- render contact list here -->
-                                            <div class="task-contact-list"id="task-contact-list"></div>
+                                            <div class="task-contact-list" id="task-contact-list"></div>
                                         </div>
                                     </div>
 
@@ -137,7 +137,7 @@
                                 <!-- Date -->
                                 <div class="form-group">
                                     <label for="dueDate">Due date<span class="form-required-color">*</span></label>
-                                    <input type="date" id="dueDate" required>
+                                    <input class="task-date" type="date" id="dueDate" required>
                                     <span class="error-message">This field is required</span>
                                 </div>
 
@@ -157,22 +157,47 @@
                                     </div>
                                 </div>
 
-                                <!-- category selection -->
-                                <div class="form-group">
+                                <div class="form-group select-container">
                                     <label for="category">Category<span class="form-required-color">*</span></label>
-                                    <div class="drop-down-menu-container">
-                                        <div class="drop-down-image-container" onclick="toggleCategoryDropdownMenu()">
+                                    <div class="select-dropdown" onclick="toggleCategoryDropdownMenu()">
+                                        <div class="selected-option" id="selected-option">Select task category</div>
+                                        <div class="drop-down-image-container">
                                             <img id="arrow-category" src="assets/img/icons/arrow_drop_down.png" alt="">
                                         </div>
-                                        <input class="no-validate task-category" type="text" id="category"
-                                            placeholder="Select task category" readonly>
-                                        <!-- drop-down-menu -->
-                                        <div id="category-dropdown-menu" class="dropdown-menu">
-                                            <div class="dropdown-category" onclick="setSelectedCategory(1)"><span>Technical Task</span></div>
-                                            <div class="dropdown-category" onclick="setSelectedCategory(2)"><span>User Story</span></div>
+                                        <div class="dropdown-menu" id="category-dropdown-menu">
+                                            <div class="dropdown-category" onclick="setSelectedCategory(1)">Technical
+                                                Task</div>
+                                            <div class="dropdown-category" onclick="setSelectedCategory(2)">User Story
+                                            </div>
                                         </div>
                                     </div>
+                                    <select id="category-todo" required class="d-none task-category">
+                                        <option value="Technical Task">Technical Task</option>
+                                        <option value="User Story">User Story</option>
+                                    </select>
+                                    <div class="error-message">This field is required</div>
                                 </div>
+
+
+
+
+                                
+
+
+                                
+
+
+
+
+                                
+
+
+
+
+
+
+
+
 
                                 <!-- subtasks -->
                                 <div class="form-group">
@@ -189,6 +214,24 @@
                                         </div>
                                     </div>
                                 </div>
+
+
+
+
+
+                                
+
+
+
+
+
+
+                                
+
+
+
+
+
                             </div>
                         </form>
                     </div>
