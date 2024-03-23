@@ -91,81 +91,34 @@
 
       <div class="content" id="main-content">
         <div class="container">
-          <header>
-            <h1>Projektmanagement</h1>
-            <div class="header-right">
-              <button class="add-task-button">Neue Aufgabe hinzufügen</button>
-            </div>
-          </header>
-          <main>
-            <div class="boards">
-              <div class="board">
-                <h2>Zu erledigen</h2>
-                <ul class="tasks">
-                  <li class="task">
-                    <input type="checkbox" id="task-1" />
-                    <label for="task-1">Erstellung einer Kontaktformular-Seite</label>
-                    <span class="details">
-                      <span class="due-date">15.03.2024</span>
-                      <span class="priority">Mittel</span>
-                      <span class="assigned-to">Anna</span>
-                    </span>
-                  </li>
-                  <li class="task">
-                    <input type="checkbox" id="task-2" />
-                    <label for="task-2">Erstellung eines HTML-Grundgerüsts</label>
-                    <span class="details">
-                      <span class="due-date">17.03.2024</span>
-                      <span class="priority">Hoch</span>
-                      <span class="assigned-to">Lukas</span>
-                    </span>
-                  </li>
-                </ul>
-              </div>
-              <div class="board">
-                <h2>In Bearbeitung</h2>
-                <ul class="tasks">
-                  <li class="task">
-                    <input type="checkbox" id="task-3" />
-                    <label for="task-3">Design der Website</label>
-                    <span class="details">
-                      <span class="due-date">20.03.2024</span>
-                      <span class="priority">Mittel</span>
-                      <span class="assigned-to">Max</span>
-                    </span>
-                  </li>
-                </ul>
-              </div>
-              <div class="board">
-                <h2>Warten auf Feedback</h2>
-                <ul class="tasks">
-                  <li class="task">
-                    <input type="checkbox" id="task-4" />
-                    <label for="task-4">Überprüfung des Contents</label>
-                    <span class="details">
-                      <span class="due-date">22.03.2024</span>
-                      <span class="priority">Hoch</span>
-                      <span class="assigned-to">Anna</span>
-                    </span>
-                  </li>
-                </ul>
-              </div>
-              <div class="board">
-                <h2>Erledigt</h2>
-                <ul class="tasks">
-                  <li class="task">
-                    <input type="checkbox" id="task-5" checked />
-                    <label for="task-5">Testtask</label>
-                    <span class="details">
-                      <span class="due-date">25.03.2024</span>
-                      <span class="priority">Niedrig</span>
-                      <span class="assigned-to">Markus</span>
-                    </span>
-                  </li>
-                </ul>
+          <div class="board-container">
+            <div class="board-headline-container">
+              <div class="board-headline">Board</div>
+              <div class="input-button-board-container">
+                <input class="board-input" type="text" placeholder="Find Task">
+                <img class="search-png" src="./assets/img/icons/search.png" alt="search-Icon">
+                <button class="add-task-btn">Add task</button>
+                <img class="plus-sign-white" src="./assets/img/icons/add-white.png" alt="White Plus Icon">
               </div>
             </div>
-          </main>
+            <div class="to-do-container">
+              <div class="taskflow-board">
+                <span>To do</span>
+                <img src="../assets/img/icons/plus_button_dark.png" alt="dark-blue-plus-sign">
+              </div>
+              <div class="taskflow-board">
+                <span>In progress</span>
+                <img src="./assets/img/icons/plus_button_dark.png" alt="dark-blue-plus-sign">
+              </div>
+              <div class="taskflow-board">
+                <span>Await feedback</span>
+                <img src="./assets/img/icons/plus_button_dark.png" alt="dark-blue-plus-sign">
+              </div class="taskflow-board">
+              <div class="taskflow-board">
+                <span>Done</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
