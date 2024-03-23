@@ -1,0 +1,41 @@
+<div class="content" id="main-content">
+        <div class="main-board-container">
+          <div class="board-container">
+            <div class="board-headline-upper-side">
+              <div class="board-headline-container">
+                <div class="board-headline">Board</div>
+                <div class="input-button-board-container">
+                  <input class="board-input" type="text" placeholder="Find Task">
+                  <img class="search-png" src="./assets/img/icons/search.png" alt="search-Icon">
+                  <button class="add-task-btn">Add task <img class="plus-sign-white"
+                      src="./assets/img/icons/add-white.png" alt="White Plus Icon"></button>
+                </div>
+              </div>
+              <div class="board-head-under-side">
+                <div class="to-do-container">
+                  <div class="taskflow-board">
+                    <span>To do</span>
+                    <img src="../assets/img/icons/plus_button_dark.png" alt="dark-blue-plus-sign">
+                  </div>
+                  <div class="taskflow-board">
+                    <span>In progress</span>
+                    <img src="./assets/img/icons/plus_button_dark.png" alt="dark-blue-plus-sign">
+                  </div>
+                  <div class="taskflow-board">
+                    <span>Await feedback</span>
+                    <img src="./assets/img/icons/plus_button_dark.png" alt="dark-blue-plus-sign">
+                  </div class="taskflow-board">
+                  <div class="taskflow-board">
+                    <span>Done</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="dragdrop-container">Hallo</div>
+          </div>
+        </div>
+      </div>
+  </section>
+</body>
+
+</html>

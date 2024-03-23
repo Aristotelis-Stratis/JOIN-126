@@ -1514,9 +1514,22 @@ input[type=submit]:hover {
 
 /*BOARD START*/
 
+.content-board {
+    width: 100%;
+    height: calc(100% - 96px);
+    position: sticky;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+}
+
 .board-container {
     width: 1208px;
     height: 232px;
+    display: flex;
+    flex-direction: column;
 }
 
 .board-headline-container {
@@ -1588,6 +1601,9 @@ input[type=submit]:hover {
     line-height: 25.2px;
     text-align: left;
     cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     transition: background-color 0.3s ease;
 }
 
@@ -1598,9 +1614,6 @@ input[type=submit]:hover {
 .plus-sign-white {
     width: 32px;
     height: 32px;
-    position: absolute;
-    top: 100px;
-    right: 140px;
     object-fit: contain;
 }
 
@@ -1611,7 +1624,7 @@ input[type=submit]:hover {
     display: flex;
     justify-content: space-between;
     padding-bottom: 7.5px;
-    gap: 34.67;
+    row-gap: 34.67px;
 }
 
 .taskflow-board {
@@ -1638,6 +1651,102 @@ input[type=submit]:hover {
     line-height: 24px;
     color: #42526e;
 }
+
+.dragdrop-container {
+    width: 1208px;
+    height: 688px;
+    padding: 0px 64px 0px 64px;
+    display: flex;
+    justify-content: space-between;
+    gap: 26px;
+}
+
+.column-properties {
+    width: 246px;
+    height: 688px;
+}
+
+.no-task-box {
+    width: 246px;
+    height: 48px;
+    border-radius: 10px;
+    border: 1px dashed #A8A8A8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'open sans';
+    font-weight: 400;
+    color: #A8A8A8;
+    margin-top: 8px;
+}
+
+.cardA {
+    width: 252px;
+    min-height: 260px;
+    border-radius: 24px;
+    padding: 16px;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.task-category-board {
+    border-radius: 8px;
+    padding: 4px 16px 4px 16px;
+    background-color: #038ff0;
+    color: white;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.subtasks {
+    padding-top: 24px;
+    width: 220px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.subtasks span {
+    font-weight: 400;
+    font-size: 12px;
+}
+
+.subtask-bar {
+    width: 128px;
+    height: 8px;
+}
+
+.filled-subtask-bar {
+    width: 64px;
+    height: 8px;
+    border-radius: 16px;
+    background-color: #4589FF;
+}
+
+.asigned-to {
+    padding-top: 24px;
+    width: 220px;
+    height: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.asigned-to-image-container {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.asigned-to img {
+    width: 17px;
+    height: 8px;
+    object-fit: cover;
+}
+
+
 
 /*BOARD END*/
 
