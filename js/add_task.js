@@ -1,3 +1,4 @@
+let task = [];
 let allContacts = [];
 let selectedContacts = [];
 let subtasks = [];
@@ -14,7 +15,40 @@ async function init() {
 }
 
 
-function createTask() { }
+function createTask() {
+    let title = document.getElementById('title').value;
+    let description = document.getElementById('description').value;
+    let dueDate = document.getElementById('dueDate').value;
+    let priority = selectedPriority[0];
+
+    let newTask = {
+        title,
+        description,
+        dueDate,
+        priority,
+        contacts: selectedContacts,
+        subtasks: subtasks
+    }
+
+    task.push(newTask);
+    console.log(task);
+    resetUI();
+}
+
+
+function resetUI() {
+    document.querySelectorAll('.priority-button.active').forEach(button => {
+        button.classList.remove('active');
+    });
+    document.getElementById('title').value = '';
+    document.getElementById('description').value = '';
+    document.getElementById('dueDate').value = '';
+    document.getElementById('subtaskContainer').innerHTML = '';
+    selectedContacts = [];
+    subtasks = [];
+    selectedPriority = [];
+}
+
 
 /**
  * Loads contacts into the application from storage.
@@ -45,6 +79,7 @@ function renderTaskContactList() {
  * @param {Element} element - The DOM element of the contact item.
  */
 function toggleContactSelection(index) {
+    event.stopPropagation(); // NEEDS FIX
     const contactItem = document.getElementById(`contact-item-${index}`);
     const contact = allContacts[index];
 
@@ -325,19 +360,15 @@ function validateAndLogDate() {
     const dueDate = new Date(dueDateValue);
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
-
-
     if (dueDate < currentDate) {
         errorMessage.textContent = "Due date cannot be in the past.";
         errorMessage.style.display = 'block';
         dueDateInput.style.borderColor = 'red';
     } else {
-
         errorMessage.style.display = 'none';
         dueDateInput.style.borderColor = '';
     }
 }
-
 
 
 /**
@@ -347,6 +378,7 @@ function validateAndLogDate() {
  * @param {string} buttonId - The ID of the button that was clicked.
  */
 function togglePriority(buttonId) {
+    event.preventDefault();
     const button = document.getElementById(buttonId);
     const priority = button.getAttribute('data-priority');
 
@@ -354,7 +386,7 @@ function togglePriority(buttonId) {
         document.querySelectorAll('.priority-button').forEach(btn => {
             btn.classList.remove('active');
         });
-        
+
         selectedPriority = [priority];
         button.classList.add('active');
     }
