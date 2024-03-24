@@ -1,6 +1,7 @@
 let allContacts = [];
 let selectedContacts = [];
 let subtasks = [];
+let selectedPriority = [];
 
 /**
  * Initializes the application by loading contacts and rendering them.
@@ -317,19 +318,6 @@ function updateElementVisibility(element, shouldDisplay) {
 
 function assignSelectedContact() { }
 
-//Button priority
-function togglePriority(element, priority) {
-    var priorityButtons = document.getElementsByClassName('priority-button');
-
-    for (var i = 0; i < priorityButtons.length; i++) {
-        priorityButtons[i].classList.remove('active');
-    }
-
-    element.classList.add('active');
-}
-
-
-
 function validateAndLogDate() {
     const dueDateInput = document.getElementById('dueDate');
     const errorMessage = document.getElementById('date-error-message');
@@ -352,9 +340,25 @@ function validateAndLogDate() {
 
 
 
+/**
+ * Toggles the 'active' state of priority buttons and updates the selectedPriority.
+ * It ensures only one priority is active at a time by managing an array of selected priorities.
+ *
+ * @param {string} buttonId - The ID of the button that was clicked.
+ */
+function togglePriority(buttonId) {
+    const button = document.getElementById(buttonId);
+    const priority = button.getAttribute('data-priority');
 
-
-
+    if (!selectedPriority.includes(priority)) {
+        document.querySelectorAll('.priority-button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        selectedPriority = [priority];
+        button.classList.add('active');
+    }
+}
 
 
 
