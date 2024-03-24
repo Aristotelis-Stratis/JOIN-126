@@ -137,8 +137,8 @@
                                 <!-- Date -->
                                 <div class="form-group">
                                     <label for="dueDate">Due date<span class="form-required-color">*</span></label>
-                                    <input class="task-date" type="date" id="dueDate" required>
-                                    <span class="error-message">This field is required</span>
+                                    <input class="task-date" type="date" id="dueDate" required onchange="validateAndLogDate()">
+                                    <span id="date-error-message"class="error-message" style="display: none;">This field is required</span>
                                 </div>
 
                                 <!-- priority buttons -->

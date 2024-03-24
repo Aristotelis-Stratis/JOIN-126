@@ -330,6 +330,58 @@ function togglePriority(element, priority) {
 
 
 
+function validateAndLogDate() {
+    const dueDateInput = document.getElementById('dueDate');
+    const errorMessage = document.getElementById('date-error-message');
+    const dueDateValue = dueDateInput.value;
+    const dueDate = new Date(dueDateValue);
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+
+
+    if (dueDate < currentDate) {
+        errorMessage.textContent = "Due date cannot be in the past.";
+        errorMessage.style.display = 'block';
+        dueDateInput.style.borderColor = 'red';
+    } else {
+
+        errorMessage.style.display = 'none';
+        dueDateInput.style.borderColor = '';
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // // Input Validation
 // function validateInput(input) {
 //     const isNotValid = input.value.trim() === '';
