@@ -117,8 +117,8 @@
                                 <!-- assign to list -->
                                 <div class="form-group">
                                     <label for="assignedTo">Assigned to</label>
-                                    <div class="drop-down-menu-container">
-                                        <div class="drop-down-image-container" onclick="toggleAssignDropdownMenu()">
+                                    <div class="drop-down-menu-container" onclick="toggleAssignDropdownMenu()">
+                                        <div class="drop-down-image-container">
                                             <img id="arrow-assign-to" src="assets/img/icons/arrow_drop_down.png" alt="">
                                         </div>
                                         <input class="no-validate task-assign" type="text" id="assignedTo"
@@ -195,7 +195,7 @@
                                                 style="display:none;">
                                         </div>
 
-                                        <input class="no-validate subtask" type="text" id="subTaskInput"
+                                        <input class="no-validate subtask" type="text" id="subTaskInput" maxlength="15"
                                             placeholder="Add new subtask" oninput="toggleAddButtonImage()">
                                     </div>
                                     <div class="subtask-container" id="subtaskContainer">
@@ -215,7 +215,7 @@
                         <div class="form-below">
                             <div class="aco-button-container">
                                 <button class="fb lb mb">Clear <img src="assets/img/icons/x.png" alt="Clear"></button>
-                                <button class="fb rb">Create Task <img src="assets/img/icons/check.png"
+                                <button class="fb rb" onclick="createTask()">Create Task <img src="assets/img/icons/check.png"
                                         alt="Create Task"></button>
                             </div>
                         </div>

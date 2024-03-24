@@ -13,6 +13,8 @@ async function init() {
 }
 
 
+function createTask() { }
+
 /**
  * Loads contacts into the application from storage.
  */
@@ -41,15 +43,16 @@ function renderTaskContactList() {
  * @param {number} index - The index of the contact in the allContacts array.
  * @param {Element} element - The DOM element of the contact item.
  */
-function toggleContactSelection(index, element) {
+function toggleContactSelection(index) {
+    const contactItem = document.getElementById(`contact-item-${index}`);
     const contact = allContacts[index];
 
     if (isSelected(contact)) {
         removeContact(contact);
-        setCheckboxImage(element, false);
+        setCheckboxImage(contactItem, false);
     } else {
         addContact(contact);
-        setCheckboxImage(element, true);
+        setCheckboxImage(contactItem, true);
     }
     console.log(selectedContacts);
 }
@@ -111,7 +114,7 @@ function updateCheckboxImage(element, isChecked) {
  * @param {boolean} isChecked - The selection state of the item.
  */
 function updateTaskContactItemStyle(element, isChecked) {
-    const taskContactItem = element.closest('.task-contact-item');
+    const taskContactItem = element.closest('.contact-item');
     if (isChecked) {
         setItemSelectedStyle(taskContactItem);
     } else {
@@ -146,12 +149,12 @@ function resetItemStyle(item) {
 function toggleCategoryDropdownMenu() {
     var dropdownMenu = document.getElementById("category-dropdown-menu");
     var arrow = document.getElementById("arrow-category");
-    
-    if (dropdownMenu.style.display === "block") {
+
+    if (dropdownMenu.style.display === "flex") {
         dropdownMenu.style.display = "none";
         arrow.style.transform = "rotate(0deg)";
     } else {
-        dropdownMenu.style.display = "block";
+        dropdownMenu.style.display = "flex";
         arrow.style.transform = "rotate(180deg)";
     }
 }
@@ -178,6 +181,9 @@ function toggleAssignDropdownMenu() {
 }
 
 
+/**
+ * Adds a new subtask to the list of subtasks.
+ */
 function addSubtask() {
     let subtaskInput = document.getElementById('subTaskInput');
     let subtaskText = subtaskInput.value;
@@ -190,12 +196,70 @@ function addSubtask() {
 }
 
 
+/**
+ * Edits an existing subtask by index, setting its padding to 0 and replacing
+ * its content with an editable input field.
+ * @param {number} subtaskIndex - The index of the subtask to edit.
+ */
+function editSubtask(subtaskIndex) {
+    const subtaskItem = document.getElementById(`subtask_${subtaskIndex}`);
+    subtaskItem.style.padding = '0';
+    subtaskItem.innerHTML = createEditInputField(subtasks[subtaskIndex], subtaskIndex);
+    focusAndSetCursorAtEnd(subtaskItem.querySelector('.edit-input-field'));
+}
+
+
+/**
+ * Updates the subtask text at a given index or deletes it if the new text is empty.
+ * @param {number} subtaskIndex - The index of the subtask to update.
+ */
+function updateSubtask(subtaskIndex) {
+    const newText = getSubtaskInputValue(subtaskIndex);
+
+    if (newText) {
+        subtasks[subtaskIndex] = newText;
+    } else {
+        subtasks.splice(subtaskIndex, 1);
+    }
+    renderSubtasks();
+}
+
+
+/**
+ * Sets the focus to the input field and positions the cursor at the end of its text content.
+ * @param {HTMLInputElement} inputField - The input element to focus on.
+ */
+function focusAndSetCursorAtEnd(inputField) {
+    inputField.focus();
+    inputField.setSelectionRange(inputField.value.length, inputField.value.length);
+}
+
+
+/**
+ * Retrieves the trimmed value of the subtask's input field by index.
+ * @param {number} subtaskIndex - The index of the subtask's input field to retrieve the value from.
+ * @returns {string} The trimmed value of the input field.
+ */
+function getSubtaskInputValue(subtaskIndex) {
+    const inputField = document.getElementById(`editInputField_${subtaskIndex}`);
+    return inputField.value.trim();
+}
+
+
+/**
+ * Deletes a subtask from the array based on the specified index and renders the updated list of subtasks.
+ * @param {number} subtaskIndex - The index of the subtask to delete.
+ */
 function deleteSubtask(subtaskIndex) {
     subtasks.splice(subtaskIndex, 1);
     renderSubtasks();
 }
 
 
+/**
+ * Renders the list of subtasks in the UI.
+ * Clears the subtask container and repopulates it with the current list of subtasks.
+ */
 function renderSubtasks() {
     let subtaskContainer = document.getElementById('subtaskContainer');
     subtaskContainer.innerHTML = '';
@@ -208,6 +272,9 @@ function renderSubtasks() {
 }
 
 
+/**
+ * Clears the text from the subtask input field and toggles the add button image based on the current input.
+ */
 function clearInputField() {
     const subtaskInput = document.getElementById('subTaskInput');
     subtaskInput.value = '';
@@ -215,47 +282,40 @@ function clearInputField() {
 }
 
 
+/**
+ * Toggles the add button image, visibility, and functionality based on the subtask input's value.
+ */
 function toggleAddButtonImage() {
-    const subtaskInput = document.getElementById('subTaskInput');
-    const addButtonImage = document.getElementById('addBtn');
-    const closeButtonImage = document.getElementById('closeBtn');
-    const seperator = document.getElementById('sub-seperator');
+    const subtaskInputValue = document.getElementById('subTaskInput').value.trim();
+    const isInputNotEmpty = subtaskInputValue !== '';
 
-    if (subtaskInput.value.trim() !== '') {
-        addButtonImage.src = 'assets/img/icons/check_blue.png';
-        addButtonImage.style.display = 'block';
-        addButtonImage.onclick = addSubtask;
-        closeButtonImage.style.display = 'block';
-        seperator.style.display = 'block';
-    } else {
-        addButtonImage.src = 'assets/img/icons/add.png';
-        addButtonImage.style.display = 'block';
-        addButtonImage.onclick = null;
-        closeButtonImage.style.display = 'none';
-        seperator.style.display = 'none';
-    }
+    updateAddButton(isInputNotEmpty);
+    updateElementVisibility(document.getElementById('closeBtn'), isInputNotEmpty);
+    updateElementVisibility(document.getElementById('sub-seperator'), isInputNotEmpty);
+}
+
+/**
+ * Updates the add button's source, display, and onclick event based on the input value.
+ * @param {boolean} isInputNotEmpty - Indicates whether the input contains text.
+ */
+function updateAddButton(isInputNotEmpty) {
+    const addButtonImage = document.getElementById('addBtn');
+    addButtonImage.src = isInputNotEmpty ? 'assets/img/icons/check_blue.png' : 'assets/img/icons/add.png';
+    addButtonImage.style.display = 'block';
+    addButtonImage.onclick = isInputNotEmpty ? addSubtask : null;
+}
+
+/**
+ * Updates the visibility of an element based on the specified condition.
+ * @param {HTMLElement} element - The DOM element to update.
+ * @param {boolean} shouldDisplay - Determines whether the element should be displayed.
+ */
+function updateElementVisibility(element, shouldDisplay) {
+    element.style.display = shouldDisplay ? 'block' : 'none';
 }
 
 
 function assignSelectedContact() { }
-
-
-// // Input Validation
-// function validateInput(input) {
-//     const isNotValid = input.value.trim() === '';
-//     input.classList.toggle('input-error', isNotValid);
-//     input.nextElementSibling.style.display = isNotValid ? 'block' : 'none';
-// }
-
-// function initValidation() {
-//     document.querySelectorAll('input[type=text], input[type=date], textarea').forEach(input => {
-//         if (!input.classList.contains('no-validate')) {
-//             input.onblur = () => validateInput(input);
-//             input.oninput = () => input.value.trim() && validateInput(input);
-//         }
-//     });
-// }
-
 
 //Button priority
 function togglePriority(element, priority) {
@@ -268,5 +328,23 @@ function togglePriority(element, priority) {
     element.classList.add('active');
 }
 
-// document.addEventListener('DOMContentLoaded', initValidation);
+
+
+// // Input Validation
+// function validateInput(input) {
+//     const isNotValid = input.value.trim() === '';
+//     input.classList.toggle('input-error', isNotValid);
+//     input.nextElementSibling.style.display = isNotValid ? 'block' : 'none';
+// }
+// function initValidation() {
+//     document.querySelectorAll('input[type=text], input[type=date], textarea').forEach(input => {
+//         if (!input.classList.contains('no-validate')) {
+//             input.onblur = () => validateInput(input);
+//             input.oninput = () => input.value.trim() && validateInput(input);
+//         }
+//     });
+// }
+
+
+//  document.addEventListener('DOMContentLoaded', initValidation);
 
