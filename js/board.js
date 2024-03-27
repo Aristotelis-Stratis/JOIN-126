@@ -52,3 +52,8 @@
 // addTask("Task 1");
 // addTask("Task 2");
 // displayTasks();
+
+function popUpCheckBlue(){
+    let check = document.getElementById('subtask-check');
+    check.src = "./assets/img/icons/box-checked-blue.png";
+}

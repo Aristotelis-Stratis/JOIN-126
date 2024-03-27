@@ -999,9 +999,12 @@ h3 {
 }
 
 button.disabled {
-    background-color: #CCCCCC !important; /* Graue Hintergrundfarbe */
-    color: #666666 !important; /* Dunklerer Text */
-    cursor: not-allowed !important; /* Zeiger wird zu "not-allowed" */
+    background-color: #CCCCCC !important;
+    /* Graue Hintergrundfarbe */
+    color: #666666 !important;
+    /* Dunklerer Text */
+    cursor: not-allowed !important;
+    /* Zeiger wird zu "not-allowed" */
 }
 
 .aco-close {
@@ -1799,6 +1802,139 @@ input[type=submit]:hover {
     margin: -6px;
 }
 
+.board-overlay {
+    width: 100%;
+    height: 100vh;
+    z-index: 2001;
+    position: fixed;
+    top: 0;
+    background-color: rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.board-pop-up {
+    width: 525px;
+    height:80vh;
+    padding: 48px 40px 48px 40px;
+    gap: 24px;
+    border-radius: 30px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.board-pop-up-headline {
+    background-color:rgba(0, 56, 255, 1);
+    color: white;
+    border-radius: 8px;
+    padding: 4px 24px 4px 24px;
+    font-weight: 400;
+    font-size: 23px;
+}
+
+.board-task-pop-up-headline {
+    font-weight: 700;
+    font-size: 61px;
+}
+
+.board-pop-up-description {
+    font-weight: 400;
+    font-size: 20px;
+}
+
+.popup-date-container {
+    display: flex;
+    justify-content: flex-start;
+    gap: 25px;
+}
+
+.popup-blue-span {
+    font-weight: 400;
+    font-size: 20px;
+    color: rgba(42, 54, 71, 1);
+}
+
+.popup-prio-container {
+    display: flex;
+    justify-content: flex-start;
+    gap: 25px;
+}
+
+.popup-medium-image {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;;
+}
+
+.popup-medium-image img {
+    width: 17px;
+    object-fit: contain;
+}
+
+.popup-assignedto-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.popup-names-container {
+    display: flex;
+    flex-direction: column;
+    padding-top: 8px;
+}
+
+.popup-names {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-left: 16px;
+}
+
+.popup-subtask-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.popup-subtasks {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-left: 16px;
+    padding-top: 8px;
+}
+
+.popup-subtasks img {
+    cursor: pointer;
+}
+
+.popup-del-edit-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.popup-delete-and-edit {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.popup-delete-and-edit img {
+    width: 18px;
+    height: 18px;
+}
+.popup-delete-and-edit span{
+    font-weight: 400;
+    font-size: 16px;
+    color: rgba(42, 54, 71, 1);
+}
+
+.popup-delete-and-edit:hover {
+    cursor: pointer;
+}
 
 /*BOARD END*/
 
