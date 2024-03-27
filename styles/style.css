@@ -92,7 +92,6 @@ body {
     background-color: #11455c;
 }
 
-/* active is going to go on every active html with JS*/
 .active {
     background-color: rgb(9, 25, 49);
 }
@@ -998,12 +997,6 @@ h3 {
     background-color: #29ABE2;
 }
 
-button.disabled {
-    background-color: #CCCCCC !important; /* Graue Hintergrundfarbe */
-    color: #666666 !important; /* Dunklerer Text */
-    cursor: not-allowed !important; /* Zeiger wird zu "not-allowed" */
-}
-
 .aco-close {
     display: flex;
     align-items: center;
@@ -1112,11 +1105,6 @@ button.disabled {
     position: relative;
 }
 
-select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-}
-
 .select-dropdown {
     position: relative;
     cursor: pointer;
@@ -1208,7 +1196,7 @@ select {
     background-color: #fff;
     z-index: 1;
     gap: 12px;
-    box-shadow: 0px 0px 14px 3px rgba(0, 0, 0, 0.04);
+    box-shadow: 0px 3px 8px 0px rgb(0 0 0 / 20%);
 }
 
 .dropdown-menu.visible {
