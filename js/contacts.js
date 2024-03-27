@@ -257,7 +257,7 @@ function deleteContact(i) {
 
 
 /**
- * Clears all contacts from local storage.
+ * Clears all contacts from remote storage.
  */
 function deleteStorage() {
     allContacts = [];
