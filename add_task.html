@@ -18,85 +18,15 @@
 <body onload="init()">
     <section class="main-container">
         <!-- left part of website fixed menu -->
-        <div class="left-section">
-            <div class="logo-container">
-                <a href="./desktop_template.html"><img class="left-section-logo"
-                        src="/assets/img/favicon/JOIN-logo-white.png" alt="Join Logo"></a>
-                <!--back to summary html-->
-            </div>
-            <div class="menu">
-                <div class="menu-choice">
-                    <div class="menu-container">
-                        <a href="./summary.html"><img src="/assets/img/icons/summary.png" alt="Summary">Summary</a>
-                        <!--Summary html-->
-                    </div>
-                </div>
-                <div class="menu-choice active">
-                    <div class="menu-container">
-                        <a href="../../add_task.html"><img src=" /assets/img/icons/add_task.png" alt="Add Task">Add
-                            Task</a>
-                        <!--Add Task html-->
-                    </div>
-                </div>
-                <div class="menu-choice">
-                    <div class="menu-container">
-                        <a href="../../board.html"><img src="/assets/img/icons/board.png" alt="Board">Board</a>
-                        <!--Board html-->
-                    </div>
-                </div>
-                <div class="menu-choice">
-                    <div class="menu-container">
-                        <a href="../../contacts.html"><img src="/assets/img/icons/contacts.png"
-                                alt="Contacts">Contacts</a>
-                        <!--Contacts html-->
-                    </div>
-                </div>
-            </div>
-            <div class="imprint">
-                <div class="menu-choice">
-                    <div class="menu-container">
-                        <a class="imprint-link" href="assets/templates/privacy_template.html">Privacy Policy</a>
-                        <!--privacy policy html-->
-                    </div>
-                </div>
-                <div class="menu-choice">
-                    <div class="menu-container">
-                        <a class="imprint-link" href="assets/templates/legal_template.html">Legal notice</a>
-                        <!--legal notice html-->
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div w3-include-html="./assets/templates/nav.html"></div>
         <!--right part of website (content) -->
         <div class="right-section">
             <!-- top navbar -->
-            <div class="navbar">
-                <a href="../../summary.html"><img class="mobile-logo" src="/assets/img/favicon/JOIN-logo-dark.png"
-                        alt="JOIN Logo"></a>
-                <span class="navbar-title">Kanban Project Management Tool</span>
-                <div class="profile-container">
-                    <a href="./assets/templates/help.template.html"><img class="help-img"
-                            src="/assets/img/help/help_icon_big.png" alt="help"></a>
-                    <div class="profile" id="profile-button" onclick="openSubMenu()">
-                        <span>S</span><span>M</span> <!--Initial Letters of Accountname -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- onclick user menu -->
-            <div class="sub-menu d-none" id="user-sub-menu">
-                <div class="sub-menu-choice"><a class="imprint-link" href="./assets/templates/legal_template.html">Legal
-                        Notice</a></div>
-                <div class="sub-menu-choice"><a class="imprint-link"
-                        href="./assets/templates/privacy_template.html">Privacy Policy</a></div>
-                <div class="sub-menu-choice"><a class="imprint-link" href="./index.html">Logout</a></div>
-            </div>
+            <div w3-include-html="./assets/templates/header.html"></div>
 
             <div class="contentTask" id="main-content">
                 <div class="content-container" id="text-content">
-
                     <div class="form-container">
-
                         <div class="task-title">
                             <h1>Add Task</h1>
                         </div>
@@ -112,7 +42,6 @@
                                     <textarea class="no-validate" id="description"
                                         placeholder="Enter a Description"></textarea>
                                 </div>
-
                                 <!-- assign to list -->
                                 <div class="form-group">
                                     <label for="assignedTo">Assigned to</label>
@@ -176,12 +105,6 @@
                                     </select>
                                     <div id="category-error-message" class="error-message">This field is required</div>
                                 </div>
-
-
-
-
-
-
                                 <div class="form-group">
                                     <label>Subtasks</label>
                                     <div class="drop-down-menu-container">
@@ -204,7 +127,6 @@
                             </div>
                         </form>
                     </div>
-
                     <!-- wrapper -->
                     <div class="add-task-wrapper">
                         <div class="form-below">

@@ -1,19 +1,12 @@
-/**
- * Global variables
- */
-// 'i' is used as a generic index or iterator variable throughout the code.
 let i;
-
-// 'allContacts' stores an array of all contact objects in the application.
 let allContacts = [];
-
-// 'currentEditingId' holds the ID of the contact currently being edited, or null if no edit is in progress.
 let currentEditingId = null;
 
 /**
  * Initializes the application by loading all contacts.
  */
 async function init() {
+    includeHTML();
     await loadAllContacts();
 }
 

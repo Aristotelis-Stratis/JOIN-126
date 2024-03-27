@@ -8,6 +8,7 @@ let selectedPriority = [];
  * Initializes the application by loading contacts and rendering them.
  */
 async function init() {
+    includeHTML();
     await loadContactsToTasks();
     await loadTasksFromStorage();
     renderTaskContactList();
