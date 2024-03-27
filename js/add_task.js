@@ -44,6 +44,7 @@ async function saveToStorage() {
     await setItem('tasks', JSON.stringify(allTasks));
 }
 
+//!!Eduard!!//
 async function loadTasksFromStorage() {
     try {
         const tasksString = await getItem('tasks');
