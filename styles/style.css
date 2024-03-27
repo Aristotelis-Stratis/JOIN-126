@@ -1551,17 +1551,12 @@ input[type=submit]:hover {
 
 .board-container {
     width: 100%;
-    height: 232px;
-    display: flex;
-    flex-direction: column;
 }
 
 .board-headline-container {
-    width: 1056px;
+    width: 100%;
     height: 73px;
-    padding-top: 79.5px;
-    padding-bottom: 79.5px;
-    padding-left: 64px;
+    padding-bottom: 48px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1642,13 +1637,12 @@ input[type=submit]:hover {
 }
 
 .to-do-container {
-    width: 1208px;
+    width: 100%;
     height: 24px;
-    padding: 0px 64px 0px 64px;
     display: flex;
     justify-content: space-between;
     padding-bottom: 7.5px;
-    row-gap: 34.67px;
+
 }
 
 .taskflow-board {
@@ -1656,7 +1650,7 @@ input[type=submit]:hover {
     height: 24px;
     display: flex;
     justify-content: space-between;
-
+    padding-bottom: 7.5px;
 }
 
 .taskflow-board img {
@@ -1677,17 +1671,24 @@ input[type=submit]:hover {
 }
 
 .dragdrop-container {
-    width: 1208px;
+    width: 100%;
     height: 688px;
-    padding: 0px 64px 0px 64px;
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
     gap: 26px;
 }
 
 .column-properties {
     width: 246px;
     height: 688px;
+}
+
+.column-titles {
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 24px;
+    color: #42526e;
 }
 
 .no-task-box {
@@ -1705,21 +1706,23 @@ input[type=submit]:hover {
 }
 
 .cardA {
-    width: 252px;
+    width: 220px;
     min-height: 260px;
     border-radius: 24px;
     padding: 16px;
     gap: 10px;
     cursor: pointer;
+    box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.18);
 }
 
 .cardB {
-    width: 252px;
+    width: 220px;
     min-height: 260px;
     border-radius: 24px;
     padding: 16px;
     gap: 10px;
     cursor: pointer;
+    box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.18);
 }
 
 .task-category-board {
@@ -1794,6 +1797,18 @@ input[type=submit]:hover {
 /*BOARD END*/
 
 /*RESPONSIVE*/
+
+@media (max-width: 1500px) {
+    .to-do-container {
+        width: 1065px;
+    }
+}
+
+@media (max-width: 1400px) {
+    .to-do-container {
+        width: 1065px;
+    }
+}
 
 @media (max-width: 1350px) {
 
@@ -1872,17 +1887,6 @@ input[type=submit]:hover {
         box-sizing: border-box;
     }
 
-    .board-headline-container {
-        width: 900px;
-    }
-
-    .to-do-container {
-        width: 1070px;
-    }
-
-    .dragdrop-container {
-        width: 1070px;
-    }
 }
 
 @media (max-width: 1050px) {
@@ -1940,6 +1944,62 @@ input[type=submit]:hover {
         justify-content: center;
     }
 
+    .input-button-board-container {
+        flex-direction: column-reverse;
+        align-items: flex-end;
+        padding-top: 85px;
+    }
+
+    .board-input {
+        margin-right: 285px;
+        width: 396px !important;
+    }
+
+    .dragdrop-container {
+        padding-top: 48px;
+    }
+
+    .search-png {
+        top: 40px;
+        right: 295px
+    }
+
+    .add-task-btn {
+        margin-right: 10%;
+    }
+}
+
+@media (max-width: 980px) {
+    .add-task-btn {
+        margin-right: 20%;
+        width: 40px;
+        height: 40px;
+        color: transparent;
+    }
+
+    .plus-sign-white {
+        padding-right: 100px;
+        position: relative;
+        right: 57px;
+    }
+}
+
+@media (max-width: 930px) {
+    .add-task-btn {
+        margin-right: 30%;
+    }
+
+    .column-properties {
+        width: 100%;
+    }
+
+    .no-task-box {
+        width: 396px;
+    }
+
+    .taskflow-board {
+        width: 396px;
+    }
 }
 
 @media (max-width: 900px) {
@@ -2082,6 +2142,48 @@ input[type=submit]:hover {
     .mb {
         display: none;
     }
+
+    .dragdrop-container {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        height: 100vh;
+    }
+
+    .column-properties {
+        width: 100%;
+    }
+
+    .add-task-btn {
+        margin-right: 0;
+    }
+
+    .search-png {
+        right: 315px;
+    }
+
+    .board-headline-container {
+        justify-content: flex-start;
+    }
+
+    .taskflow-board {
+        width: 100%;
+    }
+
+    .no-task-box {
+        width: 100%;
+    }
+}
+
+@media (max-width: 740px) {
+    .add-task-btn {
+        margin-right: 10%;
+    }
+}
+
+@media (max-width: 700px) {
+    .add-task-btn {
+        margin-right: 20%;
+    }
 }
 
 @media (max-width: 650px) {
@@ -2108,6 +2210,16 @@ input[type=submit]:hover {
 
     .details-1-name {
         font-size: 36px;
+    }
+
+    .add-task-btn {
+        margin-right: 30%;
+    }
+}
+
+@media (max-width: 600px) {
+    .add-task-btn {
+        margin-right: 50%;
     }
 }
 
@@ -2297,6 +2409,39 @@ input[type=submit]:hover {
 
     .form-info span {
         font-size: 14px;
+    }
+}
+
+@media (max-width: 460px) {
+    .add-task-btn {
+        margin-right: 56%;
+    }
+}
+
+@media (max-width: 425px) {
+    .add-task-btn {
+        margin-right: 65%;
+    }
+
+    .board-input {
+        width: 360px !important;
+        margin-right: 317px;
+    }
+
+}
+
+@media (max-width: 390px) {
+    .add-task-btn {
+        margin-right: 68%;
+    }
+
+    .board-input {
+        width: 348px !important;
+        margin-right: 331px;
+    }
+
+    .search-png {
+        right: 340px;
     }
 }
 
