@@ -998,9 +998,12 @@ h3 {
 }
 
 button.disabled {
-    background-color: #CCCCCC !important; /* Graue Hintergrundfarbe */
-    color: #666666 !important; /* Dunklerer Text */
-    cursor: not-allowed !important; /* Zeiger wird zu "not-allowed" */
+    background-color: #CCCCCC !important;
+    /* Graue Hintergrundfarbe */
+    color: #666666 !important;
+    /* Dunklerer Text */
+    cursor: not-allowed !important;
+    /* Zeiger wird zu "not-allowed" */
 }
 
 .aco-close {
@@ -1803,11 +1806,12 @@ input[type=submit]:hover {
     display: flex;
     justify-content: center;
     align-items: center;
+    display: none;
 }
 
 .board-pop-up {
     width: 525px;
-    height:80vh;
+    height: 80vh;
     padding: 48px 40px 48px 40px;
     gap: 24px;
     border-radius: 30px;
@@ -1818,7 +1822,7 @@ input[type=submit]:hover {
 }
 
 .board-pop-up-headline {
-    background-color:rgba(0, 56, 255, 1);
+    background-color: rgba(0, 56, 255, 1);
     color: white;
     border-radius: 8px;
     padding: 4px 24px 4px 24px;
@@ -1857,7 +1861,8 @@ input[type=submit]:hover {
 .popup-medium-image {
     display: flex;
     justify-content: flex-start;
-    gap: 10px;;
+    gap: 10px;
+    ;
 }
 
 .popup-medium-image img {
@@ -1913,11 +1918,13 @@ input[type=submit]:hover {
     align-items: center;
     gap: 12px;
 }
+
 .popup-delete-and-edit img {
     width: 18px;
     height: 18px;
 }
-.popup-delete-and-edit span{
+
+.popup-delete-and-edit span {
     font-weight: 400;
     font-size: 16px;
     color: rgba(42, 54, 71, 1);
@@ -1926,6 +1933,7 @@ input[type=submit]:hover {
 .popup-delete-and-edit:hover {
     cursor: pointer;
 }
+
 
 /*BOARD END*/
 

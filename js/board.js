@@ -57,3 +57,8 @@ function popUpCheckBlue(){
     let check = document.getElementById('subtask-check');
     check.src = "./assets/img/icons/box-checked-blue.png";
 }
+
+function showPopUp() {
+   let boardOverlay = document.querySelector('.board-overlay');
+    boardOverlay.style.display = 'flex';
+}
