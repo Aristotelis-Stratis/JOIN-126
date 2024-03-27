@@ -998,6 +998,12 @@ h3 {
     background-color: #29ABE2;
 }
 
+button.disabled {
+    background-color: #CCCCCC !important; /* Graue Hintergrundfarbe */
+    color: #666666 !important; /* Dunklerer Text */
+    cursor: not-allowed !important; /* Zeiger wird zu "not-allowed" */
+}
+
 .aco-close {
     display: flex;
     align-items: center;

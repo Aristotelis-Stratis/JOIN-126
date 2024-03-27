@@ -1,4 +1,4 @@
-let task = [];
+let allTasks = [];
 let allContacts = [];
 let selectedContacts = [];
 let subtasks = [];
@@ -8,19 +8,19 @@ let selectedPriority = [];
  * Initializes the application by loading contacts and rendering them.
  */
 async function init() {
+    includeHTML();
     await loadContactsToTasks();
-    console.log(allContacts);
-    console.log(selectedContacts);
+    await loadTasksFromStorage();
     renderTaskContactList();
+    console.warn('All Tasks are here:', allTasks);
 }
 
 
-function createTask() {
+async function createTask() {
     let title = document.getElementById('title').value;
     let description = document.getElementById('description').value;
     let dueDate = document.getElementById('dueDate').value;
     let priority = selectedPriority[0];
-
     let newTask = {
         title,
         description,
@@ -30,20 +30,61 @@ function createTask() {
         subtasks: subtasks
     }
 
-    task.push(newTask);
-    console.log(task);
+    allTasks.push(newTask);
+    await saveToStorage();
+    console.log('Added task into allTask array:', allTasks);
     resetUI();
 }
 
 
+/**
+ * Saves the current state of `allContacts` array to storage.
+ */
+async function saveToStorage() {
+    await setItem('tasks', JSON.stringify(allTasks));
+}
+
+async function loadTasksFromStorage() {
+    try {
+        const tasksString = await getItem('tasks');
+        if (tasksString) {
+            const tasks = JSON.parse(tasksString);
+            allTasks = tasks;     // Update the global tasks array
+        } else {
+            console.log('No tasks found. Starting with an empty task list.');
+        }
+    } catch (e) {
+        console.warn('Could not load tasks:', e);
+        allTasks = [];               // Reset the tasks array on failure
+    }
+}
+
+/**
+ * Clears all tasks from remote storage.
+ */
+function deleteStorage() {
+    allTasks = [];
+    setItem('tasks', JSON.stringify(allTasks));
+}
+
+
+/**
+ * Resets the user interface (UI) by clearing input fields, removing active classes from priority buttons,
+ * and resetting selected contact, subtask, and priority arrays.
+ */
 function resetUI() {
     document.querySelectorAll('.priority-button.active').forEach(button => {
         button.classList.remove('active');
     });
     document.getElementById('title').value = '';
     document.getElementById('description').value = '';
+    document.getElementById('selected-option').textContent = 'Select task category';
     document.getElementById('dueDate').value = '';
     document.getElementById('subtaskContainer').innerHTML = '';
+    const dropdownMenu = document.getElementById('assign-dropdown-menu');
+    if (dropdownMenu.classList.contains('visible')) {
+        dropdownMenu.classList.remove('visible');
+    }
     selectedContacts = [];
     subtasks = [];
     selectedPriority = [];
@@ -392,47 +433,4 @@ function togglePriority(buttonId) {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// // Input Validation
-// function validateInput(input) {
-//     const isNotValid = input.value.trim() === '';
-//     input.classList.toggle('input-error', isNotValid);
-//     input.nextElementSibling.style.display = isNotValid ? 'block' : 'none';
-// }
-// function initValidation() {
-//     document.querySelectorAll('input[type=text], input[type=date], textarea').forEach(input => {
-//         if (!input.classList.contains('no-validate')) {
-//             input.onblur = () => validateInput(input);
-//             input.oninput = () => input.value.trim() && validateInput(input);
-//         }
-//     });
-// }
-
-
-//  document.addEventListener('DOMContentLoaded', initValidation);
 
