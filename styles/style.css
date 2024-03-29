@@ -30,6 +30,10 @@ body {
     display: flex;
 }
 
+.d-none-board {
+    display: none !important;
+}
+
 .d-none {
     display: none;
 }
@@ -1806,7 +1810,6 @@ input[type=submit]:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    display: none;
 }
 
 .board-pop-up {
@@ -1897,8 +1900,15 @@ input[type=submit]:hover {
     display: flex;
     align-items: center;
     gap: 20px;
-    padding-left: 16px;
-    padding-top: 8px;
+    margin-left: 16px;
+    margin-top: 8px;
+    padding: 4px;
+}
+
+.popup-subtasks:hover {
+    background-color: rgba(238, 238, 238, 0.8);
+    border-radius: 8px;
+    padding: 4px;
 }
 
 .popup-subtasks img {
@@ -1916,12 +1926,24 @@ input[type=submit]:hover {
 .popup-delete-and-edit {
     display: flex;
     align-items: center;
-    gap: 12px;
+}
+
+.popup-delete-and-edit:hover {
+    background-image: url('../assets/img/icons/delete-blue.png');
+}
+
+.popup-edit {
+    display: flex;
+    align-items: center;
+}
+
+.popup-edit:hover {
+    background-image: url('../assets/img/icons/edit-blue.png');
+    cursor: pointer;;
 }
 
 .popup-delete-and-edit img {
-    width: 18px;
-    height: 18px;
+    object-fit: cover;
 }
 
 .popup-delete-and-edit span {
@@ -1932,6 +1954,27 @@ input[type=submit]:hover {
 
 .popup-delete-and-edit:hover {
     cursor: pointer;
+}
+
+.pop-up-headline-flex {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    object-fit: cover;
+}
+
+.pop-up-headline-flex img {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    padding: 4px;
+    
+}
+
+.pop-up-headline-flex img:hover {
+    border-radius: 50px;
+    background-color: lightgray;
+    padding: 4px;
 }
 
 
