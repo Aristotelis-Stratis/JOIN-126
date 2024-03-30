@@ -16,12 +16,12 @@
 
 <body onload="includeHTML();">
   <section class="main-container">
-        <!-- left part of website fixed menu -->
-        <div w3-include-html="./assets/templates/nav.html"></div>
+    <!-- left part of website fixed menu -->
+    <div w3-include-html="./assets/templates/nav.html"></div>
     <!--right part of website (content) -->
     <div class="right-section">
-            <!-- top navbar -->
-            <div w3-include-html="./assets/templates/header.html"></div>
+      <!-- top navbar -->
+      <div w3-include-html="./assets/templates/header.html"></div>
 
       <div class="content-board" id="main-content">
         <div class="content-container">
@@ -111,9 +111,12 @@
           </div>
   </section>
 
-  <section class="board-overlay">
-    <div class="board-pop-up">
-      <div class="board-pop-up-headline">User Story</div>
+  <section id="pop-up" class="board-overlay d-none-board" onclick="closePopUp()">
+    <div class="board-pop-up" onclick="doNotClosePopUp(event)">
+      <div class="pop-up-headline-flex">
+        <div class="board-pop-up-headline">User Story</div>
+        <img onclick="closePopUp()" src="./assets/img/icons/close.png" alt="Close-PNG">
+      </div>
       <div class="board-task-pop-up-headline">Kochwelt Page & Recipe Recommender</div>
       <div class="board-pop-up-description">Build start page with recipe redommendation</div>
       <div class="popup-date-container">
@@ -144,23 +147,23 @@
         <span class="popup-blue-span">Subtasks</span>
         <div>
           <div class="popup-subtasks">
-            <img onclick="popUpCheckBlue()" id="subtask-check" src="./assets/img/icons/box_unchecked.png" alt="Box-Empty">
+            <img onclick="popUpCheckBlue()" id="subtask-check" src="./assets/img/icons/checkbox-empty-black-24.png"
+              alt="Box-Empty">
             <div>Implement Recipe Recommendation</div>
           </div>
           <div class="popup-subtasks">
-            <img src="./assets/img/icons/box_unchecked.png" alt="Box-Empty">
+            <img src="./assets/img/icons/checkbox-empty-black-24.png" alt="Box-Empty">
             <div>Start Page Layout</div>
           </div>
         </div>
       </div>
       <div class="popup-del-edit-container">
         <div class="popup-delete-and-edit">
-          <img src="./assets/img/icons/trash.png" alt="Trash-Image">
-          <span>Delete</span>
+          <img src="./assets/img/icons/delete-black.png" alt="Trash-Image">
         </div>
-        <div class="popup-delete-and-edit">
-          <img src="./assets/img/icons/edit_dark.png" alt="edit-Image">
-          <span>Edit</span>
+        <span>|</span>
+        <div class="popup-edit">
+          <img src="./assets/img/icons/edit-black.png" alt="edit-Image">
         </div>
       </div>
     </div>
