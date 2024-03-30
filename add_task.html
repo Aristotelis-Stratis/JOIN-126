@@ -34,7 +34,7 @@
                             <div class="form-left">
                                 <div class="form-group">
                                     <label for="title">Title<span class="form-required-color">*</span></label>
-                                    <input type="text" id="title" required placeholder="Enter a title">
+                                    <input type="text" id="title" required placeholder="Enter a title" oninput="hideValidationError('title', 'title-error-message')">
                                     <span id="title-error-message"class="error-message">This field is required</span>
                                 </div>
                                 <div class="form-group">
@@ -65,7 +65,7 @@
                                 <!-- Date -->
                                 <div class="form-group">
                                     <label for="dueDate">Due date<span class="form-required-color">*</span></label>
-                                    <input class="task-date" type="date" id="dueDate" required onchange="validateAndLogDate()">
+                                    <input type="date" id="dueDate" required onchange="validateDueDate()">
                                     <span id="date-error-message"class="error-message" style="display: none;">This field is required</span>
                                 </div>
 
@@ -87,7 +87,7 @@
 
                                 <div class="form-group select-container">
                                     <label for="category">Category<span class="form-required-color">*</span></label>
-                                    <div class="select-dropdown" onclick="toggleCategoryDropdownMenu()">
+                                    <div class="select-dropdown" id="select-dropdown"onclick="toggleCategoryDropdownMenu()">
                                         <div class="selected-option" id="selected-option">Select task category</div>
                                         <div class="drop-down-image-container">
                                             <img id="arrow-category" src="assets/img/icons/arrow_drop_down.png" alt="">
@@ -131,7 +131,7 @@
                     <div class="add-task-wrapper">
                         <div class="form-below">
                             <div class="aco-button-container">
-                                <button class="fb lb mb">Clear <img src="assets/img/icons/x.png" alt="Clear"></button>
+                                <button class="fb lb mb"onclick="resetUI()">Clear <img src="assets/img/icons/x.png" alt="Clear"></button>
                                 <button class="fb rb" onclick="createTask()">Create Task <img src="assets/img/icons/check.png"
                                         alt="Create Task"></button>
                             </div>
