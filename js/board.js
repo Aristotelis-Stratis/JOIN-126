@@ -62,3 +62,22 @@ function showPopUp() {
    let boardOverlay = document.querySelector('.board-overlay');
     boardOverlay.style.display = 'flex';
 }
+
+async function init(){
+    loadTasksFromStorage();
+}
+
+async function loadTasksFromStorage() {
+    try {
+        const tasksString = await getItem('tasks');
+        if (tasksString) {
+            const tasks = JSON.parse(tasksString);
+            allTasks = tasks;     // Update the global tasks array
+        } else {
+            console.log('No tasks found. Starting with an empty task list.');
+        }
+    } catch (e) {
+        console.warn('Could not load tasks:', e);
+        allTasks = [];               // Reset the tasks array on failure
+    }
+}
