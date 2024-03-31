@@ -40,7 +40,7 @@ function constructNewTask() {
     let description = document.getElementById('description').value;
     let dueDate = document.getElementById('dueDate').value;
     let priority = selectedPriority[0];
-    
+
     return {
         title,
         description,
@@ -141,7 +141,7 @@ function renderTaskContactList() {
  * @param {string} input - The user's input used for filtering contacts by name.
  */
 function filterContacts(input) {
-    const filteredContacts = allContacts.filter(contact => 
+    const filteredContacts = allContacts.filter(contact =>
         contact.name.toLowerCase().includes(input.toLowerCase())
     );
 
@@ -298,7 +298,7 @@ function setSelectedCategory(index) {
     var selectedCategory = categoryNames[index - 1];
     document.getElementById("selected-option").innerText = selectedCategory;
     document.getElementById("category-todo").value = selectedCategory;
-    
+
     let errorMessageElement = document.getElementById('category-error-message');
     let categoryDropdown = document.getElementById('select-dropdown');
     clearErrorMessage(errorMessageElement, categoryDropdown);
@@ -508,7 +508,7 @@ function setRedBorder(id, errorMessageId) {
  */
 function validateTaskInputs() {
     let isTitleValid = validateTitle();
-    let isDueDateValid = validateDueDate(); 
+    let isDueDateValid = validateDueDate();
     let isCategoryValid = validateCategory();
 
     return isTitleValid && isDueDateValid && isCategoryValid;

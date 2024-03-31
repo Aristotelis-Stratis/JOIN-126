@@ -733,13 +733,17 @@ h3 {
     height: 24px;
 }
 
-.delete-contact {
+.delete-contact,
+.popup-edit,
+.popup-delete-and-edit {
     display: flex;
     align-items: center;
     cursor: pointer;
 }
 
-.delete-contact:hover {
+.delete-contact:hover,
+.popup-edit:hover,
+.popup-delete-and-edit:hover {
     filter: brightness(0) saturate(100%) invert(35%) sepia(78%) saturate(3361%) hue-rotate(193deg) brightness(96%) contrast(102%);
 }
 
@@ -1928,7 +1932,8 @@ input[type=submit]:hover {
 
 .popup-edit:hover {
     background-image: url('../assets/img/icons/edit-blue.png');
-    cursor: pointer;;
+    cursor: pointer;
+    ;
 }
 
 .popup-delete-and-edit img {
@@ -1957,7 +1962,7 @@ input[type=submit]:hover {
     height: 24px;
     cursor: pointer;
     padding: 4px;
-    
+
 }
 
 .pop-up-headline-flex img:hover {
