@@ -15,25 +15,40 @@ async function init() {
     console.warn('All Tasks are here:', allTasks);
 }
 
-
+/**
+ * Creates a new task and adds it to the task list if all input validations pass.
+ * It saves the updated task list to storage and resets the user interface.
+ * @async
+ */
 async function createTask() {
+    if (validateTaskInputs()) {
+        const newTask = constructNewTask();
+        allTasks.push(newTask);
+        await saveToStorage();
+        console.log('Added task into allTask array:', allTasks);
+        resetUI();
+    }
+}
+
+/**
+ * Constructs a new task object based on the user input from the form. It collects data from the title, description,
+ * due date, priority, selected contacts, and subtasks fields.
+ * @returns {Object} The new task object with properties: title, description, dueDate, priority, contacts, and subtasks.
+ */
+function constructNewTask() {
     let title = document.getElementById('title').value;
     let description = document.getElementById('description').value;
     let dueDate = document.getElementById('dueDate').value;
     let priority = selectedPriority[0];
-    let newTask = {
+    
+    return {
         title,
         description,
         dueDate,
         priority,
         contacts: selectedContacts,
         subtasks: subtasks
-    }
-
-    allTasks.push(newTask);
-    await saveToStorage();
-    console.log('Added task into allTask array:', allTasks);
-    resetUI();
+    };
 }
 
 
@@ -44,7 +59,12 @@ async function saveToStorage() {
     await setItem('tasks', JSON.stringify(allTasks));
 }
 
-//!!Eduard!!//
+/**
+ * Asynchronously loads tasks from storage. If tasks are found, it updates the global tasks array with these tasks.
+ * If no tasks are found or an error occurs during the loading process, it either logs that no tasks were found or warns of an error,
+ * and resets the global tasks array to an empty array.
+ * @async
+ */
 async function loadTasksFromStorage() {
     try {
         const tasksString = await getItem('tasks');
@@ -116,12 +136,42 @@ function renderTaskContactList() {
 
 
 /**
+ * Filters the contacts based on the user's input. 
+ * It performs a case-insensitive search to find contacts whose names include the input string.
+ * @param {string} input - The user's input used for filtering contacts by name.
+ */
+function filterContacts(input) {
+    const filteredContacts = allContacts.filter(contact => 
+        contact.name.toLowerCase().includes(input.toLowerCase())
+    );
+
+    renderFilteredContactList(filteredContacts);
+}
+
+
+/**
+ * Renders the filtered list of contacts in the UI. 
+ * This function clears the existing list and repopulates it with only those contacts that match the filter criteria.
+ * @param {Array} filteredContacts - An array of contact objects that have passed the filtering criteria.
+ */
+function renderFilteredContactList(filteredContacts) {
+    const contactListContainer = document.getElementById('task-contact-list');
+    contactListContainer.innerHTML = '';
+
+    for (let i = 0; i < filteredContacts.length; i++) {
+        const contact = filteredContacts[i];
+        contactListContainer.innerHTML += generateContactHTML(contact, i);
+    }
+}
+
+
+/**
  * Toggles the selection state of a contact.
  * @param {number} index - The index of the contact in the allContacts array.
  * @param {Element} element - The DOM element of the contact item.
  */
 function toggleContactSelection(index) {
-    event.stopPropagation(); // NEEDS FIX
+    event.stopPropagation();
     const contactItem = document.getElementById(`contact-item-${index}`);
     const contact = allContacts[index];
 
@@ -238,11 +288,20 @@ function toggleCategoryDropdownMenu() {
 }
 
 
+/**
+ * Sets the selected task category based on the provided index. The function updates the text content of the "selected-option"
+ * element and the value of the "category-todo" input field to match the selected category.
+ * @param {number} index - The index of the selected category, starting from 1.
+ */
 function setSelectedCategory(index) {
     var categoryNames = ['Technical Task', 'User Story'];
     var selectedCategory = categoryNames[index - 1];
     document.getElementById("selected-option").innerText = selectedCategory;
     document.getElementById("category-todo").value = selectedCategory;
+    
+    let errorMessageElement = document.getElementById('category-error-message');
+    let categoryDropdown = document.getElementById('select-dropdown');
+    clearErrorMessage(errorMessageElement, categoryDropdown);
 }
 
 
@@ -393,26 +452,6 @@ function updateElementVisibility(element, shouldDisplay) {
 }
 
 
-function assignSelectedContact() { }
-
-function validateAndLogDate() {
-    const dueDateInput = document.getElementById('dueDate');
-    const errorMessage = document.getElementById('date-error-message');
-    const dueDateValue = dueDateInput.value;
-    const dueDate = new Date(dueDateValue);
-    const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-    if (dueDate < currentDate) {
-        errorMessage.textContent = "Due date cannot be in the past.";
-        errorMessage.style.display = 'block';
-        dueDateInput.style.borderColor = 'red';
-    } else {
-        errorMessage.style.display = 'none';
-        dueDateInput.style.borderColor = '';
-    }
-}
-
-
 /**
  * Toggles the 'active' state of priority buttons and updates the selectedPriority.
  * It ensures only one priority is active at a time by managing an array of selected priorities.
@@ -435,3 +474,144 @@ function togglePriority(buttonId) {
 }
 
 
+/**
+ * Checks if the input field with the specified ID is filled out.
+ * @param {string} id - The ID of the input field to check.
+ * @returns {boolean} True if the field is filled, false otherwise.
+ */
+function checkIsFieldFilled(id) {
+    let content = document.getElementById(id);
+    return content.value.length > 0;
+}
+
+
+/**
+ * Adds an "input-error" class to the element with the specified ID and displays an error message
+ * if an errorMessageId is provided.
+ * @param {string} id - The ID of the element to add the error class to.
+ * @param {string} [errorMessageId] - The ID of the element where the error message will be displayed.
+ */
+function setRedBorder(id, errorMessageId) {
+    let element = document.getElementById(id);
+    element.classList.add("input-error");
+    if (errorMessageId) {
+        let errorMessageElement = document.getElementById(errorMessageId);
+        errorMessageElement.textContent = "This field is required";
+        errorMessageElement.style.display = 'block';
+    }
+}
+
+
+/**
+ * Validates all task input fields by checking the title, due date, and category.
+ * @returns {boolean} True if all validations pass, false otherwise.
+ */
+function validateTaskInputs() {
+    let isTitleValid = validateTitle();
+    let isDueDateValid = validateDueDate(); 
+    let isCategoryValid = validateCategory();
+
+    return isTitleValid && isDueDateValid && isCategoryValid;
+}
+
+
+/**
+ * Validates the title input field to ensure it is filled out.
+ * Sets a red border if validation fails.
+ * @returns {boolean} True if the title field is filled, false otherwise.
+ */
+function validateTitle() {
+    const titleIsValid = checkIsFieldFilled('title');
+    if (!titleIsValid) {
+        setRedBorder('title', 'title-error-message');
+    }
+    return titleIsValid;
+}
+
+
+/**
+ * Validates that a task category has been selected and is not the default option.
+ * Sets a red border if validation fails.
+ * @returns {boolean} True if a valid category is selected, false otherwise.
+ */
+function validateCategory() {
+    let selectedCategory = document.getElementById('selected-option').textContent;
+    const categoryIsValid = selectedCategory !== 'Select task category';
+    if (!categoryIsValid) {
+        setRedBorder('select-dropdown', 'category-error-message');
+    }
+    return categoryIsValid;
+}
+
+
+/**
+ * Checks if a given date string represents a date that is in the future relative to the current date.
+ * @param {string} dateString - The date string to check.
+ * @returns {boolean} True if the date is in the future, false otherwise.
+ */
+function isDateValidAndFuture(dateString) {
+    const dueDate = new Date(dateString);
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    return dueDate >= currentDate;
+}
+
+
+/**
+ * Displays an error message related to a specific input field and adds an error class to that field.
+ * @param {HTMLElement} element - The element where the error message will be displayed.
+ * @param {string} message - The error message to display.
+ * @param {HTMLElement} inputField - The input field associated with the error.
+ */
+function showErrorMessage(element, message, inputField) {
+    element.textContent = message;
+    element.style.display = 'block';
+    inputField.classList.add('input-error');
+}
+
+
+/**
+ * Clears the displayed error message for a specific input field and removes the error class from that field.
+ * @param {HTMLElement} element - The element where the error message was displayed.
+ * @param {HTMLElement} inputField - The input field associated with the error.
+ */
+function clearErrorMessage(element, inputField) {
+    element.style.display = 'none';
+    inputField.classList.remove('input-error');
+}
+
+
+/**
+ * Hides validation error visual cues for a specific input field, if an error message ID is provided,
+ * also hides the error message.
+ * @param {string} id - The ID of the input field.
+ * @param {string} [errorMessageId] - The ID of the error message element.
+ */
+function hideValidationError(id, errorMessageId) {
+    let element = document.getElementById(id);
+    element.classList.remove("input-error");
+    if (errorMessageId) {
+        let errorMessageElement = document.getElementById(errorMessageId);
+        errorMessageElement.style.display = 'none';
+    }
+}
+
+
+/**
+ * Validates the due date input to ensure it's in the future.
+ * Displays or clears the error message based on the validation result.
+ * @returns {boolean} True if the due date is valid and in the future, false otherwise.
+ */
+function validateDueDate() {
+    const dueDateInput = document.getElementById('dueDate');
+    const errorMessageElement = document.getElementById('date-error-message');
+    const isDueDateValid = isDateValidAndFuture(dueDateInput.value);
+
+    if (isDueDateValid) {
+        clearErrorMessage(errorMessageElement, dueDateInput);
+    } else {
+        showErrorMessage(errorMessageElement, "Due date cannot be in the past.", dueDateInput);
+    }
+
+    return isDueDateValid;
+}
