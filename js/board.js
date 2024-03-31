@@ -8,19 +8,34 @@ async function init(){
     console.log(allTasks);
 }
 
-function popUpCheckBlue(){
+function popUpCheckBlue() {
     let check = document.getElementById('subtask-check');
-    check.src ="./assets/img/icons/checkbox-checked-black-24.png";
+    check.src = "./assets/img/icons/checkbox-checked-black-24.png";
 }
 
 function showPopUp() {
-   document.getElementById('pop-up').classList.remove('d-none-board');
+    const overlay = document.getElementById('overlay');
+    const popUp = document.getElementById('pop-up');
+    overlay.classList.remove('d-none-board'); 
+    popUp.classList.remove('closing-animation'); 
+    popUp.classList.add('slide-in-animation'); 
+    document.body.classList.add('no-scroll'); 
 }
 
 function closePopUp() {
-    document.getElementById('pop-up').classList.add('d-none-board');
+    const overlay = document.getElementById('overlay');
+    const popUp = document.getElementById('pop-up');
+    popUp.classList.remove('slide-in-animation'); 
+    popUp.classList.add('closing-animation'); 
+
+    // Warten Sie auf das Ende der Animation, bevor Sie das Popup ausblenden
+    setTimeout(() => {
+        overlay.classList.add('d-none-board'); // Overlay ausblenden
+        popUp.classList.remove('closing-animation'); // Zur Wiederverwendung vorbereiten
+        document.body.classList.remove('no-scroll'); // Body scrollen wieder erlauben
+    }, 500); // Die Dauer der Schließanimation in Millisekunden
 }
- 
+
 function doNotClosePopUp(event) {
     event.stopPropagation();
 }
