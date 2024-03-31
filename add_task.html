@@ -50,13 +50,13 @@
                                             <img id="arrow-assign-to" src="assets/img/icons/arrow_drop_down.png" alt="">
                                         </div>
                                         <input class="no-validate task-assign" type="text" id="assignedTo"
-                                            placeholder="Select contacts to assign" readonly>
+                                        placeholder="Select contacts to assign" oninput="filterContacts(this.value)">
+                                 
                                         <div id="assign-dropdown-menu" class="dropdown-menu">
                                             <!-- render contact list here -->
                                             <div class="task-contact-list" id="task-contact-list"></div>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
 

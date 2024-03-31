@@ -136,11 +136,41 @@ function renderTaskContactList() {
 
 
 /**
+ * Filters the contacts based on the user's input. 
+ * It performs a case-insensitive search to find contacts whose names include the input string.
+ * @param {string} input - The user's input used for filtering contacts by name.
+ */
+function filterContacts(input) {
+    const filteredContacts = allContacts.filter(contact => 
+        contact.name.toLowerCase().includes(input.toLowerCase())
+    );
+
+    renderFilteredContactList(filteredContacts);
+}
+
+
+/**
+ * Renders the filtered list of contacts in the UI. 
+ * This function clears the existing list and repopulates it with only those contacts that match the filter criteria.
+ * @param {Array} filteredContacts - An array of contact objects that have passed the filtering criteria.
+ */
+function renderFilteredContactList(filteredContacts) {
+    const contactListContainer = document.getElementById('task-contact-list');
+    contactListContainer.innerHTML = '';
+
+    for (let i = 0; i < filteredContacts.length; i++) {
+        const contact = filteredContacts[i];
+        contactListContainer.innerHTML += generateContactHTML(contact, i);
+    }
+}
+
+
+/**
  * Toggles the selection state of a contact.
  * @param {number} index - The index of the contact in the allContacts array.
  * @param {Element} element - The DOM element of the contact item.
  */
-function toggleContactSelection(index, event) {
+function toggleContactSelection(index) {
     event.stopPropagation();
     const contactItem = document.getElementById(`contact-item-${index}`);
     const contact = allContacts[index];
