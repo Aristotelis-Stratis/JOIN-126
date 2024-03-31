@@ -1822,6 +1822,39 @@ input[type=submit]:hover {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    position: absolute;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(300%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(300%);
+    }
+}
+
+.slide-in-animation {
+    animation-name: slideIn;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+}
+
+.closing-animation {
+    animation-name: slideOut;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
 }
 
 .board-pop-up-headline {
@@ -1939,7 +1972,8 @@ input[type=submit]:hover {
 
 .popup-edit:hover {
     background-image: url('../assets/img/icons/edit-blue.png');
-    cursor: pointer;;
+    cursor: pointer;
+    ;
 }
 
 .popup-delete-and-edit img {
@@ -1968,7 +2002,7 @@ input[type=submit]:hover {
     height: 24px;
     cursor: pointer;
     padding: 4px;
-    
+
 }
 
 .pop-up-headline-flex img:hover {
