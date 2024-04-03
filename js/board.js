@@ -35,6 +35,28 @@ function showToDos(){
         const task = allTasks[i];
         let taskName = task.title;
         let taskDescription = task.description;
+        let totalTasks = task.subtasks.length
+        let completedTasks = 1
+        let completionPercentage =(completedTasks / totalTasks) * 100
+        let priorityImage = '';
+
+        // Setze das Prioritätsbild basierend auf der Priorität der Aufgabe
+        switch (task.priority) {
+            case 'low':
+                priorityImage = './assets/img/icons/low.png';
+                break;
+            case 'medium':
+                priorityImage = './assets/img/icons/medium.png';
+                break;
+            case 'urgent':
+                priorityImage = './assets/img/icons/urgent.png';
+                break;
+            default:
+                // Setze ein Standardbild, falls keine Übereinstimmung gefunden wurde
+                priorityImage = './assets/img/icons/default.png';
+                break;
+        }
+
         let usersHTML = '';
 
         for (let j = 0; j < task.contacts.length; j++) {
@@ -58,15 +80,15 @@ function showToDos(){
                   </div>
                   <div class="subtasks">
                     <div class="subtask-bar">
-                      <div class="filled-subtask-bar"></div>
-                    </div><span>1/2 Subtasks</span>
+                      <div class="filled-subtask-bar" style="width: ${completionPercentage}%;"></div>
+                    </div><span>1/${totalTasks} Subtasks</span>
                   </div>
                   <div class="asigned-to">
                     <div class="asigned-to-icons">
                         ${usersHTML}
                     </div>
                     <div class="asigned-to-image-container">
-                      <img src="./assets/img/icons/medium.png" alt="medium-png">
+                      <img src="${priorityImage}" alt="medium-png">
                     </div>
                     </div>
             </div>

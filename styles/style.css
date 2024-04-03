@@ -1770,7 +1770,7 @@ input[type=submit]:hover {
 }
 
 .filled-subtask-bar {
-    width: 64px;
+    width: 20%;
     height: 8px;
     border-radius: 16px;
     background-color: #4589FF;
