@@ -1646,11 +1646,11 @@ input[type=submit]:hover {
 }
 
 .taskflow-board {
-    width: 244px;
+    width: 252px;
     height: 24px;
     display: flex;
     justify-content: space-between;
-    padding-bottom: 7.5px;
+    padding-bottom: 24px;
 }
 
 .taskflow-board img {
@@ -1680,7 +1680,7 @@ input[type=submit]:hover {
 }
 
 .column-properties {
-    width: 246px;
+    width: 252px;
     height: 688px;
 }
 
@@ -1707,6 +1707,14 @@ input[type=submit]:hover {
 
 .cardA {
     width: 220px;
+    border-radius: 24px;
+    padding: 16px;
+    box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.18);
+    cursor: pointer;
+}
+
+.cardB {
+    width: 252px;
     min-height: 260px;
     border-radius: 24px;
     padding: 16px;
@@ -1715,14 +1723,14 @@ input[type=submit]:hover {
     box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.18);
 }
 
-.cardB {
-    width: 220px;
-    min-height: 260px;
-    border-radius: 24px;
-    padding: 16px;
-    gap: 10px;
-    cursor: pointer;
-    box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.18);
+#ToDos {
+    width: 252px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    
+    
 }
 
 .task-category-board {
@@ -1817,6 +1825,7 @@ input[type=submit]:hover {
     align-items: flex-start;
     position: absolute;
 }
+
 
 @keyframes slideIn {
     from {
@@ -1951,22 +1960,27 @@ input[type=submit]:hover {
 
 .popup-delete-and-edit {
     display: flex;
+    justify-content: space-between;
     align-items: center;
+    gap: 8px;
 }
 
-.popup-delete-and-edit:hover {
-    background-image: url('../assets/img/icons/delete-blue.png');
+.popup-delete-and-edit img {
+    width: 24px;
+    height: 24px;
 }
+
 
 .popup-edit {
     display: flex;
+    justify-content: space-between;
     align-items: center;
+    gap: 8px;
 }
 
-.popup-edit:hover {
-    background-image: url('../assets/img/icons/edit-blue.png');
-    cursor: pointer;
-    ;
+.popup-edit img {
+    width: 24px;
+    height: 24px;
 }
 
 .popup-delete-and-edit img {

@@ -44,7 +44,9 @@
                   <div class="column-titles">To do</div>
                   <img src="../assets/img/icons/plus_button_dark.png" alt="dark-blue-plus-sign">
                 </div>
-                <div class="no-task-box">No tasks To do</div>
+                <div id="ToDos">
+                  <div class="no-task-box">No tasks To do</div>
+                </div>
               </div>
               <div class="column-properties">
                 <div class="taskflow-board">
@@ -148,23 +150,25 @@
         <span class="popup-blue-span">Subtasks</span>
         <div>
           <div class="popup-subtasks">
-            <img onclick="popUpCheckBlue()" id="subtask-check" src="./assets/img/icons/checkbox-empty-black-24.png"
+            <img onclick="popUpCheckDark()" id="subtask-check1" src="./assets/img/icons/checkbox-empty-black-24.png"
               alt="Box-Empty">
             <div>Implement Recipe Recommendation</div>
           </div>
-          <div class="popup-subtasks">
-            <img src="./assets/img/icons/checkbox-empty-black-24.png" alt="Box-Empty">
+          <div onclick="popUpCheckDark2()" class="popup-subtasks">
+            <img src="./assets/img/icons/checkbox-empty-black-24.png" id="subtask-check2" alt="Box-Empty">
             <div>Start Page Layout</div>
           </div>
         </div>
       </div>
       <div class="popup-del-edit-container">
         <div class="popup-delete-and-edit">
-          <img src="./assets/img/icons/delete-black.png" alt="Trash-Image">
+          <img src="./assets/img/icons/trash.png" alt="Trash-Image">
+          <span>Delete</span>
         </div>
         <span>|</span>
         <div class="popup-edit">
-          <img src="./assets/img/icons/edit-black.png" alt="edit-Image">
+          <img src="./assets/img/icons/edit_dark.png" alt="edit-Image">
+          <span>Edit</span>
         </div>
       </div>
     </div>
