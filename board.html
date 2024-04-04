@@ -50,31 +50,9 @@
               </div>
               <div class="column-properties">
                 <div class="taskflow-board">
-                  <div class="column-titles">In progress</div>
-                  <img src="./assets/img/icons/plus_button_dark.png" alt="dark-blue-plus-sign">
+                  <div class="column-titles">In Progress</div>
                 </div>
-                <div class="cardA" onclick="showPopUp()">
-                  <span class="task-category-board">User Story</span>
-                  <div class="card-middle-part">
-                    <h4 class="task-name">Kochwelt Page & Recipe Recommender</h4>
-                    <span class="task-description">Build start page with recipe redommendation</span>
-                  </div>
-                  <div class="subtasks">
-                    <div class="subtask-bar">
-                      <div class="filled-subtask-bar"></div>
-                    </div><span>1/2 Subtasks</span>
-                  </div>
-                  <div class="asigned-to">
-                    <div class="asigned-to-icons">
-                      <span class="contact-icon board-icon">AM</span>
-                      <span class="contact-icon board-icon">EF</span>
-                      <span class="contact-icon board-icon">DK</span>
-                    </div>
-                    <div class="asigned-to-image-container">
-                      <img src="./assets/img/icons/medium.png" alt="medium-png">
-                    </div>
-                  </div>
-                </div>
+                <span class="no-task-box">No Task is Progress</span>
               </div>
               <div class="column-properties">
                 <div class="taskflow-board">
@@ -116,61 +94,7 @@
 
   <section id="overlay" class="board-overlay d-none-board" onclick="closePopUp()">
     <div id="pop-up" class="board-pop-up" onclick="doNotClosePopUp(event)">
-      <div class="pop-up-headline-flex">
-        <div class="board-pop-up-headline">User Story</div>
-        <img onclick="closePopUp()" src="./assets/img/icons/close.png" alt="Close-PNG">
-      </div>
-      <div class="board-task-pop-up-headline">Kochwelt Page & Recipe Recommender</div>
-      <div class="board-pop-up-description">Build start page with recipe redommendation</div>
-      <div class="popup-date-container">
-        <span class="popup-blue-span">Due date:</span> <span>date??</span>
-      </div>
-      <div class="popup-prio-container">
-        <span class="popup-blue-span">Priority:</span> <span class="popup-medium-image">Medium <img
-            src="./assets/img/icons/medium.png" alt="Medium-Image"></span>
-      </div>
-      <div class="popup-assignedto-container">
-        <span class="popup-blue-span">Assigned To:</span>
-        <div class="popup-names-container">
-          <div class="popup-names">
-            <span class="contact-icon">EM</span>
-            <div>Eammanuel Mauer</div>
-          </div>
-          <div class="popup-names">
-            <span class="contact-icon">MB</span>
-            <div>Marcel Bauer</div>
-          </div>
-          <div class="popup-names">
-            <span class="contact-icon">AM</span>
-            <div>Anton Mayer</div>
-          </div>
-        </div>
-      </div>
-      <div class="popup-subtask-container">
-        <span class="popup-blue-span">Subtasks</span>
-        <div>
-          <div class="popup-subtasks">
-            <img onclick="popUpCheckDark()" id="subtask-check1" src="./assets/img/icons/checkbox-empty-black-24.png"
-              alt="Box-Empty">
-            <div>Implement Recipe Recommendation</div>
-          </div>
-          <div onclick="popUpCheckDark2()" class="popup-subtasks">
-            <img src="./assets/img/icons/checkbox-empty-black-24.png" id="subtask-check2" alt="Box-Empty">
-            <div>Start Page Layout</div>
-          </div>
-        </div>
-      </div>
-      <div class="popup-del-edit-container">
-        <div class="popup-delete-and-edit">
-          <img src="./assets/img/icons/trash.png" alt="Trash-Image">
-          <span>Delete</span>
-        </div>
-        <span>|</span>
-        <div class="popup-edit">
-          <img src="./assets/img/icons/edit_dark.png" alt="edit-Image">
-          <span>Edit</span>
-        </div>
-      </div>
+      
     </div>
   </section>
 </body>
