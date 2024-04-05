@@ -1901,7 +1901,9 @@ input[type=submit]:hover {
     display: flex;
     justify-content: flex-start;
     gap: 10px;
-    ;
+    text-transform: capitalize;
+    font-size: 20px;
+    font-weight: 400;
 }
 
 .popup-medium-image img {
@@ -1969,6 +1971,11 @@ input[type=submit]:hover {
 .popup-delete-and-edit img {
     width: 24px;
     height: 24px;
+    object-fit: cover;
+}
+
+.weight-700:hover {
+    font-weight: 700;
 }
 
 
@@ -1977,15 +1984,18 @@ input[type=submit]:hover {
     justify-content: space-between;
     align-items: center;
     gap: 8px;
+    font-weight: 400;
+    font-size: 16px;
+    color: rgba(42, 54, 71, 1)
+}
+
+.popup-edit:hover {
+    font-weight: 700;
 }
 
 .popup-edit img {
     width: 24px;
     height: 24px;
-}
-
-.popup-delete-and-edit img {
-    object-fit: cover;
 }
 
 .popup-delete-and-edit span {
@@ -1996,6 +2006,7 @@ input[type=submit]:hover {
 
 .popup-delete-and-edit:hover {
     cursor: pointer;
+    font-weight: 700;
 }
 
 .pop-up-headline-flex {
@@ -2023,6 +2034,17 @@ input[type=submit]:hover {
 /*BOARD END*/
 
 /*RESPONSIVE*/
+@media (max-width: 1600px) {
+    .fourth-property {
+        margin-left: 26px;
+    }
+}
+
+@media (max-width: 1530px) {
+    .column-properties {
+        margin-bottom: 100vh;
+    }
+}
 
 @media (max-width: 1500px) {
     .to-do-container {

@@ -2,7 +2,7 @@
 
 let allTasks = [];
 
-async function init(){
+async function init() {
     includeHTML();
     await loadTasksFromStorage();
     console.log(allTasks);
@@ -26,17 +26,17 @@ async function loadTasksFromStorage() {
 }
 
 
-function showToDos(){
-   let todo = document.getElementById('ToDos');
-   todo.innerHTML = '';
-   
+function showToDos() {
+    let todo = document.getElementById('ToDos');
+    todo.innerHTML = '';
+
     for (let i = 0; i < allTasks.length; i++) {
         const task = allTasks[i];
         let taskName = task.title;
         let taskDescription = task.description;
         let totalTasks = task.subtasks.length
         let completedTasks = 1
-        let completionPercentage =(completedTasks / totalTasks) * 100
+        let completionPercentage = (completedTasks / totalTasks) * 100
         let priorityImage = setPriority(task.priority);
         let usersHTML = '';
 
@@ -77,7 +77,7 @@ function showToDos(){
     }
 }
 
-function setPriority(priority){
+function setPriority(priority) {
     let priorityImage;
 
     switch (priority) {
@@ -117,16 +117,24 @@ function popUpCheckDark2() {
     }
 }
 
+function showOverlayAndPopUp() {
+    let overlay = document.getElementById('overlay');
+    let popUp = document.getElementById('pop-up');
+    overlay.classList.remove('d-none-board');
+    popUp.classList.remove('closing-animation');
+    popUp.classList.add('slide-in-animation');
+}
+
 function showPopUp(index) {
     const task = allTasks[index];
     let taskName = task.title;
     let taskDescription = task.description;
-    let overlay = document.getElementById('overlay');
+    let date = task.dueDate;
+    let priority = task.priority;
+    let priorityImage = setPriority(task.priority);
+    showOverlayAndPopUp();
+
     let popUp = document.getElementById('pop-up');
-    overlay.classList.remove('d-none-board'); 
-    popUp.classList.remove('closing-animation'); 
-    popUp.classList.add('slide-in-animation'); 
-    
     popUp.innerHTML = `
     <div class="pop-up-headline-flex">
         <div class="board-pop-up-headline">User Story</div>
@@ -135,11 +143,11 @@ function showPopUp(index) {
       <div class="board-task-pop-up-headline">${taskName}</div>
       <div class="board-pop-up-description">${taskDescription}</div>
       <div class="popup-date-container">
-        <span class="popup-blue-span">Due date:</span> <span>date??</span>
+        <span class="popup-blue-span">Due date:</span> <span>${date}</span>
       </div>
       <div class="popup-prio-container">
-        <span class="popup-blue-span">Priority:</span> <span class="popup-medium-image">Medium <img
-            src="./assets/img/icons/medium.png" alt="Medium-Image"></span>
+        <span class="popup-blue-span">Priority:</span> <span class="popup-medium-image">${priority}<img
+            src="${priorityImage}" alt="Medium-Image"></span>
       </div>
       <div class="popup-assignedto-container">
         <span class="popup-blue-span">Assigned To:</span>
@@ -175,12 +183,12 @@ function showPopUp(index) {
       <div class="popup-del-edit-container">
         <div class="popup-delete-and-edit">
           <img src="./assets/img/icons/trash.png" alt="Trash-Image">
-          <span>Delete</span>
+          <span class="weight-700">Delete</span>
         </div>
         <span>|</span>
         <div class="popup-edit">
           <img src="./assets/img/icons/edit_dark.png" alt="edit-Image">
-          <span>Edit</span>
+          <span class="weight-700">Edit</span>
         </div>
       </div>
     `;
@@ -189,8 +197,8 @@ function showPopUp(index) {
 function closePopUp() {
     const overlay = document.getElementById('overlay');
     const popUp = document.getElementById('pop-up');
-    popUp.classList.remove('slide-in-animation'); 
-    popUp.classList.add('closing-animation'); 
+    popUp.classList.remove('slide-in-animation');
+    popUp.classList.add('closing-animation');
 
     // Warten Sie auf das Ende der Animation, bevor Sie das Popup ausblenden
     setTimeout(() => {
