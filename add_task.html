@@ -26,6 +26,10 @@
 
             <div class="contentTask" id="main-content">
                 <div class="content-container" id="text-content">
+                    <div class="confirm-container">
+                        <div class="task-confirmation-container" style="display:none" id="add-task-confirmation"></div>
+                    </div>
+
                     <div class="form-container">
                         <div class="task-title">
                             <h1>Add Task</h1>
@@ -34,8 +38,9 @@
                             <div class="form-left">
                                 <div class="form-group">
                                     <label for="title">Title<span class="form-required-color">*</span></label>
-                                    <input type="text" id="title" required placeholder="Enter a title" oninput="hideValidationError('title', 'title-error-message')">
-                                    <span id="title-error-message"class="error-message">This field is required</span>
+                                    <input type="text" id="title" required placeholder="Enter a title"
+                                        oninput="hideValidationError('title', 'title-error-message')">
+                                    <span id="title-error-message" class="error-message">This field is required</span>
                                 </div>
                                 <div class="form-group">
                                     <label for="description">Description</label>
@@ -50,8 +55,9 @@
                                             <img id="arrow-assign-to" src="assets/img/icons/arrow_drop_down.png" alt="">
                                         </div>
                                         <input class="no-validate task-assign" type="text" id="assignedTo"
-                                        placeholder="Select contacts to assign" oninput="filterContacts(this.value)">
-                                 
+                                            placeholder="Select contacts to assign"
+                                            oninput="filterContacts(this.value)">
+
                                         <div id="assign-dropdown-menu" class="dropdown-menu">
                                             <!-- render contact list here -->
                                             <div class="task-contact-list" id="task-contact-list"></div>
@@ -66,7 +72,8 @@
                                 <div class="form-group">
                                     <label for="dueDate">Due date<span class="form-required-color">*</span></label>
                                     <input type="date" id="dueDate" required onchange="validateDueDate()">
-                                    <span id="date-error-message"class="error-message" style="display: none;">This field is required</span>
+                                    <span id="date-error-message" class="error-message" style="display: none;">This
+                                        field is required</span>
                                 </div>
 
                                 <!-- priority buttons -->
@@ -87,7 +94,8 @@
 
                                 <div class="form-group select-container">
                                     <label for="category">Category<span class="form-required-color">*</span></label>
-                                    <div class="select-dropdown" id="select-dropdown"onclick="toggleCategoryDropdownMenu()">
+                                    <div class="select-dropdown" id="select-dropdown"
+                                        onclick="toggleCategoryDropdownMenu()">
                                         <div class="selected-option" id="selected-option">Select task category</div>
                                         <div class="drop-down-image-container">
                                             <img id="arrow-category" src="assets/img/icons/arrow_drop_down.png" alt="">
@@ -113,7 +121,8 @@
                                             <img id="addBtn" src="assets/img/icons/add.png" alt="">
                                             <div id="sub-seperator" class="subtask-seperator" style="display:none;">
                                             </div>
-                                            <img id="closeBtn" src="assets/img/icons/close.png" onclick="clearInputField(), toggleAddButtonImage()" alt=""
+                                            <img id="closeBtn" src="assets/img/icons/close.png"
+                                                onclick="clearInputField(), toggleAddButtonImage()" alt=""
                                                 style="display:none;">
                                         </div>
 
@@ -131,9 +140,10 @@
                     <div class="add-task-wrapper">
                         <div class="form-below">
                             <div class="aco-button-container">
-                                <button class="fb lb mb"onclick="resetUI()">Clear <img src="assets/img/icons/x.png" alt="Clear"></button>
-                                <button class="fb rb" onclick="createTask()">Create Task <img src="assets/img/icons/check.png"
-                                        alt="Create Task"></button>
+                                <button class="fb lb mb" onclick="resetUI()">Clear <img src="assets/img/icons/x.png"
+                                        alt="Clear"></button>
+                                <button class="fb rb" onclick="createTask()">Create Task <img
+                                        src="assets/img/icons/check.png" alt="Create Task"></button>
                             </div>
                         </div>
                         <div class="form-info">

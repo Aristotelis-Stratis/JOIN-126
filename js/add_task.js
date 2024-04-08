@@ -27,19 +27,24 @@ async function createTask() {
         await saveToStorage();
         console.log('Added task into allTask array:', allTasks);
         resetUI();
+        initiateConfirmation('Task added to <img class="add-task-icon-board"src="assets/img/icons/board.png" alt="Board">');
+        setTimeout(() => {
+            window.location.href = 'board.html';
+        }, 2500);
     }
 }
 
 /**
  * Constructs a new task object based on the user input from the form. It collects data from the title, description,
- * due date, priority, selected contacts, and subtasks fields.
- * @returns {Object} The new task object with properties: title, description, dueDate, priority, contacts, and subtasks.
+ * due date, priority, selected contacts, subtasks, and category fields.
+ * @returns {Object} The new task object with properties: title, description, dueDate, priority, contacts, subtasks, and category.
  */
 function constructNewTask() {
     let title = document.getElementById('title').value;
     let description = document.getElementById('description').value;
     let dueDate = document.getElementById('dueDate').value;
     let priority = selectedPriority[0];
+    let category = document.getElementById('category-todo').value;
 
     return {
         title,
@@ -47,7 +52,8 @@ function constructNewTask() {
         dueDate,
         priority,
         contacts: selectedContacts,
-        subtasks: subtasks
+        subtasks: subtasks,
+        category
     };
 }
 
@@ -144,7 +150,6 @@ function filterContacts(input) {
     const filteredContacts = allContacts.filter(contact =>
         contact.name.toLowerCase().includes(input.toLowerCase())
     );
-
     renderFilteredContactList(filteredContacts);
 }
 
@@ -157,7 +162,6 @@ function filterContacts(input) {
 function renderFilteredContactList(filteredContacts) {
     const contactListContainer = document.getElementById('task-contact-list');
     contactListContainer.innerHTML = '';
-
     for (let i = 0; i < filteredContacts.length; i++) {
         const contact = filteredContacts[i];
         contactListContainer.innerHTML += generateContactHTML(contact, i);
@@ -174,7 +178,6 @@ function toggleContactSelection(index) {
     event.stopPropagation();
     const contactItem = document.getElementById(`contact-item-${index}`);
     const contact = allContacts[index];
-
     if (isSelected(contact)) {
         removeContact(contact);
         setCheckboxImage(contactItem, false);
@@ -275,15 +278,15 @@ function resetItemStyle(item) {
  * Toggles the visibility of the category dropdown menu and the rotation of the arrow icon.
  */
 function toggleCategoryDropdownMenu() {
-    var dropdownMenu = document.getElementById("category-dropdown-menu");
-    var arrow = document.getElementById("arrow-category");
+    let dropdownMenu = document.getElementById('category-dropdown-menu');
+    let arrow = document.getElementById('arrow-category');
 
-    if (dropdownMenu.style.display === "flex") {
-        dropdownMenu.style.display = "none";
-        arrow.style.transform = "rotate(0deg)";
+    if (dropdownMenu.style.display === 'flex') {
+        dropdownMenu.style.display = 'none';
+        arrow.style.transform = 'rotate(0deg)';
     } else {
-        dropdownMenu.style.display = "flex";
-        arrow.style.transform = "rotate(180deg)";
+        dropdownMenu.style.display = 'flex';
+        arrow.style.transform = 'rotate(180deg)';
     }
 }
 
@@ -312,8 +315,13 @@ function setSelectedCategory(index) {
 function toggleAssignDropdownMenu() {
     let dropdownMenu = document.getElementById('assign-dropdown-menu');
     let arrow = document.getElementById('arrow-assign-to');
-    dropdownMenu.classList.toggle('visible');
-    arrow.classList.toggle('rotate-180');
+    if (dropdownMenu.classList.contains('visible')) {
+        dropdownMenu.classList.remove('visible');
+        arrow.style.transform = "rotate(0deg)";
+    } else {
+        dropdownMenu.classList.add('visible');
+        arrow.style.transform = "rotate(180deg)";
+    }
     renderTaskContactList();
 }
 
@@ -324,7 +332,6 @@ function toggleAssignDropdownMenu() {
 function addSubtask() {
     let subtaskInput = document.getElementById('subTaskInput');
     let subtaskText = subtaskInput.value;
-
     if (subtaskText !== '') {
         subtasks.push(subtaskText);
         renderSubtasks();
@@ -352,7 +359,6 @@ function editSubtask(subtaskIndex) {
  */
 function updateSubtask(subtaskIndex) {
     const newText = getSubtaskInputValue(subtaskIndex);
-
     if (newText) {
         subtasks[subtaskIndex] = newText;
     } else {
@@ -400,7 +406,6 @@ function deleteSubtask(subtaskIndex) {
 function renderSubtasks() {
     let subtaskContainer = document.getElementById('subtaskContainer');
     subtaskContainer.innerHTML = '';
-
     for (let index = 0; index < subtasks.length; index++) {
         const subtaskText = subtasks[index];
         const subtaskItemHTML = createSubtaskTemplate(subtaskText, index);
@@ -425,7 +430,6 @@ function clearInputField() {
 function toggleAddButtonImage() {
     const subtaskInputValue = document.getElementById('subTaskInput').value.trim();
     const isInputNotEmpty = subtaskInputValue !== '';
-
     updateAddButton(isInputNotEmpty);
     updateElementVisibility(document.getElementById('closeBtn'), isInputNotEmpty);
     updateElementVisibility(document.getElementById('sub-seperator'), isInputNotEmpty);
@@ -455,19 +459,16 @@ function updateElementVisibility(element, shouldDisplay) {
 /**
  * Toggles the 'active' state of priority buttons and updates the selectedPriority.
  * It ensures only one priority is active at a time by managing an array of selected priorities.
- *
  * @param {string} buttonId - The ID of the button that was clicked.
  */
 function togglePriority(buttonId) {
     event.preventDefault();
     const button = document.getElementById(buttonId);
     const priority = button.getAttribute('data-priority');
-
     if (!selectedPriority.includes(priority)) {
         document.querySelectorAll('.priority-button').forEach(btn => {
             btn.classList.remove('active');
         });
-
         selectedPriority = [priority];
         button.classList.add('active');
     }
@@ -510,7 +511,6 @@ function validateTaskInputs() {
     let isTitleValid = validateTitle();
     let isDueDateValid = validateDueDate();
     let isCategoryValid = validateCategory();
-
     return isTitleValid && isDueDateValid && isCategoryValid;
 }
 
@@ -606,12 +606,89 @@ function validateDueDate() {
     const dueDateInput = document.getElementById('dueDate');
     const errorMessageElement = document.getElementById('date-error-message');
     const isDueDateValid = isDateValidAndFuture(dueDateInput.value);
-
     if (isDueDateValid) {
         clearErrorMessage(errorMessageElement, dueDateInput);
     } else {
         showErrorMessage(errorMessageElement, "Due date cannot be in the past.", dueDateInput);
     }
-
     return isDueDateValid;
+}
+
+
+/**
+ * Determines if a click event's target is within a specified element.
+ * 
+ * @param {string} elementId - The ID of the target element.
+ * @param {EventTarget} target - The click event's target.
+ * @returns {boolean} True if target is inside the element, false otherwise.
+ */
+function isClickInside(elementId, target) {
+    const element = document.getElementById(elementId);
+    return element && element.contains(target);
+}
+
+
+/**
+ * Toggles the visibility of a dropdown menu, hiding it if visible, and resets the arrow icon's rotation.
+ * 
+ * @param {string} menuId - The ID of the dropdown menu.
+ * @param {string} arrowIconId - The ID of the associated arrow icon.
+ */
+function closeDropdownMenu(menuId, arrowIconId) {
+    const dropdownMenu = document.getElementById(menuId);
+    const arrowIcon = document.getElementById(arrowIconId);
+    const isVisible = dropdownMenu.classList.contains('visible') || dropdownMenu.style.display === 'flex';
+    if (isVisible) {
+        if (dropdownMenu.classList.contains('visible')) {
+            dropdownMenu.classList.remove('visible');
+        } else {
+            dropdownMenu.style.display = 'none';
+        }
+        if (arrowIcon) {
+            arrowIcon.style.transform = '';
+        }
+    }
+}
+
+
+/**
+ * Handles document-wide click events to close dropdown menus if clicked outside.
+ * This listener checks clicks against the 'assignedTo' and 'category' dropdowns.
+ * It closes a dropdown if the click occurred outside its area or its associated input.
+ */
+document.addEventListener('click', function (event) {
+    if (!isClickInside('assignedTo', event.target) && !isClickInside('assign-dropdown-menu', event.target)) {
+        closeDropdownMenu('assign-dropdown-menu', 'arrow-assign-to');
+    }
+    if (!isClickInside('selected-option', event.target) && !isClickInside('category-dropdown-menu', event.target)) {
+        closeDropdownMenu('category-dropdown-menu', 'arrow-category');
+    }
+});
+
+
+/**
+* Initiates and displays a confirmation window with a specified message.
+* @param {string} message - The message to be displayed in the confirmation window.
+*/
+function initiateConfirmation(message) {
+    const confirmation = document.getElementById('add-task-confirmation');
+    confirmation.innerHTML = message;
+    confirmation.style.display = 'flex';
+    confirmation.style.animation = `slideInUp 0.5s ease-in-out forwards`;
+
+    setTimeout(() => {
+        // Starte die Ausflug-Animation
+        confirmation.style.animation = `slideOutDown 0.5s ease-in-out forwards`;
+        confirmation.addEventListener('animationend', () => {
+            confirmation.style.display = 'none'; // Verstecke den Container am Ende der Ausflug-Animation
+        }, { once: true });
+    }, 2000); // Die Zeit, die der Container sichtbar bleibt, bevor er wieder herausfliegt
+}
+
+
+/**
+ * Shows a confirmation message upon successful task creation.
+ */
+function showCreationConfirmation() {
+    initiateConfirmation('Contact successfully created');
 }
