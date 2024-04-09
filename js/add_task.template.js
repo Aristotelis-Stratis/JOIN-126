@@ -34,6 +34,7 @@ function createSubtaskTemplate(subtaskText, subtaskIndex) {
     `;
 }
 
+
 function createEditInputField(subtaskText, subtaskIndex) {
     return `
         <div class="edit-container">
@@ -50,6 +51,7 @@ function createEditInputField(subtaskText, subtaskIndex) {
         </div>
     `;
 }
+
 
 function createContactIconHTML(contact) {
     const initialsHTML = contact.initials.split('').map(initial => `<span>${initial}</span>`).join('');

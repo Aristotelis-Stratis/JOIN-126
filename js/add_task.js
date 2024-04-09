@@ -272,16 +272,6 @@ function updateCheckboxImage(element, isChecked) {
 
 
 /**
- * Resets the style of an item to default.
- * @param {Element} item - The DOM element of the item.
- */
-function resetItemStyle(item) {
-    item.style.backgroundColor = '';
-    item.style.color = '';
-}
-
-
-/**
  * Toggles the visibility of the category dropdown menu and the rotation of the arrow icon.
  */
 function toggleCategoryDropdownMenu() {
