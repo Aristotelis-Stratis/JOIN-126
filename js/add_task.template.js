@@ -1,3 +1,10 @@
+/**
+ * Generates HTML markup for a contact item with a selectable checkbox.
+ * @param {Object} contact - The contact object containing the details to display.
+ * @param {number} index - The index of the contact in the list, used for unique ID attributes.
+ * @param {boolean} isChecked - Determines if the contact is selected (checked) or not.
+ * @returns {string} HTML string representing the contact item.
+ */
 function generateContactHTML(contact, index, isChecked) {
     const checkboxImage = isChecked ? "assets/img/icons/checkbox-checked-black-24.png" : "assets/img/icons/checkbox-empty-black-24.png";
     return `
@@ -20,6 +27,12 @@ function generateContactHTML(contact, index, isChecked) {
 }
 
 
+/**
+ * Creates an HTML template for a subtask item.
+ * @param {string} subtaskText - The text content of the subtask.
+ * @param {number} subtaskIndex - The index of the subtask, used for unique ID attributes.
+ * @returns {string} HTML string representing the subtask item.
+ */
 function createSubtaskTemplate(subtaskText, subtaskIndex) {
     return `
         <div class="subtask-item" id="subtask_${subtaskIndex}">
@@ -35,6 +48,12 @@ function createSubtaskTemplate(subtaskText, subtaskIndex) {
 }
 
 
+/**
+ * Returns an HTML string for an input field pre-populated with the subtask's text, for editing purposes.
+ * @param {string} subtaskText - The current text of the subtask to be edited.
+ * @param {number} subtaskIndex - The index of the subtask, used to generate unique IDs for the input field and buttons.
+ * @returns {string} HTML markup for the input field and associated action icons.
+ */
 function createEditInputField(subtaskText, subtaskIndex) {
     return `
         <div class="edit-container">
@@ -53,6 +72,11 @@ function createEditInputField(subtaskText, subtaskIndex) {
 }
 
 
+/**
+ * Generates HTML for a contact's icon, displaying the contact's initials on a colored background.
+ * @param {Object} contact - The contact object containing initials and color properties.
+ * @returns {string} HTML string for the contact's icon.
+ */
 function createContactIconHTML(contact) {
     const initialsHTML = contact.initials.split('').map(initial => `<span>${initial}</span>`).join('');
     return `<div class="contact-icon" style="background-color:${contact.color};">${initialsHTML}</div>`;

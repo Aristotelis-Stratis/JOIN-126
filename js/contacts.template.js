@@ -1,4 +1,3 @@
-
 /**
  * Creates HTML markup for a new contact entry.
  * 
@@ -29,7 +28,6 @@ function createNewContactHTML(contact, index) {
     </div>
     `;
 }
-
 
 
 /**

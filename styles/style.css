@@ -315,7 +315,7 @@ body {
     max-width: 1208px;
     padding-top: 50px;
     padding-right: 100px;
-    padding-bottom: 50px;
+    padding-bottom: 100px;
     padding-left: 100px;
 }
 
@@ -904,9 +904,12 @@ h3 {
 .aco-right form {
     display: flex;
     flex-direction: column;
-    gap: 32px;
     margin-left: 50px;
 }
+
+/* .aco-right form span {
+    margin-bottom: 8px;
+} */
 
 .aco-right-input-container {
     width: 322px;
@@ -916,6 +919,8 @@ h3 {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: 8px;
+    margin-bottom: 8px;
 }
 
 .aco-input {
@@ -968,6 +973,7 @@ h3 {
 .aco-button-container {
     display: flex;
     gap: 16px;
+    margin-top: 16px;
 }
 
 .fb {

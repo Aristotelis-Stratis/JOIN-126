@@ -12,24 +12,55 @@ async function init() {
 
 
 /**
- * Creates a new contact from the form input values, adds it to the `allContacts` array, and saves the updated array to storage.
+ * Validates inputs and creates a new contact if valid, then updates the UI and storage.
  */
 async function createContact() {
-    let name = document.getElementById('inputName').value;
-    let email = document.getElementById('inputEmail').value;
-    let number = document.getElementById('inputNumber').value;
-    let initials = getInitials(name);
-    let contact = {
+    let nameInput = document.getElementById('inputName');
+    let emailInput = document.getElementById('inputEmail');
+    let numberInput = document.getElementById('inputNumber');
+
+    if (areInputsValid([nameInput, emailInput, numberInput])) {
+        let contact = createContactObject(nameInput.value, emailInput.value, numberInput.value);
+        allContacts.push(contact);
+        await saveToStorage();
+        renderContacts();
+        showCreationConfirmation();
+    }
+}
+
+
+/**
+ * Generates a contact object with unique ID, name, email, number, initials, and color.
+ * @param {string} name - The name of the contact.
+ * @param {string} email - The email address of the contact.
+ * @param {string} number - The phone number of the contact.
+ * @returns {Object} The contact object with generated fields.
+ */
+function createContactObject(name, email, number) {
+    return {
         id: generateUniqueId(),
-        name: name,
-        email: email,
-        number: number,
-        initials: initials,
+        name,
+        email,
+        number,
+        initials: getInitials(name),
         color: randomColor()
     };
-    allContacts.push(contact);
-    await saveToStorage();
-    renderContacts();
+}
+
+
+/**
+ * Returns true if all provided input elements are valid according to HTML5 validation.
+ * @param {HTMLInputElement[]} inputs - An array of input elements to validate.
+ * @returns {boolean} True if all inputs are valid, false otherwise.
+ */
+function areInputsValid(inputs) {
+    for (const input of inputs) {
+        if (!input.checkValidity()) {
+            input.reportValidity();
+            return false;
+        }
+    }
+    return true;
 }
 
 
@@ -283,7 +314,7 @@ function addContactContent() {
 
     headline.innerHTML = 'Add Contact';
     subheadline.innerHTML = 'Tasks are better with a team!';
-    button.setAttribute("onClick", "javascript: createContact(); showCreationConfirmation();");
+    button.setAttribute("onClick", "javascript: createContact();");
     button.innerHTML = 'Create contact <img src="assets/img/icons/check.png" alt = "Create Contact"> ';
 }
 
