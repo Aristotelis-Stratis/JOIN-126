@@ -1726,18 +1726,12 @@ input[type=submit]:hover {
 }
 
 .dragdrop-container {
-    width: 100%;
-    height: 688px;
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 26px;
 }
 
-.column-properties {
-    width: 252px;
-    height: 688px;
-}
 
 .column-titles {
     font-weight: 700;
@@ -1779,8 +1773,6 @@ input[type=submit]:hover {
 }
 
 #ToDos {
-    width: 252px;
-    height: 600px;
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -1972,16 +1964,22 @@ input[type=submit]:hover {
 }
 
 .popup-names-container {
-    display: flex;
-    flex-direction: column;
     padding-top: 8px;
 }
 
 .popup-names {
     display: flex;
-    align-items: center;
-    gap: 10px;
+    flex-direction: column;
+    gap: 18px;
     padding-left: 16px;
+    padding-top: 8px;
+}
+
+.username-HTML {
+   display: flex;
+   align-items: center;
+   gap: 16px;
+
 }
 
 .popup-subtask-container {
@@ -2095,12 +2093,6 @@ input[type=submit]:hover {
     }
 }
 
-@media (max-width: 1530px) {
-    .column-properties {
-        margin-bottom: 100vh;
-    }
-}
-
 @media (max-width: 1500px) {
     .to-do-container {
         width: 1065px;
@@ -2188,6 +2180,19 @@ input[type=submit]:hover {
     .form-container {
         margin-bottom: 50px;
         box-sizing: border-box;
+    }
+
+    .dragdrop-container {
+        flex-direction: column;
+    }
+
+    #ToDos {
+        height: 263px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        overflow-x: auto;
+        scrollbar-width: thin;
     }
 
 }

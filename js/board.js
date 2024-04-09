@@ -25,6 +25,50 @@ async function loadTasksFromStorage() {
     showToDos();
 }
 
+function getCategoryBackgroundColor(category) {
+    if (category === 'Technical Task') {
+        return '#1FD7C1';
+    } else if (category === 'User Story') {
+        return '#038ff0';
+    }
+}
+
+function generateUserHTMLplusName(contacts) {
+    let usersHTML = '';
+
+    for (let j = 0; j < contacts.length; j++) {
+        const user = contacts[j];
+        let userInitials = user.initials;
+        let userColor = user.color;
+        let userName = user.name;
+
+        usersHTML += `
+        <div class="username-HTML">
+            <span class="contact-icon board-icon" style="background-color: ${userColor};">${userInitials}</span>
+            <div>${userName}</div>
+        </div>
+        `;
+    }
+
+    return usersHTML;
+}
+
+function generateUserHTML(contacts) {
+    let usersHTML = '';
+
+    for (let j = 0; j < contacts.length; j++) {
+        const user = contacts[j];
+        let userInitials = user.initials;
+        let userColor = user.color;
+
+        usersHTML += `
+        <span class="contact-icon board-icon" style="background-color: ${userColor};">${userInitials}</span>
+        `;
+    }
+
+    return usersHTML;
+}
+
 
 function showToDos() {
     let todo = document.getElementById('ToDos');
@@ -38,22 +82,15 @@ function showToDos() {
         let completedTasks = 1
         let completionPercentage = (completedTasks / totalTasks) * 100
         let priorityImage = setPriority(task.priority);
-        let usersHTML = '';
+        let category = task.category;
+        let usersHTML = generateUserHTML(task.contacts);
+        let backgroundColor = getCategoryBackgroundColor(category);
 
-        for (let j = 0; j < task.contacts.length; j++) {
-            const user = task.contacts[j];
-            let userInitials = user.initials;
-            let userColor = user.color;
-
-            usersHTML += `
-            <span class="contact-icon board-icon" style="background-color: ${userColor};">${userInitials}</span>
-            `;
-        }
 
         todo.innerHTML += `
         <div>
             <div class="cardA" onclick="showPopUp(${i})">
-                  <span class="task-category-board">User Story</span>
+                  <span class="task-category-board" style="background-color: ${backgroundColor};">${category}</span>
                   <div class="card-middle-part">
                     <h4 class="task-name">${taskName}</h4>
                     <span class="task-description">${taskDescription}</span>
@@ -92,7 +129,7 @@ function setPriority(priority) {
             break;
         default:
             // Setze ein Standardbild, falls keine Übereinstimmung gefunden wurde
-            priorityImage = './assets/img/icons/default.png';
+            priorityImage = './assets/img/icons/low.png';
             break;
     }
 
@@ -132,6 +169,7 @@ function showPopUp(index) {
     let date = task.dueDate;
     let priority = task.priority;
     let priorityImage = setPriority(task.priority);
+    let usersHTML = generateUserHTMLplusName(task.contacts);
     showOverlayAndPopUp();
 
     let popUp = document.getElementById('pop-up');
@@ -153,16 +191,7 @@ function showPopUp(index) {
         <span class="popup-blue-span">Assigned To:</span>
         <div class="popup-names-container">
           <div class="popup-names">
-            <span class="contact-icon">EM</span>
-            <div>Eammanuel Mauer</div>
-          </div>
-          <div class="popup-names">
-            <span class="contact-icon">MB</span>
-            <div>Marcel Bauer</div>
-          </div>
-          <div class="popup-names">
-            <span class="contact-icon">AM</span>
-            <div>Anton Mayer</div>
+            ${usersHTML}
           </div>
         </div>
       </div>
