@@ -1110,8 +1110,9 @@ h3 {
     align-items: center;
     justify-content: center;
     position: relative;
-    width:100%;
+    width: 100%;
 }
+
 .task-confirmation-container {
     align-items: center;
     justify-content: center;
@@ -1574,7 +1575,12 @@ input[type=submit]:hover {
     border-radius: 0 !important;
 }
 
-
+.selected-contacts-container {
+    display: flex;
+    flex-wrap: wrap;
+    padding-top: 4px;
+    font-size: 14px;
+}
 
 /*ADD TASK END*/
 

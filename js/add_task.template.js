@@ -1,4 +1,5 @@
-function generateContactHTML(contact, index) {
+function generateContactHTML(contact, index, isChecked) {
+    const checkboxImage = isChecked ? "assets/img/icons/checkbox-checked-black-24.png" : "assets/img/icons/box_unchecked.png";
     return `
         <div id="contact-item-${index}" class="contact-item" onclick="toggleContactSelection(${index})">
             <div class="task-contact-item">
@@ -11,7 +12,7 @@ function generateContactHTML(contact, index) {
                     </div>
                 </div>
                 <div class="task-contact-checkbox">
-                    <img id="checkbox-${index}" src="assets/img/icons/box_unchecked.png">
+                    <img id="checkbox-${index}" src="${checkboxImage}">
                 </div>
             </div>
         </div>
@@ -48,4 +49,9 @@ function createEditInputField(subtaskText, subtaskIndex) {
         <span id="error-message" style="display: none; color: red;"></span>
         </div>
     `;
+}
+
+function createContactIconHTML(contact) {
+    const initialsHTML = contact.initials.split('').map(initial => `<span>${initial}</span>`).join('');
+    return `<div class="contact-icon" style="background-color:${contact.color};">${initialsHTML}</div>`;
 }

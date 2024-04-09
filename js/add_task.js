@@ -108,6 +108,7 @@ function resetUI() {
     document.getElementById('selected-option').textContent = 'Select task category';
     document.getElementById('dueDate').value = '';
     document.getElementById('subtaskContainer').innerHTML = '';
+    document.getElementById('selected-contacts-list').innerHTML = '';
     const dropdownMenu = document.getElementById('assign-dropdown-menu');
     if (dropdownMenu.classList.contains('visible')) {
         dropdownMenu.classList.remove('visible');
@@ -136,7 +137,8 @@ function renderTaskContactList() {
 
     for (let i = 0; i < allContacts.length; i++) {
         const contact = allContacts[i];
-        contactListContainer.innerHTML += generateContactHTML(contact, i);
+        const isChecked = isSelected(contact);
+        contactListContainer.innerHTML += generateContactHTML(contact, i, isChecked);
     }
 }
 
@@ -169,6 +171,23 @@ function renderFilteredContactList(filteredContacts) {
 }
 
 
+
+/**
+ * Renders the selected contacts in the UI using the data from the selectedContacts array.
+ */
+function renderSelectedContacts() {
+    const container = document.querySelector('.selected-contacts-container');
+    container.innerHTML = ''; // Clear the container first
+
+    // Iterate through the selected contacts and add them to the container
+    selectedContacts.forEach(contact => {
+        container.insertAdjacentHTML('beforeend', createContactIconHTML(contact));
+    });
+}
+
+
+
+
 /**
  * Toggles the selection state of a contact.
  * @param {number} index - The index of the contact in the allContacts array.
@@ -185,8 +204,22 @@ function toggleContactSelection(index) {
         addContact(contact);
         setCheckboxImage(contactItem, true);
     }
+    renderSelectedContacts();
     console.log(selectedContacts);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /**
@@ -195,7 +228,7 @@ function toggleContactSelection(index) {
  * @returns {boolean} - Returns true if the contact is selected, false otherwise.
  */
 function isSelected(contact) {
-    return selectedContacts.findIndex(selected => selected.id === contact.id) !== -1;
+    return selectedContacts.some(selectedContact => selectedContact.id === contact.id);
 }
 
 
@@ -224,7 +257,6 @@ function removeContact(contact) {
  */
 function setCheckboxImage(element, isChecked) {
     updateCheckboxImage(element, isChecked);
-    updateTaskContactItemStyle(element, isChecked);
 }
 
 
@@ -235,32 +267,7 @@ function setCheckboxImage(element, isChecked) {
  */
 function updateCheckboxImage(element, isChecked) {
     const checkboxImg = element.querySelector('img');
-    checkboxImg.src = isChecked ? "assets/img/icons/box_checked.png" : "assets/img/icons/box_unchecked.png";
-}
-
-
-/**
- * Updates the style of the task contact item based on the selection state.
- * @param {Element} element - The DOM element of the task contact item.
- * @param {boolean} isChecked - The selection state of the item.
- */
-function updateTaskContactItemStyle(element, isChecked) {
-    const taskContactItem = element.closest('.contact-item');
-    if (isChecked) {
-        setItemSelectedStyle(taskContactItem);
-    } else {
-        resetItemStyle(taskContactItem);
-    }
-}
-
-
-/**
- * Sets the style of a selected item.
- * @param {Element} item - The DOM element of the item.
- */
-function setItemSelectedStyle(item) {
-    item.style.backgroundColor = 'rgba(42, 54, 71, 1)';
-    item.style.color = 'white';
+    checkboxImg.src = isChecked ? "assets/img/icons/checkbox-checked-black-24.png" : "assets/img/icons/box_unchecked.png";
 }
 
 
