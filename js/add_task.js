@@ -267,7 +267,7 @@ function setCheckboxImage(element, isChecked) {
  */
 function updateCheckboxImage(element, isChecked) {
     const checkboxImg = element.querySelector('img');
-    checkboxImg.src = isChecked ? "assets/img/icons/checkbox-checked-black-24.png" : "assets/img/icons/box_unchecked.png";
+    checkboxImg.src = isChecked ? "assets/img/icons/checkbox-checked-black-24.png" : "assets/img/icons/checkbox-empty-black-24.png";
 }
 
 

@@ -1,5 +1,5 @@
 function generateContactHTML(contact, index, isChecked) {
-    const checkboxImage = isChecked ? "assets/img/icons/checkbox-checked-black-24.png" : "assets/img/icons/box_unchecked.png";
+    const checkboxImage = isChecked ? "assets/img/icons/checkbox-checked-black-24.png" : "assets/img/icons/checkbox-empty-black-24.png";
     return `
         <div id="contact-item-${index}" class="contact-item" onclick="toggleContactSelection(${index})">
             <div class="task-contact-item">
