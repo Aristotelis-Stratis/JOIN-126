@@ -1770,6 +1770,7 @@ input[type=submit]:hover {
     font-weight: 400;
     color: #A8A8A8;
     margin-top: 8px;
+    background-color: rgba(168, 168, 168, 0.4)
 }
 
 .cardA {
@@ -1858,8 +1859,13 @@ input[type=submit]:hover {
     align-items: center;
 }
 
+
 .asigned-to-icons {
     display: flex;
+}
+
+.asigned-to-icons::-webkit-scrollbar {
+    display: none;
 }
 
 .board-icon {
@@ -1982,7 +1988,9 @@ input[type=submit]:hover {
 }
 
 .popup-names-container {
-    padding-top: 8px;
+    padding-top: 16px;
+    overflow-y: auto;
+    height: 200px;
 }
 
 .popup-names {
@@ -2105,11 +2113,6 @@ input[type=submit]:hover {
 /*BOARD END*/
 
 /*RESPONSIVE*/
-@media (max-width: 1600px) {
-    .fourth-property {
-        margin-left: 26px;
-    }
-}
 
 @media (max-width: 1500px) {
     .to-do-container {

@@ -86,7 +86,6 @@ function showToDos() {
         let usersHTML = generateUserHTML(task.contacts);
         let backgroundColor = getCategoryBackgroundColor(category);
 
-
         todo.innerHTML += `
         <div>
             <div class="cardA" onclick="showPopUp(${i})">
@@ -170,12 +169,26 @@ function showPopUp(index) {
     let priority = task.priority;
     let priorityImage = setPriority(task.priority);
     let usersHTML = generateUserHTMLplusName(task.contacts);
+    let category = task.category;
+    let backgroundColor = getCategoryBackgroundColor(category);
     showOverlayAndPopUp();
 
     let popUp = document.getElementById('pop-up');
+
+    let subtasksHTML = '';
+    for (let i = 0; i < task.subtasks.length; i++) {
+        let subtask = task.subtasks[i];
+        subtasksHTML += `
+            <div class="popup-subtasks">
+                <img src="./assets/img/icons/checkbox-empty-black-24.png" id="subtask-check${i + 1}" alt="Box-Empty">
+                <div>${subtask}</div>
+            </div>
+        `;
+    }
+
     popUp.innerHTML = `
     <div class="pop-up-headline-flex">
-        <div class="board-pop-up-headline">User Story</div>
+        <div class="board-pop-up-headline" style="background-color: ${backgroundColor}">${category}</div>
         <img onclick="closePopUp()" src="./assets/img/icons/close.png" alt="Close-PNG">
       </div>
       <div class="board-task-pop-up-headline">${taskName}</div>
@@ -197,12 +210,8 @@ function showPopUp(index) {
       </div>
       <div class="popup-subtask-container">
         <span class="popup-blue-span">Subtasks</span>
+        <div>${subtasksHTML}</div>
         <div>
-          <div class="popup-subtasks">
-            <img onclick="popUpCheckDark()" id="subtask-check1" src="./assets/img/icons/checkbox-empty-black-24.png"
-              alt="Box-Empty">
-            <div>Implement Recipe Recommendation</div>
-          </div>
           <div onclick="popUpCheckDark2()" class="popup-subtasks">
             <img src="./assets/img/icons/checkbox-empty-black-24.png" id="subtask-check2" alt="Box-Empty">
             <div>Start Page Layout</div>
