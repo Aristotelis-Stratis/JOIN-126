@@ -239,5 +239,29 @@ function doNotClosePopUp(event) {
 }
 
 function showAddTaskPopUp() {
-  
+  const overlay = document.getElementById('overlay2');
+  const addTaskPopUp = document.getElementById('addTaskPopUp');
+
+ 
+  overlay.classList.remove('d-none-board');
+
+  addTaskPopUp.classList.remove('closing-animation');
+  addTaskPopUp.classList.add('slide-in-animation');
+
+}
+
+function closeAddTaskPopUp() {
+  const overlay = document.getElementById('overlay2');
+  const addtask = document.getElementById('addTaskPopUp');
+  addtask.classList.remove('slide-in-animation');
+  addtask.classList.add('closing-animation');
+
+  setTimeout(() => {
+      overlay.classList.add('d-none-board'); 
+      addtask.classList.remove('closing-animation'); 
+  }, 500); 
+}
+
+function doNotCloseAddTaskPopUp(event) {
+  event.stopPropagation();
 }

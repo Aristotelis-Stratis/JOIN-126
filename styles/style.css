@@ -1897,6 +1897,19 @@ input[type=submit]:hover {
     position: absolute;
 }
 
+.add-task-popup {
+    width: 70%;
+    height: 80vh;
+    padding: 48px 40px 48px 40px;
+    gap: 24px;
+    border-radius: 30px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: absolute;
+}
+
 
 @keyframes slideIn {
     from {
