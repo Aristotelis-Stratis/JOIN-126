@@ -78,8 +78,11 @@ function showToDos() {
         const task = allTasks[i];
         let taskName = task.title;
         let taskDescription = task.description;
-        let totalTasks = task.subtasks.length
-        let completedTasks = 1
+        let totalTasks = task.subtasks.length;
+        let completedTasks = 1;
+
+      
+
         let completionPercentage = (completedTasks / totalTasks) * 100
         let priorityImage = setPriority(task.priority);
         let category = task.category;
@@ -87,7 +90,7 @@ function showToDos() {
         let backgroundColor = getCategoryBackgroundColor(category);
 
         todo.innerHTML += `
-        <div>
+        <div draggable="true">
             <div class="cardA" onclick="showPopUp(${i})">
                   <span class="task-category-board" style="background-color: ${backgroundColor};">${category}</span>
                   <div class="card-middle-part">
@@ -135,22 +138,13 @@ function setPriority(priority) {
     return priorityImage;
 }
 
-function popUpCheckDark() {
-    let check = document.getElementById('subtask-check1');
-    if (check.src.includes('checkbox-checked-black-24.png')) {
-        check.src = "./assets/img/icons/checkbox-empty-black-24.png";
-    } else {
-        check.src = "./assets/img/icons/checkbox-checked-black-24.png";
-    }
-}
-
-function popUpCheckDark2() {
-    let check = document.getElementById('subtask-check2');
-    if (check.src.includes('checkbox-checked-black-24.png')) {
-        check.src = "./assets/img/icons/checkbox-empty-black-24.png";
-    } else {
-        check.src = "./assets/img/icons/checkbox-checked-black-24.png";
-    }
+function toggleSubtaskCheck(subtaskcheck) {
+  let check = document.getElementById(subtaskcheck);
+  if (check.src.includes('checkbox-checked-black-24.png')) {
+      check.src = "./assets/img/icons/checkbox-empty-black-24.png";
+  } else {
+      check.src = "./assets/img/icons/checkbox-checked-black-24.png";
+  }
 }
 
 function showOverlayAndPopUp() {
@@ -180,7 +174,7 @@ function showPopUp(index) {
         let subtask = task.subtasks[i];
         subtasksHTML += `
             <div class="popup-subtasks">
-                <img src="./assets/img/icons/checkbox-empty-black-24.png" id="subtask-check${i + 1}" alt="Box-Empty">
+                <img src="./assets/img/icons/checkbox-empty-black-24.png" id="subtask-check${i}" onclick="toggleSubtaskCheck('subtask-check${i}')" alt="Box-Empty">
                 <div>${subtask}</div>
             </div>
         `;
@@ -211,12 +205,6 @@ function showPopUp(index) {
       <div class="popup-subtask-container">
         <span class="popup-blue-span">Subtasks</span>
         <div>${subtasksHTML}</div>
-        <div>
-          <div onclick="popUpCheckDark2()" class="popup-subtasks">
-            <img src="./assets/img/icons/checkbox-empty-black-24.png" id="subtask-check2" alt="Box-Empty">
-            <div>Start Page Layout</div>
-          </div>
-        </div>
       </div>
       <div class="popup-del-edit-container">
         <div class="popup-delete-and-edit">
@@ -248,4 +236,8 @@ function closePopUp() {
 
 function doNotClosePopUp(event) {
     event.stopPropagation();
+}
+
+function showAddTaskPopUp() {
+  
 }

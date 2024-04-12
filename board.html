@@ -33,10 +33,12 @@
               <div class="input-button-board-container">
                 <input class="board-input" type="text" placeholder="Find Task">
                 <img class="search-png" src="./assets/img/icons/search.png" alt="search-Icon">
-                <button class="add-task-btn">Add task <img class="plus-sign-white"
+                <button onclick="showAddTaskPopUp()" class="add-task-btn">Add task <img class="plus-sign-white"
                     src="./assets/img/icons/add-white.png" alt="White Plus Icon"></button>
               </div>
             </div>
+
+            <div class="add-task-popup"></div>
 
             <div class="dragdrop-container">
               <div class="column-properties">
@@ -51,21 +53,28 @@
               <div class="column-properties">
                 <div class="taskflow-board">
                   <div class="column-titles">In Progress</div>
+                  <img src="../assets/img/icons/plus_button_dark.png" alt="dark-blue-plus-sign">
                 </div>
-                <span class="no-task-box">No Task is in Progress</span>
+                <div id="progress-container">
+                  <div class="no-task-box">No Task is in Progress</div>
+                </div>
               </div>
               <div class="column-properties">
                 <div class="taskflow-board">
                   <div class="column-titles">Await feedback</div>
                   <img src="./assets/img/icons/plus_button_dark.png" alt="dark-blue-plus-sign">
                 </div>
-                <span class="no-task-box">No Task requires Feedback</span>
+                <div id="feedback-container">
+                  <div class="no-task-box">No Task requires Feedback</div>
+                </div>
               </div>
               <div class="column-properties">
                 <div class="taskflow-board">
                   <div class="column-titles fourth-property">Done</div>
                 </div>
-                <span class="no-task-box fourth-property">No Task is Done</span>
+                <div id="done-container">
+                  <div class="no-task-box fourth-property">No Task is Done</div>
+                </div>
               </div>
             </div>
           </div>
@@ -73,7 +82,7 @@
 
   <section id="overlay" class="board-overlay d-none-board" onclick="closePopUp()">
     <div id="pop-up" class="board-pop-up" onclick="doNotClosePopUp(event)">
-      
+
     </div>
   </section>
 </body>
