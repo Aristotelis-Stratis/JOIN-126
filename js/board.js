@@ -102,14 +102,16 @@ function showToDos() {
                       <div class="filled-subtask-bar" style="width: ${completionPercentage}%;"></div>
                     </div><span>1/${totalTasks} Subtasks</span>
                   </div>
+                 <div class="asigned-to-flex"> 
                   <div class="asigned-to">
                     <div class="asigned-to-icons">
                         ${usersHTML}
                     </div>
-                    <div class="asigned-to-image-container">
+                  </div>
+                  <div class="asigned-to-image-container">
                       <img src="${priorityImage}" alt="medium-png">
-                    </div>
-                    </div>
+                  </div>
+                 </div>
             </div>
         </div>
         `;
@@ -241,10 +243,7 @@ function doNotClosePopUp(event) {
 function showAddTaskPopUp() {
   const overlay = document.getElementById('overlay2');
   const addTaskPopUp = document.getElementById('addTaskPopUp');
-
- 
   overlay.classList.remove('d-none-board');
-
   addTaskPopUp.classList.remove('closing-animation');
   addTaskPopUp.classList.add('slide-in-animation');
 
