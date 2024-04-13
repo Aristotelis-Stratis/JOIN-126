@@ -15,6 +15,8 @@
   <script src="/js/add_task.js"></script>
   <script src="/js/add_task.template.js"></script>
   <script src="/js/templates.js"></script>
+  <script src="/js/add_task.js"></script>
+  <script src="/js/add_task.template.js"></script>
 </head>
 
 <body onload="init();">
@@ -44,7 +46,7 @@
               <div class="column-properties">
                 <div class="taskflow-board">
                   <div class="column-titles">To do</div>
-                  <img src="../assets/img/icons/plus_button_dark.png" alt="dark-blue-plus-sign">
+                  <img onclick="showAddTaskPopUp()" src="../assets/img/icons/plus_button_dark.png" alt="dark-blue-plus-sign">
                 </div>
                 <div id="ToDos">
                   <div class="no-task-box">No tasks To do</div>
@@ -53,7 +55,7 @@
               <div class="column-properties">
                 <div class="taskflow-board">
                   <div class="column-titles">In Progress</div>
-                  <img src="../assets/img/icons/plus_button_dark.png" alt="dark-blue-plus-sign">
+                  <img onclick="showAddTaskPopUp()" src="../assets/img/icons/plus_button_dark.png" alt="dark-blue-plus-sign">
                 </div>
                 <div id="progress-container">
                   <div class="no-task-box">No Task is in Progress</div>
@@ -62,7 +64,7 @@
               <div class="column-properties">
                 <div class="taskflow-board">
                   <div class="column-titles">Await feedback</div>
-                  <img src="./assets/img/icons/plus_button_dark.png" alt="dark-blue-plus-sign">
+                  <img onclick="showAddTaskPopUp()" src="./assets/img/icons/plus_button_dark.png" alt="dark-blue-plus-sign">
                 </div>
                 <div id="feedback-container">
                   <div class="no-task-box">No Task requires Feedback</div>
@@ -87,8 +89,9 @@
   <section id="overlay2" class="board-overlay d-none-board" onclick="closeAddTaskPopUp()">
     <div id="addTaskPopUp" class="add-task-popup" onclick="doNotCloseAddTaskPopUp(event)">
       <div class="form-container">
-        <div class="task-title">
+        <div class="task-title-popup">
           <h1>Add Task</h1>
+          <img onclick="closeAddTaskPopUp()" src="./assets/img/icons/close.png" alt="Close-PNG">
         </div>
         <form class="task-form" id="taskForm">
           <div class="form-left">
