@@ -15,8 +15,6 @@
   <script src="/js/add_task.js"></script>
   <script src="/js/add_task.template.js"></script>
   <script src="/js/templates.js"></script>
-  <script src="/js/add_task.js"></script>
-  <script src="/js/add_task.template.js"></script>
 </head>
 
 <body onload="init();">
@@ -30,6 +28,9 @@
 
       <div class="content-board" id="main-content">
         <div class="content-container">
+          <div class="confirm-container">
+            <div class="task-confirmation-container" style="display:none" id="add-task-confirmation"></div>
+          </div>
           <div class="board-container">
 
             <div class="board-headline-container">
@@ -46,7 +47,8 @@
               <div class="column-properties">
                 <div class="taskflow-board">
                   <div class="column-titles">To do</div>
-                  <img onclick="showAddTaskPopUp()" src="../assets/img/icons/plus_button_dark.png" alt="dark-blue-plus-sign">
+                  <img onclick="showAddTaskPopUp()" src="../assets/img/icons/plus_button_dark.png"
+                    alt="dark-blue-plus-sign">
                 </div>
                 <div id="ToDos">
                   <div class="no-task-box">No tasks To do</div>
@@ -55,7 +57,8 @@
               <div class="column-properties">
                 <div class="taskflow-board">
                   <div class="column-titles">In Progress</div>
-                  <img onclick="showAddTaskPopUp()" src="../assets/img/icons/plus_button_dark.png" alt="dark-blue-plus-sign">
+                  <img onclick="showAddTaskPopUp()" src="../assets/img/icons/plus_button_dark.png"
+                    alt="dark-blue-plus-sign">
                 </div>
                 <div id="progress-container">
                   <div class="no-task-box">No Task is in Progress</div>
@@ -64,7 +67,8 @@
               <div class="column-properties">
                 <div class="taskflow-board">
                   <div class="column-titles">Await feedback</div>
-                  <img onclick="showAddTaskPopUp()" src="./assets/img/icons/plus_button_dark.png" alt="dark-blue-plus-sign">
+                  <img onclick="showAddTaskPopUp()" src="./assets/img/icons/plus_button_dark.png"
+                    alt="dark-blue-plus-sign">
                 </div>
                 <div id="feedback-container">
                   <div class="no-task-box">No Task requires Feedback</div>
@@ -197,7 +201,7 @@
         <div class="form-below">
           <div class="aco-button-container">
             <button class="fb lb mb" onclick="resetUI()">Clear <img src="assets/img/icons/x.png" alt="Clear"></button>
-            <button class="fb rb" onclick="createTask()">Create Task <img src="assets/img/icons/check.png"
+            <button class="fb rb" onclick="createTask();closeAddTaskPopUp(); showToDos();">Create Task <img src="assets/img/icons/check.png"
                 alt="Create Task"></button>
           </div>
         </div>

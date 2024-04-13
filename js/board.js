@@ -1,11 +1,9 @@
-
-
-let allTasks = [];
-
 async function init() {
     includeHTML();
     await loadTasksFromStorage();
+    await loadContactsFromStorage();
     console.log(allTasks);
+    showToDos();
 }
 
 async function loadTasksFromStorage() {
@@ -21,9 +19,8 @@ async function loadTasksFromStorage() {
         console.warn('Could not load tasks:', e);
         allTasks = [];               // Reset the tasks array on failure
     }
-
-    showToDos();
 }
+
 
 function getCategoryBackgroundColor(category) {
     if (category === 'Technical Task') {

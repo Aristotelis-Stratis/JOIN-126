@@ -1,11 +1,10 @@
 let i;
-let allContacts = [];
 let currentEditingId = null;
 
 /**
  * Initializes the application by loading all contacts.
  */
-async function init() {
+async function initContacts() {
     includeHTML();
     await loadAllContacts();
 }

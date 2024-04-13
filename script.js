@@ -1,3 +1,9 @@
+let allTasks = [];
+let allContacts = [];
+let selectedContacts = [];
+let subtasks = [];
+let selectedPriority = [];
+
 function openSubMenu() {
     let userSubMenu = document.getElementById('user-sub-menu');
     if (userSubMenu.style.display === "flex") {

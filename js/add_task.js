@@ -1,18 +1,13 @@
-let allTasks = [];
-let allContacts = [];
-let selectedContacts = [];
-let subtasks = [];
-let selectedPriority = [];
 
 /**
  * Initializes the application by loading contacts and rendering them.
  */
-async function init() {
+async function initTasks() {
     includeHTML();
-    await loadContactsToTasks();
+    await loadContactsFromStorage();
     await loadTasksFromStorage();
     renderTaskContactList();
-    console.warn('All Tasks are here:', allTasks);
+    // console.warn('All Tasks are here:', allTasks);
 }
 
 /**
@@ -28,11 +23,15 @@ async function createTask() {
         console.log('Added task into allTask array:', allTasks);
         resetUI();
         initiateConfirmation('Task added to <img class="add-task-icon-board"src="assets/img/icons/board.png" alt="Board">');
-        setTimeout(() => {
-            window.location.href = 'board.html';
-        }, 2500);
     }
 }
+
+function directToBoard(){
+    setTimeout(() => {
+        window.location.href = 'board.html';
+    }, 2500);
+}
+
 
 /**
  * Constructs a new task object based on the user input from the form. It collects data from the title, description,
@@ -122,7 +121,7 @@ function resetUI() {
 /**
  * Loads contacts into the application from storage.
  */
-async function loadContactsToTasks() {
+async function loadContactsFromStorage() {
     let response = await getItem('contacts');
     allContacts = JSON.parse(response);
 }
