@@ -5,9 +5,9 @@
 async function initTasks() {
     includeHTML();
     await loadContactsFromStorage();
-    // await loadTasksFromStorage();
+    await loadTasksFromStorage();
     renderTaskContactList();
-    // console.warn('All Tasks are here:', allTasks);
+    console.warn('All Tasks are here:', allTasks);
 }
 
 /**
@@ -23,10 +23,11 @@ async function createTask() {
         console.log('Added task into allTask array:', allTasks);
         resetUI();
         initiateConfirmation('Task added to <img class="add-task-icon-board"src="assets/img/icons/board.png" alt="Board">');
+        directToBoard();
     }
 }
 
-function directToBoard(){
+function directToBoard() {
     setTimeout(() => {
         window.location.href = 'board.html';
     }, 2500);
@@ -70,20 +71,20 @@ async function saveToStorage() {
  * and resets the global tasks array to an empty array.
  * @async
  */
-// async function loadTasksFromStorage() {
-//     try {
-//         const tasksString = await getItem('tasks');
-//         if (tasksString) {
-//             const tasks = JSON.parse(tasksString);
-//             allTasks = tasks;     // Update the global tasks array
-//         } else {
-//             console.log('No tasks found. Starting with an empty task list.');
-//         }
-//     } catch (e) {
-//         console.warn('Could not load tasks:', e);
-//         allTasks = [];               // Reset the tasks array on failure
-//     }
-// }
+async function loadTasksFromStorage() {
+    try {
+        const tasksString = await getItem('tasks');
+        if (tasksString) {
+            const tasks = JSON.parse(tasksString);
+            allTasks = tasks;     // Update the global tasks array
+        } else {
+            console.log('No tasks found. Starting with an empty task list.');
+        }
+    } catch (e) {
+        console.warn('Could not load tasks:', e);
+        allTasks = [];               // Reset the tasks array on failure
+    }
+}
 
 /**
  * Clears all tasks from remote storage.
