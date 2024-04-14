@@ -261,3 +261,21 @@ function closeAddTaskPopUp() {
 function doNotCloseAddTaskPopUp(event) {
   event.stopPropagation();
 }
+
+
+/**
+ * Creates a new task and adds it to the task list if all input validations pass.
+ * It saves the updated task list to storage and resets the user interface.
+ * @async
+ */
+async function createTaskOnBoard() {
+    if (validateTaskInputs()) {
+        const newTask = constructNewTask();
+        allTasks.push(newTask);
+        await saveToStorage();
+        console.log('Added task into allTask array:', allTasks);
+        resetUI();
+        initiateConfirmation('Task added to <img class="add-task-icon-board"src="assets/img/icons/board.png" alt="Board">');
+        closeAddTaskPopUp();
+    }
+}

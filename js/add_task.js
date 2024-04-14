@@ -5,7 +5,7 @@
 async function initTasks() {
     includeHTML();
     await loadContactsFromStorage();
-    await loadTasksFromStorage();
+    // await loadTasksFromStorage();
     renderTaskContactList();
     // console.warn('All Tasks are here:', allTasks);
 }
@@ -70,20 +70,20 @@ async function saveToStorage() {
  * and resets the global tasks array to an empty array.
  * @async
  */
-async function loadTasksFromStorage() {
-    try {
-        const tasksString = await getItem('tasks');
-        if (tasksString) {
-            const tasks = JSON.parse(tasksString);
-            allTasks = tasks;     // Update the global tasks array
-        } else {
-            console.log('No tasks found. Starting with an empty task list.');
-        }
-    } catch (e) {
-        console.warn('Could not load tasks:', e);
-        allTasks = [];               // Reset the tasks array on failure
-    }
-}
+// async function loadTasksFromStorage() {
+//     try {
+//         const tasksString = await getItem('tasks');
+//         if (tasksString) {
+//             const tasks = JSON.parse(tasksString);
+//             allTasks = tasks;     // Update the global tasks array
+//         } else {
+//             console.log('No tasks found. Starting with an empty task list.');
+//         }
+//     } catch (e) {
+//         console.warn('Could not load tasks:', e);
+//         allTasks = [];               // Reset the tasks array on failure
+//     }
+// }
 
 /**
  * Clears all tasks from remote storage.
@@ -204,21 +204,7 @@ function toggleContactSelection(index) {
         setCheckboxImage(contactItem, true);
     }
     renderSelectedContacts();
-    console.log(selectedContacts);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /**
@@ -609,57 +595,6 @@ function validateDueDate() {
     }
     return isDueDateValid;
 }
-
-
-/**
- * Determines if a click event's target is within a specified element.
- * 
- * @param {string} elementId - The ID of the target element.
- * @param {EventTarget} target - The click event's target.
- * @returns {boolean} True if target is inside the element, false otherwise.
- */
-function isClickInside(elementId, target) {
-    const element = document.getElementById(elementId);
-    return element && element.contains(target);
-}
-
-
-/**
- * Toggles the visibility of a dropdown menu, hiding it if visible, and resets the arrow icon's rotation.
- * 
- * @param {string} menuId - The ID of the dropdown menu.
- * @param {string} arrowIconId - The ID of the associated arrow icon.
- */
-function closeDropdownMenu(menuId, arrowIconId) {
-    const dropdownMenu = document.getElementById(menuId);
-    const arrowIcon = document.getElementById(arrowIconId);
-    const isVisible = dropdownMenu.classList.contains('visible') || dropdownMenu.style.display === 'flex';
-    if (isVisible) {
-        if (dropdownMenu.classList.contains('visible')) {
-            dropdownMenu.classList.remove('visible');
-        } else {
-            dropdownMenu.style.display = 'none';
-        }
-        if (arrowIcon) {
-            arrowIcon.style.transform = '';
-        }
-    }
-}
-
-
-/**
- * Handles document-wide click events to close dropdown menus if clicked outside.
- * This listener checks clicks against the 'assignedTo' and 'category' dropdowns.
- * It closes a dropdown if the click occurred outside its area or its associated input.
- */
-document.addEventListener('click', function (event) {
-    if (!isClickInside('assignedTo', event.target) && !isClickInside('assign-dropdown-menu', event.target)) {
-        closeDropdownMenu('assign-dropdown-menu', 'arrow-assign-to');
-    }
-    if (!isClickInside('selected-option', event.target) && !isClickInside('category-dropdown-menu', event.target)) {
-        closeDropdownMenu('category-dropdown-menu', 'arrow-category');
-    }
-});
 
 
 /**
