@@ -1,4 +1,3 @@
-
 /**
  * Initializes the application by loading contacts and rendering them.
  */
@@ -27,6 +26,9 @@ async function createTask() {
     }
 }
 
+/**
+ * Directs the user to the board page after a short delay once the task has been created.
+ */
 function directToBoard() {
     setTimeout(() => {
         window.location.href = 'board.html';
@@ -609,12 +611,11 @@ function initiateConfirmation(message) {
     confirmation.style.animation = `slideInUp 0.5s ease-in-out forwards`;
 
     setTimeout(() => {
-        // Starte die Ausflug-Animation
         confirmation.style.animation = `slideOutDown 0.5s ease-in-out forwards`;
         confirmation.addEventListener('animationend', () => {
-            confirmation.style.display = 'none'; // Verstecke den Container am Ende der Ausflug-Animation
+            confirmation.style.display = 'none';
         }, { once: true });
-    }, 2000); // Die Zeit, die der Container sichtbar bleibt, bevor er wieder herausfliegt
+    }, 2000);
 }
 
 

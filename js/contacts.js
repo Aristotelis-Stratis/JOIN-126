@@ -79,14 +79,14 @@ async function loadAllContacts() {
         const contactsString = await getItem('contacts');
         if (contactsString) {
             const contacts = JSON.parse(contactsString);
-            allContacts = contacts;     // Update the global contacts array
+            allContacts = contacts;
         } else {
             console.log('No contacts found. Starting with an empty contacts list.');
         }
-        renderContacts();               // Refresh the displayed contact list
+        renderContacts();
     } catch (e) {
         console.warn('Could not load Contacts:', e);
-        allContacts = [];               // Reset the contacts array on failure
+        allContacts = [];
     }
 }
 
@@ -139,10 +139,10 @@ function closeContactDetails() {
  */
 function openEditMobileMenu() {
     let editSubMenu = document.getElementById('edit-sub-menu');
-    if (editSubMenu.style.display === "flex") {
-        editSubMenu.style.display = "none";
+    if (editSubMenu.style.display === 'flex') {
+        editSubMenu.style.display = 'none';
     } else {
-        editSubMenu.style.display = "flex";
+        editSubMenu.style.display = 'flex';
     }
 }
 
@@ -198,6 +198,7 @@ function setContactDataToUI(name, email, number) {
     document.getElementById('inputNumber').value = number;
 }
 
+
 /**
  * Prepares the UI for editing a contact by displaying the contact overlay and filling in the contact's current data.
  * @param {number} i - The index of the contact to edit.
@@ -242,7 +243,7 @@ function saveContactUpdates(contactIndex, name, email, number) {
     allContacts[contactIndex].name = name;
     allContacts[contactIndex].email = email;
     allContacts[contactIndex].number = number;
-    allContacts[contactIndex].initials = getInitials(name); // Update initials based on the new name
+    allContacts[contactIndex].initials = getInitials(name);
 }
 
 
@@ -426,10 +427,10 @@ function responsiveContactContent() {
     let contactContainer = document.getElementById('text-content');
 
     if (window.innerWidth > 1366) {
-        contactContent.style.display = "flex";
+        contactContent.style.display = 'flex';
     } else {
-        contactContent.style.display = "flex";
-        contactContainer.style.display = "flex";
+        contactContent.style.display = 'flex';
+        contactContainer.style.display = 'flex';
         contactList.style.display = 'none';
     }
 }
@@ -447,7 +448,7 @@ function generateUniqueId() {
  * It is typically called after a contact has been successfully added or edited to reset the form.
  */
 function clearInputFields() {
-    document.getElementById("inputName").value = '';
-    document.getElementById("inputEmail").value = '';
-    document.getElementById("inputNumber").value = '';
+    document.getElementById('inputName').value = '';
+    document.getElementById('inputEmail').value = '';
+    document.getElementById('inputNumber').value = '';
 }

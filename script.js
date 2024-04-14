@@ -4,6 +4,10 @@ let selectedContacts = [];
 let subtasks = [];
 let selectedPriority = [];
 
+
+/**
+ * Toggles the display of the submenu with ID 'user-sub-menu' between 'flex' and 'none'.
+ */
 function openSubMenu() {
     let userSubMenu = document.getElementById('user-sub-menu');
     if (userSubMenu.style.display === "flex") {
@@ -13,6 +17,10 @@ function openSubMenu() {
     }
 }
 
+
+/**
+ * Loads and embeds HTML content into elements with 'w3-include-html' attributes from specified URLs.
+ */
 async function includeHTML() {
     let includeElements = document.querySelectorAll('[w3-include-html]');
     for (let i = 0; i < includeElements.length; i++) {
@@ -26,6 +34,7 @@ async function includeHTML() {
         }
     }
 }
+
 
 /**
  * Determines if a click event's target is within a specified element.
