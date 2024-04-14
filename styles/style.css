@@ -996,7 +996,7 @@ h3 {
 
 .fb {
     padding: 15px;
-    border: 1px solid;
+    border: 2px solid black;
     border-radius: 10px;
     cursor: pointer;
     display: flex;
@@ -1924,6 +1924,7 @@ input[type=submit]:hover {
     flex-direction: column;
     align-items: flex-start;
     position: absolute;
+    background-color: #f7f6f8;
 }
 
 
