@@ -1824,6 +1824,7 @@ input[type=submit]:hover {
     height: 16px;
     display: flex;
     align-items: center;
+    gap: 4px;
 }
 
 .subtasks span {
@@ -1834,6 +1835,7 @@ input[type=submit]:hover {
 .subtask-bar {
     width: 128px;
     height: 8px;
+    background-color: lightgrey;
 }
 
 .filled-subtask-bar {
@@ -1902,7 +1904,7 @@ input[type=submit]:hover {
 
 .board-pop-up {
     width: 525px;
-    height: 80vh;
+    height: 90vh;
     padding: 48px 40px 48px 40px;
     gap: 24px;
     border-radius: 30px;

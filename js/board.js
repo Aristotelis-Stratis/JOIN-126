@@ -144,6 +144,8 @@ function toggleSubtaskCheck(subtaskcheck) {
   } else {
       check.src = "./assets/img/icons/checkbox-checked-black-24.png";
   }
+
+  saveToStorage();
 }
 
 function showOverlayAndPopUp() {
@@ -152,6 +154,22 @@ function showOverlayAndPopUp() {
     overlay.classList.remove('d-none-board');
     popUp.classList.remove('closing-animation');
     popUp.classList.add('slide-in-animation');
+}
+
+function generateSubtasksHTML(subtasks) {
+  let subtasksHTML = '';
+
+  for (let i = 0; i < subtasks.length; i++) {
+      let subtask = subtasks[i];
+      subtasksHTML += `
+          <div class="popup-subtasks">
+              <img src="./assets/img/icons/checkbox-empty-black-24.png" id="subtask-check${i}" onclick="toggleSubtaskCheck('subtask-check${i}')" alt="Box-Empty">
+              <div>${subtask}</div>
+          </div>
+      `;
+  }
+
+  return subtasksHTML;
 }
 
 function showPopUp(index) {
@@ -165,19 +183,9 @@ function showPopUp(index) {
     let category = task.category;
     let backgroundColor = getCategoryBackgroundColor(category);
     showOverlayAndPopUp();
-
     let popUp = document.getElementById('pop-up');
-
-    let subtasksHTML = '';
-    for (let i = 0; i < task.subtasks.length; i++) {
-        let subtask = task.subtasks[i];
-        subtasksHTML += `
-            <div class="popup-subtasks">
-                <img src="./assets/img/icons/checkbox-empty-black-24.png" id="subtask-check${i}" onclick="toggleSubtaskCheck('subtask-check${i}')" alt="Box-Empty">
-                <div>${subtask}</div>
-            </div>
-        `;
-    }
+    let subtasksHTML = generateSubtasksHTML(task.subtasks);
+    
 
     popUp.innerHTML = `
     <div class="pop-up-headline-flex">
@@ -203,10 +211,10 @@ function showPopUp(index) {
       </div>
       <div class="popup-subtask-container">
         <span class="popup-blue-span">Subtasks</span>
-        <div>${subtasksHTML}</div>
+        <div id="subtasks">${subtasksHTML}</div>
       </div>
       <div class="popup-del-edit-container">
-        <div class="popup-delete-and-edit">
+        <div onclick="deleteCard(${index})" class="popup-delete-and-edit">
           <img src="./assets/img/icons/trash.png" alt="Trash-Image">
           <span class="weight-700">Delete</span>
         </div>
@@ -217,6 +225,14 @@ function showPopUp(index) {
         </div>
       </div>
     `;
+}
+
+
+function deleteCard(index){
+  allTasks.splice(index, 1);
+  setItem('tasks', JSON.stringify(allTasks));
+  showToDos();
+  closePopUp();
 }
 
 function closePopUp() {
