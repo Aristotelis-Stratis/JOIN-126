@@ -1135,7 +1135,7 @@ h3 {
     justify-content: center;
     position: relative;
     width: 100%;
-    z-index:2003;
+    z-index: 2003;
 }
 
 .task-confirmation-container {
@@ -1863,7 +1863,7 @@ input[type=submit]:hover {
 }
 
 .asigned-to::-webkit-scrollbar {
-    height: 4px; 
+    height: 4px;
 }
 
 .asigned-to-image-container {
@@ -2163,6 +2163,69 @@ input[type=submit]:hover {
     padding: 4px;
 }
 
+.on-edit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    font-family: 'Inter' !important;
+    padding: 16px 10px;
+    font-size: 16px;
+    font-weight: 400;
+    width: 33.3%;
+    border: none;
+    background-color: white;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.task-form-edit {
+    flex-direction: column;
+}
+
+.form-left-edit {
+    border: none;
+    padding: 0;
+    width: 100%;
+
+}
+
+.form-right-edit {
+    border: none;
+    padding: 0;
+    width: 100%;
+}
+
+.task-title-popup-edit {
+    display: flex;
+    justify-content: space-between;
+}
+
+.task-title-popup-edit img {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.task-title-popup-edit img:hover {
+    border-radius: 50px;
+    background-color: lightgray;
+    padding: 4px;
+}
+
+.subtask-container-edit {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    height: 65px;
+}
+
+.edit-btn-position {
+    display: flex;
+    justify-content: flex-end;
+}
+
 
 /*BOARD END*/
 
@@ -2260,9 +2323,9 @@ input[type=submit]:hover {
     .dragdrop-container {
         flex-direction: column;
     }
-    
+
     .column-properties {
-         width: 100%;
+        width: 100%;
     }
 
     #ToDos {

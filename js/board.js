@@ -1,92 +1,92 @@
 async function init() {
-    includeHTML();
-    await loadTasksFromStorage();
-    await loadContactsFromStorage();
-    console.log(allTasks);
-    showToDos();
+  includeHTML();
+  await loadTasksFromStorage();
+  await loadContactsFromStorage();
+  console.log(allTasks);
+  showToDos();
 }
 
 async function loadTasksFromStorage() {
-    try {
-        const tasksString = await getItem('tasks');
-        if (tasksString) {
-            const tasks = JSON.parse(tasksString);
-            allTasks = tasks;     // Update the global tasks array
-        } else {
-            console.log('No tasks found. Starting with an empty task list.');
-        }
-    } catch (e) {
-        console.warn('Could not load tasks:', e);
-        allTasks = [];               // Reset the tasks array on failure
+  try {
+    const tasksString = await getItem('tasks');
+    if (tasksString) {
+      const tasks = JSON.parse(tasksString);
+      allTasks = tasks;     // Update the global tasks array
+    } else {
+      console.log('No tasks found. Starting with an empty task list.');
     }
+  } catch (e) {
+    console.warn('Could not load tasks:', e);
+    allTasks = [];               // Reset the tasks array on failure
+  }
 }
 
 
 function getCategoryBackgroundColor(category) {
-    if (category === 'Technical Task') {
-        return '#1FD7C1';
-    } else if (category === 'User Story') {
-        return '#038ff0';
-    }
+  if (category === 'Technical Task') {
+    return '#1FD7C1';
+  } else if (category === 'User Story') {
+    return '#038ff0';
+  }
 }
 
 function generateUserHTMLplusName(contacts) {
-    let usersHTML = '';
+  let usersHTML = '';
 
-    for (let j = 0; j < contacts.length; j++) {
-        const user = contacts[j];
-        let userInitials = user.initials;
-        let userColor = user.color;
-        let userName = user.name;
+  for (let j = 0; j < contacts.length; j++) {
+    const user = contacts[j];
+    let userInitials = user.initials;
+    let userColor = user.color;
+    let userName = user.name;
 
-        usersHTML += `
+    usersHTML += `
         <div class="username-HTML">
             <span class="contact-icon board-icon" style="background-color: ${userColor};">${userInitials}</span>
             <div>${userName}</div>
         </div>
         `;
-    }
+  }
 
-    return usersHTML;
+  return usersHTML;
 }
 
 function generateUserHTML(contacts) {
-    let usersHTML = '';
+  let usersHTML = '';
 
-    for (let j = 0; j < contacts.length; j++) {
-        const user = contacts[j];
-        let userInitials = user.initials;
-        let userColor = user.color;
+  for (let j = 0; j < contacts.length; j++) {
+    const user = contacts[j];
+    let userInitials = user.initials;
+    let userColor = user.color;
 
-        usersHTML += `
+    usersHTML += `
         <span class="contact-icon board-icon" style="background-color: ${userColor};">${userInitials}</span>
         `;
-    }
+  }
 
-    return usersHTML;
+  return usersHTML;
 }
 
 
 function showToDos() {
-    let todo = document.getElementById('ToDos');
-    todo.innerHTML = '';
+  let todo = document.getElementById('ToDos');
+  todo.innerHTML = '';
 
-    for (let i = 0; i < allTasks.length; i++) {
-        const task = allTasks[i];
-        let taskName = task.title;
-        let taskDescription = task.description;
-        let totalTasks = task.subtasks.length;
-        let completedTasks = 1;
+  for (let i = 0; i < allTasks.length; i++) {
+    const task = allTasks[i];
+    let taskName = task.title;
+    let taskDescription = task.description;
+    let totalTasks = task.subtasks.length;
+    let completedTasks = 1;
 
-      
 
-        let completionPercentage = (completedTasks / totalTasks) * 100
-        let priorityImage = setPriority(task.priority);
-        let category = task.category;
-        let usersHTML = generateUserHTML(task.contacts);
-        let backgroundColor = getCategoryBackgroundColor(category);
 
-        todo.innerHTML += `
+    let completionPercentage = (completedTasks / totalTasks) * 100
+    let priorityImage = setPriority(task.priority);
+    let category = task.category;
+    let usersHTML = generateUserHTML(task.contacts);
+    let backgroundColor = getCategoryBackgroundColor(category);
+
+    todo.innerHTML += `
         <div draggable="true">
             <div class="cardA" onclick="showPopUp(${i})">
                   <span class="task-category-board" style="background-color: ${backgroundColor};">${category}</span>
@@ -112,56 +112,56 @@ function showToDos() {
             </div>
         </div>
         `;
-    }
+  }
 }
 
 function setPriority(priority) {
-    let priorityImage;
+  let priorityImage;
 
-    switch (priority) {
-        case 'low':
-            priorityImage = './assets/img/icons/low.png';
-            break;
-        case 'medium':
-            priorityImage = './assets/img/icons/medium.png';
-            break;
-        case 'urgent':
-            priorityImage = './assets/img/icons/urgent.png';
-            break;
-        default:
-            // Setze ein Standardbild, falls keine Übereinstimmung gefunden wurde
-            priorityImage = './assets/img/icons/low.png';
-            break;
-    }
+  switch (priority) {
+    case 'low':
+      priorityImage = './assets/img/icons/low.png';
+      break;
+    case 'medium':
+      priorityImage = './assets/img/icons/medium.png';
+      break;
+    case 'urgent':
+      priorityImage = './assets/img/icons/urgent.png';
+      break;
+    default:
+      // Setze ein Standardbild, falls keine Übereinstimmung gefunden wurde
+      priorityImage = './assets/img/icons/low.png';
+      break;
+  }
 
-    return priorityImage;
+  return priorityImage;
 }
 
 function toggleSubtaskCheck(subtaskcheck) {
   let check = document.getElementById(subtaskcheck);
   if (check.src.includes('checkbox-checked-black-24.png')) {
-      check.src = "./assets/img/icons/checkbox-empty-black-24.png";
+    check.src = "./assets/img/icons/checkbox-empty-black-24.png";
   } else {
-      check.src = "./assets/img/icons/checkbox-checked-black-24.png";
+    check.src = "./assets/img/icons/checkbox-checked-black-24.png";
   }
 
   saveToStorage();
 }
 
 function showOverlayAndPopUp() {
-    let overlay = document.getElementById('overlay');
-    let popUp = document.getElementById('pop-up');
-    overlay.classList.remove('d-none-board');
-    popUp.classList.remove('closing-animation');
-    popUp.classList.add('slide-in-animation');
+  let overlay = document.getElementById('overlay');
+  let popUp = document.getElementById('pop-up');
+  overlay.classList.remove('d-none-board');
+  popUp.classList.remove('closing-animation');
+  popUp.classList.add('slide-in-animation');
 }
 
 function generateSubtasksHTML(subtasks) {
   let subtasksHTML = '';
 
   for (let i = 0; i < subtasks.length; i++) {
-      let subtask = subtasks[i];
-      subtasksHTML += `
+    let subtask = subtasks[i];
+    subtasksHTML += `
           <div class="popup-subtasks">
               <img src="./assets/img/icons/checkbox-empty-black-24.png" id="subtask-check${i}" onclick="toggleSubtaskCheck('subtask-check${i}')" alt="Box-Empty">
               <div>${subtask}</div>
@@ -173,21 +173,21 @@ function generateSubtasksHTML(subtasks) {
 }
 
 function showPopUp(index) {
-    const task = allTasks[index];
-    let taskName = task.title;
-    let taskDescription = task.description;
-    let date = task.dueDate;
-    let priority = task.priority;
-    let priorityImage = setPriority(task.priority);
-    let usersHTML = generateUserHTMLplusName(task.contacts);
-    let category = task.category;
-    let backgroundColor = getCategoryBackgroundColor(category);
-    showOverlayAndPopUp();
-    let popUp = document.getElementById('pop-up');
-    let subtasksHTML = generateSubtasksHTML(task.subtasks);
-    
+  const task = allTasks[index];
+  let taskName = task.title;
+  let taskDescription = task.description;
+  let date = task.dueDate;
+  let priority = task.priority;
+  let priorityImage = setPriority(task.priority);
+  let usersHTML = generateUserHTMLplusName(task.contacts);
+  let category = task.category;
+  let backgroundColor = getCategoryBackgroundColor(category);
+  showOverlayAndPopUp();
+  let popUp = document.getElementById('pop-up');
+  let subtasksHTML = generateSubtasksHTML(task.subtasks);
 
-    popUp.innerHTML = `
+
+  popUp.innerHTML = `
     <div class="pop-up-headline-flex">
         <div class="board-pop-up-headline" style="background-color: ${backgroundColor}">${category}</div>
         <img onclick="closePopUp()" src="./assets/img/icons/close.png" alt="Close-PNG">
@@ -219,7 +219,7 @@ function showPopUp(index) {
           <span class="weight-700">Delete</span>
         </div>
         <span>|</span>
-        <div class="popup-edit">
+        <div class="popup-edit" onclick="showAddTaskPopUpEdit()">
           <img src="./assets/img/icons/edit_dark.png" alt="edit-Image">
           <span class="weight-700">Edit</span>
         </div>
@@ -228,7 +228,7 @@ function showPopUp(index) {
 }
 
 
-function deleteCard(index){
+function deleteCard(index) {
   allTasks.splice(index, 1);
   setItem('tasks', JSON.stringify(allTasks));
   showToDos();
@@ -236,26 +236,27 @@ function deleteCard(index){
 }
 
 function closePopUp() {
-    const overlay = document.getElementById('overlay');
-    const popUp = document.getElementById('pop-up');
-    popUp.classList.remove('slide-in-animation');
-    popUp.classList.add('closing-animation');
+  const overlay = document.getElementById('overlay');
+  const popUp = document.getElementById('pop-up');
+  popUp.classList.remove('slide-in-animation');
+  popUp.classList.add('closing-animation');
 
-    // Warten Sie auf das Ende der Animation, bevor Sie das Popup ausblenden
-    setTimeout(() => {
-        overlay.classList.add('d-none-board'); // Overlay ausblenden
-        popUp.classList.remove('closing-animation'); // Zur Wiederverwendung vorbereiten
-        document.body.classList.remove('no-scroll'); // Body scrollen wieder erlauben
-    }, 500); // Die Dauer der Schließanimation in Millisekunden
+  // Warten Sie auf das Ende der Animation, bevor Sie das Popup ausblenden
+  setTimeout(() => {
+    overlay.classList.add('d-none-board'); // Overlay ausblenden
+    popUp.classList.remove('closing-animation'); // Zur Wiederverwendung vorbereiten
+    document.body.classList.remove('no-scroll'); // Body scrollen wieder erlauben
+  }, 500); // Die Dauer der Schließanimation in Millisekunden
 }
 
 function doNotClosePopUp(event) {
-    event.stopPropagation();
+  event.stopPropagation();
 }
 
 function showAddTaskPopUp() {
-  const overlay = document.getElementById('overlay2');
-  const addTaskPopUp = document.getElementById('addTaskPopUp');
+  let overlay = document.getElementById('overlay2');
+  let addTaskPopUp = document.getElementById('addTaskPopUp');
+  addTaskPopUp.innerHTML = generateAddTaksPopUpHTML();
   overlay.classList.remove('d-none-board');
   addTaskPopUp.classList.remove('closing-animation');
   addTaskPopUp.classList.add('slide-in-animation');
@@ -269,9 +270,9 @@ function closeAddTaskPopUp() {
   addtask.classList.add('closing-animation');
 
   setTimeout(() => {
-      overlay.classList.add('d-none-board'); 
-      addtask.classList.remove('closing-animation'); 
-  }, 500); 
+    overlay.classList.add('d-none-board');
+    addtask.classList.remove('closing-animation');
+  }, 500);
 }
 
 function doNotCloseAddTaskPopUp(event) {
@@ -285,13 +286,19 @@ function doNotCloseAddTaskPopUp(event) {
  * @async
  */
 async function createTaskOnBoard() {
-    if (validateTaskInputs()) {
-        const newTask = constructNewTask();
-        allTasks.push(newTask);
-        await saveToStorage();
-        console.log('Added task into allTask array:', allTasks);
-        resetUI();
-        initiateConfirmation('Task added to <img class="add-task-icon-board"src="assets/img/icons/board.png" alt="Board">');
-        closeAddTaskPopUp();
-    }
+  if (validateTaskInputs()) {
+    const newTask = constructNewTask();
+    allTasks.push(newTask);
+    await saveToStorage();
+    console.log('Added task into allTask array:', allTasks);
+    resetUI();
+    initiateConfirmation('Task added to <img class="add-task-icon-board"src="assets/img/icons/board.png" alt="Board">');
+    closeAddTaskPopUp();
+  }
 }
+
+function showAddTaskPopUpEdit() {
+  let popUp = document.getElementById('pop-up');
+  popUp.innerHTML = generateAddTaksPopUpEditHTML();
+}
+
