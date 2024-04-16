@@ -2226,6 +2226,19 @@ input[type=submit]:hover {
     justify-content: flex-end;
 }
 
+.users-edit-flex {
+    padding-top: 12px;
+    display: flex;
+}
+
+.edit-icon {
+    margin: 0;
+}
+
+.form-group-edit {
+    margin-bottom: 16px;
+}
+
 
 /*BOARD END*/
 

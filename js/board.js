@@ -50,6 +50,7 @@ function generateUserHTMLplusName(contacts) {
   return usersHTML;
 }
 
+
 function generateUserHTML(contacts) {
   let usersHTML = '';
 
@@ -60,6 +61,22 @@ function generateUserHTML(contacts) {
 
     usersHTML += `
         <span class="contact-icon board-icon" style="background-color: ${userColor};">${userInitials}</span>
+        `;
+  }
+
+  return usersHTML;
+}
+
+function generateUserHTMLEdit(contacts) {
+  let usersHTML = '';
+
+  for (let j = 0; j < contacts.length; j++) {
+    const user = contacts[j];
+    let userInitials = user.initials;
+    let userColor = user.color;
+
+    usersHTML += `
+        <span class="contact-icon edit-icon" style="background-color: ${userColor};">${userInitials}</span>
         `;
   }
 
@@ -172,6 +189,7 @@ function generateSubtasksHTML(subtasks) {
   return subtasksHTML;
 }
 
+
 function showPopUp(index) {
   const task = allTasks[index];
   let taskName = task.title;
@@ -219,7 +237,7 @@ function showPopUp(index) {
           <span class="weight-700">Delete</span>
         </div>
         <span>|</span>
-        <div class="popup-edit" onclick="showAddTaskPopUpEdit()">
+        <div class="popup-edit" onclick="showAddTaskPopUpEdit(${index})">
           <img src="./assets/img/icons/edit_dark.png" alt="edit-Image">
           <span class="weight-700">Edit</span>
         </div>
@@ -297,8 +315,35 @@ async function createTaskOnBoard() {
   }
 }
 
-function showAddTaskPopUpEdit() {
+function showAddTaskPopUpEdit(index) {
+  const task = allTasks[index];
   let popUp = document.getElementById('pop-up');
-  popUp.innerHTML = generateAddTaksPopUpEditHTML();
+  let date = task.dueDate;
+  let category = task.category;
+  let subtasks = subtaskTemplateEdit(task.subtasks);
+  let usersHTML =  generateUserHTMLEdit(task.contacts);
+  popUp.innerHTML = generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks);
+}
+
+
+
+
+function subtaskTemplateEdit(subtasks) {
+  let subtaskHTMLEdit = '';
+  for (let index = 0; index < subtasks.length; index++) {
+    const subtask = subtasks[index];
+    subtaskHTMLEdit += `
+      <div class="subtask-item" id="subtask_${index}">
+        <div>
+          <span>${subtask}</span>
+        </div>
+        <div class="subtask-item-icons">
+          <img class="subtask-item-icon" style="border-right: 1px solid rgba(209, 209, 209, 1);" src="assets/img/icons/edit_dark.png" alt="" onclick="editSubtask(${index})">
+          <img class="subtask-item-icon" src="assets/img/icons/trash.png" alt="" onclick="deleteSubtask(${index})">
+        </div>
+      </div>
+    `;
+  }
+  return subtaskHTMLEdit;
 }
 
