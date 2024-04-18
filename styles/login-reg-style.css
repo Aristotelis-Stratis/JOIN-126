@@ -1,0 +1,575 @@
+body {
+    font-family: 'Inter';
+    background-color: rgb(246, 247, 248);
+    margin: 0;
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.footer-signup {
+    height: 50px;
+    width: 280px;
+    margin-bottom: 56px;
+}
+
+.footer-links {
+    text-decoration: none;
+    color: rgba(0, 0, 0, 0.3) !important;
+}
+
+.footer-links:hover {
+    text-decoration: none;
+    color: rgb(40, 171, 226) !important;
+}
+
+.footer-text {
+    font-size: 20px;
+    margin: 0px;
+}
+
+/* HEADER PROPERTIES */
+
+.header {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 122px;
+    display: flex;
+    justify-content: space-between;
+    padding: 46px 48px 0px 48px;
+}
+
+.signup-nav {
+    height: 50px;
+    width: 280px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-reg-logo {
+    height: 120px;
+    width: 100px;
+    object-fit: contain;
+}
+
+/* MAIN SECTION PROPERTIES */
+
+.main-container {
+    height: calc(100vh - 172px);
+    margin-top: 172px;
+    box-sizing: border-box;
+    padding-top: 24px;
+    gap: 24px;
+}
+
+.register-form {
+    width: 580px;
+    border-radius: 24px;
+    box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.2);
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form {
+    height: 480px;
+    width: 656px;
+    border-radius: 24px;
+    box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.2);
+    background-color: white;
+}
+
+.login-h1 {
+    font-size: 60px;
+    margin-top: 48px;
+    margin-bottom: 16px;
+}
+
+.h1-underline {
+    height: 3px;
+    width: 20%;
+    background-color: #29ABE2;
+    margin-bottom: 32px;
+}
+
+.form-titel-container { 
+    width: 100%;
+    margin-top: 48px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.arrow-back {
+    height: 32px;
+    width: 32px;
+    transform: translateX(-120px);
+    background-image: url('../assets/img/icons/arrow-left-blue.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    object-fit: contain;
+}
+
+.arrow-back:hover {
+    border-radius: 50%;
+    background-image: url('../assets/img/icons/arrow-left-hover.png');
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.register-h1 {
+    font-size: 60px;
+    margin: 0;
+    margin-right: 32px;
+}
+
+.person-icon {
+    height: 24px;
+    width: 24px;
+}
+
+.register-btn {
+    width: 18%;
+    color: white;
+    margin-bottom: 48px;
+    background-color: rgb(43, 54, 71);
+}
+
+#register:disabled {
+    background-color: rgb(229, 232, 237);
+    cursor: unset;
+}
+
+/* INPUT & CHECKBOX PROPERTIES */
+
+.input-main-div {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.input-div {
+    height: 40px;
+    width: 60%;
+    padding: 4px 16px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.input-div:focus-within {
+    border: 1px solid rgb(40, 171, 226);
+}
+
+.input {
+    width: 100%;
+    border: unset;
+    font-size: 20px;
+    font-family: 'Inter';
+}
+
+.input:focus {
+    outline: none;
+}
+
+.input:-webkit-autofill {
+    transition: background-color 5000s ease-in-out 0s;
+    -webkit-background-fill-color: transparent !important;
+}
+
+.input-icon {
+    height: 24px;
+    width: 24px;
+    object-fit: contain;
+    background-repeat: no-repeat;
+    background-color: transparent;
+}
+
+.password-def-img {
+    background-image: url('../assets/img/icons/lock.png');
+}
+
+.password-v-off-img {
+    background-image: url('../assets/img/icons/visibility_off.png');
+}
+
+.password-v-on-img {
+    background-image: url('../assets/img/icons/visibility.png');
+}
+
+.error {
+    height: 16px;
+    width: 60%;
+    padding: 8px;
+    text-align: left;
+    color: red;
+}
+
+.checkbox-div {
+    width: 60%;
+    margin-bottom: 32px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.checkbox {
+    width: auto;
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-input {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.checkbox-img {
+    height: 20px;
+    width: 20px;
+    background-image: url('../assets/img/icons/checkbox-empty-black-24.png');
+    background-position: center;
+}
+
+.checkbox-text {
+    font-size: 16px;
+    margin: 0;
+    margin-left: 8px;
+}
+
+.checkbox-input:checked+.checkbox-img {
+    background-image: url('../assets/img/icons/checkbox-checked-black-24.png');
+}
+
+.checkbox-input:hover+.checkbox-img {
+    background-image: url('../assets/img/icons/checkbox-hover-disable.png');
+}
+
+.checkbox-input:checked:hover+.checkbox-img {
+    background-image: url('../assets/img/icons/checkbox-hover-checked.png');
+}
+
+.registry-checkbox {
+    width: 100%;
+    margin-bottom: 24px;
+    margin-right: 16px;
+}
+
+
+
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.disabled {
+    pointer-events: none;
+}
+
+.enabled { /* <------ Fraglich, ob es gebraucht wird. Bitte prüfen!*/
+    pointer-events: all;
+}
+
+.margin-b56 {
+    margin-bottom: 56px;
+}
+
+.margin-l24 {
+    margin-left: 24px;
+}
+
+.margin-r8 {
+    margin-right: 8px;
+}
+
+/* BUTTON PROPERTIES */
+
+/* 
+button { <---- Wird das bei anderen Buttons gebraucht? Guest Login???
+    border: unset;
+} */
+
+.btn {
+    border: unset;
+    height: 48px;
+    border-radius: 8px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.signup-btn {
+    width: 90px;
+    font-size: 16px;
+    color: white;
+    background-color: rgb(43, 54, 71);
+}
+
+.signup-btn:hover {
+    background-color: rgb(40, 171, 226);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.2);
+}
+
+.login-btns-div {
+    width: 50%;
+    margin-bottom: 48px;
+}
+
+.login-btn {
+    width: 33%;
+    color: white;
+    background-color: rgb(43, 54, 71);
+}
+
+.login-btn:hover {
+    background-color: rgb(40, 171, 226);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.2);
+}
+
+.guest-btn {
+    width: 55%;
+    background-color: white;
+    border: 1px solid #2A3647;
+}
+
+.guest-btn:hover {
+    color: rgb(40, 171, 226);
+    border: 2px solid rgb(40, 171, 226);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.2);
+}
+
+
+/* DISPLAY FLEX PROPERTIES */
+
+.d-flex-sb-c {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+.d-flex-c-c {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.d-column {
+    flex-direction: column;
+}
+
+.d-none {
+    display: none;
+}
+
+/* FONT SIZE PROPERTIES */
+
+.font-size20px {
+    font-size: 20px;
+}
+
+.font-size18px {
+    font-size: 18px;
+}
+
+
+/* MAX WIDTH 650PX */
+
+@media(max-width: 650px) {
+
+    .header {
+        padding: 16px 24px 0px 24px;
+    }
+
+    .header-reg-logo {
+        height: 80px;
+        width: 64px;
+        margin-top: 8px;
+    }
+
+    .main-container {
+        height: calc(100vh - 116px);
+        margin-top: 142px;
+    }
+
+    .register-form {
+        width: 95%;
+    }
+
+    .form-titel-container { 
+        margin-top: 24px;
+        margin-bottom: 8px;
+    }
+
+    .register-h1 {
+        font-size: 50px;
+        margin-right: 32px;
+    }
+
+    .d-none650px {
+        display: none;
+    }
+
+    .d-flex-sb650px {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .signup-btn {
+        width: 104px;
+        font-size: 16px;
+    }
+
+    .form {
+        height: auto;
+        width: 95%;
+    }
+
+    .login-h1 {
+        font-size: 50px;
+        margin-top: 32px;
+        margin-bottom: 16px;
+    }
+
+    .error {
+        width: 80%;
+    }
+
+    .checkbox-text {
+        font-size: 14px;
+    }
+
+    .login-btns-div {
+        margin-bottom: 32px; /*<--- Margin-bottom48 Wert*/
+    }
+
+    .d-column650 {
+        flex-direction: column;
+    }
+
+    .login-btn {
+        width: 180px;
+        margin-bottom: 16px;
+        font-size: 16px;
+    }
+
+    .guest-btn {
+        width: 180px;
+        font-size: 16px;
+    }
+
+    .register-btn {
+        width: 180px;
+        margin-bottom: 32px;
+    }
+
+    .arrow-back {
+        transform: translateX(-50px);
+    }
+}
+
+/* MAX WIDTH 380PX */
+
+@media(max-width: 380px) {
+
+    .header {
+        height: 88px;
+    }
+
+    .main-container {
+        margin-top: 108px;
+        padding-top: 16px;
+        gap: 16px;
+    }
+
+    .form-titel-container { 
+        margin-top: 16px;
+        margin-bottom: 8px;
+    }
+
+    .register-h1 {
+        font-size: 40px;
+        margin-right: 32px;
+    }
+
+    .signup-nav {
+        width: 240px;
+    }
+
+    .font-size20px {
+        font-size: 16px;
+        margin: 0px;
+    }
+
+    .signup-btn {
+        width: 88px;
+        font-size: 16px;
+    }
+
+    .login-h1 {
+        font-size: 40px;
+        margin-top: 24px;
+        margin-bottom: 16px;
+    }
+
+    .h1-underline {
+        margin-bottom: 16px;
+    }
+
+    .error {
+        height: 16px;
+        padding: 5px;
+    }
+
+    .checkbox-div {
+        margin-bottom: 16px;
+    }
+
+    .login-btns-div {
+        margin-bottom: 16px;
+    }
+
+    .login-btn {
+        width: 160px;
+    }
+
+    .guest-btn {
+        width: 160px;
+    }
+
+
+    .register-btn {
+        width: 160px;
+        margin-bottom: 16px;
+    }
+
+    .footer-signup {
+        width: 240px;
+        margin-bottom: 16px;
+    }
+
+    .margin-b56 {
+        margin-bottom: 16px;
+    }
+
+    .font-size18px {
+        font-size: 14px;
+    }
+
+    .arrow-back {
+        transform: translateX(-30px);
+    }
+
+    .registry-checkbox {
+        margin-bottom: 8px;
+    }
+}

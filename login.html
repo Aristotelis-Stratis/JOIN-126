@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/login-reg-style.css">
+    <link rel="stylesheet" href="/styles/fonts.css" />
+    <script src="js/login-reg.js"></script>
+    <title>Login</title>
+</head>
+<body onload="init()">
+    <header class="header"> 
+        <img class="animated-logo" src="assets/img/favicon/JOIN-logo-dark.png" alt="LOGO">
+
+        <nav class="signup-nav d-none650px"> 
+            <p class="font-size20px">Not a Join User?</p> 
+            <a href="register.html"><button class="signup-btn btn">Sign Up</button></a>  
+        </nav>
+    </header>
+
+    <section class="main-container d-flex-sb-c d-column"> 
+        <form class="form d-flex-c-c d-column" onsubmit="initLogin(); return false;"> 
+            <h1 class="login-h1">Log in</h1> 
+            <div class="h1-underline"></div> 
+
+            <div class="input-main-div d-column"> 
+                <div class="input-div d-flex-sb-c"> 
+                    <input data="Provide a valid email address." oninput="hideError('emailErrorField')" id="email" type="email" placeholder="Email" class="input" required>
+                    <img class="input-icon" src="assets/img/icons/mail.png" alt="IMG"> 
+                </div>
+                <small id="emailErrorField" class="error"></small> 
+
+                <div class="input-div d-flex-sb-c"> 
+                    <input data="Wrong Password, try again." name="password" oninput="hideError('passwordErrorField')" onfocus="changeIcon('password','passwordIcon')" onblur="changeIcon('password','passwordIcon')" id="password" type="password"
+                        placeholder="Password" class="input" required>
+                    <span onclick="showPassword('password','passwordIcon'); return false;" id="passwordIcon" class="input-icon password-def-img cursor-pointer disabled"></span>
+                </div>
+                <small id="passwordErrorField" class="error"></small> 
+            </div>
+
+            <div class="checkbox-div">
+                <label class="checkbox">
+                    <input type="checkbox" class="checkbox-input">
+                    <span class="checkbox-img"></span>
+                    <p class="checkbox-text">Remember me</p>
+                </label>
+            </div>
+
+            <div class="login-btns-div d-flex-sb-c d-column650">
+                <button id="login" class="btn login-btn">Log in</button>
+                <button onclick="loginAsGuest()" id="guestLogin" class="btn guest-btn">Guest Log in</button>
+            </div>
+        </form>
+        <footer class="footer">
+            <div class="footer-signup d-none d-flex-sb650px">
+                <p class="footer-text d-flex-c-c">Not a Join User?</p>
+                <a href="register.html"><button class="signup-btn btn">Sign Up</button></a>
+            </div>
+            <div class="margin-b56">
+                <a class="footer-links font-size18px" href="privacy_policy.html">Privacy policy</a>
+                <a class="footer-links margin-l24 font-size18px" href="legal_notice.html">Legal notice</a>
+            </div>
+        </footer>
+            
+        </form>
+    </section>
+</body>
+</html>

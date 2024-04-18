@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/login-reg-style.css">
+    <link rel="stylesheet" href="/styles/fonts.css" />
+    <script src="js/login-reg.js"></script>
+    <title>Register</title>
+</head>
+<body onload="init()">
+    <header class="header">
+        <img class="header-reg-logo" src="assets/img/favicon/JOIN-logo-dark.png" alt="LOGO"> 
+    </header>
+
+    <section class="main-container d-flex-sb-c d-column"> 
+        <form  onsubmit="initRegistry(); return false;" id="myForm" class="register-form"> 
+            <div class="form-titel-container">
+                <a href="login.html" class="arrow-back" alt="arrow-back"></a>
+                <h1 class="register-h1">Sign up</h1>
+            </div>
+            <div class="h1-underline"></div> 
+
+            <div class="input-main-div d-column"> 
+                <div class="input-div d-flex-sb-c"> 
+                    <input data="Provide a username." oninput="hideError('nameErrorField')" id="name" type="text" placeholder="Name" class="input" required>
+                    <img class="input-icon" src="assets/img/icons/person.png" alt="IMG">
+                </div>
+                <small id="nameErrorField" class="error"></small>
+
+                <div class="input-div d-flex-sb-c">
+                    <input data="Provide a valid email address." oninput="hideError('emailErrorField')" id="email" type="email" placeholder="Email" class="input" required>
+                    <img class="input-icon" src="assets/img/icons/mail.png" alt="IMG">
+                </div>
+                <small id="emailErrorField" class="error"></small>
+
+                <div class="input-div d-flex-sb-c">
+                    <input data="Please use 8+ characters, min 1 uppercase, min 1 number." oninput="hideError('passwordErrorField')" onfocus="changeIcon('password','passwordIcon')" onblur="changeIcon('password','passwordIcon')" id="password" type="password"
+                        placeholder="Password" class="input" required pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\S+$).{8,}$">
+                    <span onclick="showPassword('password','passwordIcon'); return false;" id="passwordIcon" class="input-icon password-def-img cursor-pointer disabled"></span> 
+                </div>
+                <small id="passwordErrorField" class="error"></small>
+
+                <div class="input-div d-flex-sb-c"> 
+                    <input data="" oninput="checkPassword()" oninvalid="checkPassword()" onfocus="changeIcon('confirmPassword','confirmPasswordIcon')" onblur="changeIcon('confirmPassword','confirmPasswordIcon')" id="confirmPassword" type="password"
+                        placeholder="Confirm Password" class="input" required> 
+                    <span onclick="showPassword('confirmPassword','confirmPasswordIcon'); return false;" id="confirmPasswordIcon" class="input-icon password-def-img cursor-pointer disabled"></span> 
+                </div>
+                <small id="confirmPasswordErrorField" class="error"></small> 
+
+                <div class="registry-checkbox d-flex-c-c"> 
+                    <label id="privacyPolicyCheckbox" class="checkbox" onclick="privacyPolicyCheck(); return false;"> 
+                        <input id="checkbox" type="checkbox" class="checkbox-input"> 
+                        <span class="checkbox-img margin-r8"></span> 
+                        <p class="margin-r8">I accept the </p>  
+                    </label>
+                    <a href="#">Privacy policy</a> 
+                </div>
+                
+                <button id="register" type="submit" class="btn register-btn" disabled>Sign up</button> 
+            </div>
+        </form>
+        <footer class="footer">
+            <div class="margin-b56">
+                <a class="footer-links font-size18px" href="privacy_policy.html">Privacy policy</a>
+                <a class="footer-links margin-l24 font-size18px" href="legal_notice.html">Legal notice</a>
+            </div>
+        </footer>
+    </section>
+</body>
+</html>
