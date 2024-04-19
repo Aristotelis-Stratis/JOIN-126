@@ -85,7 +85,7 @@ function initLogin() {
     if (user) {
         allUsers[2]['currentUser'].push(user);
         setItem('allUsers', JSON.stringify(allUsers));
-        window.location = 'summary.html'; // Weiterleitung zu Summary!
+        // window.location = 'summary.html'; // Weiterleitung zu Summary!
         console.log('Du wurdest eingeloggt');
         console.log('Das ist  der aktuelle User: ', allUsers[2]['currentUser']);
     } else if (!user) {
