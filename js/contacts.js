@@ -7,6 +7,8 @@ let currentEditingId = null;
 async function initContacts() {
     includeHTML();
     await loadAllContacts();
+    await loadTasksFromStorage();
+    console.log(allTasks);
 }
 
 
@@ -269,16 +271,37 @@ function saveUpdatedContact() {
 
 /**
  * Deletes the selected contact from the array and refreshes the contact list display.
- * @param {number} i - The index of the contact to be deleted.
+ * Also removes the contact from all tasks.
+ * @param {number} contactIndex - The index of the contact to be deleted.
  */
-function deleteContact(i) {
-    allContacts.splice(i, 1);
-    document.getElementById('contact-overview').innerHTML = '';
-    saveToStorage();
-    renderContacts();
-    showDeleteConfirmation();
+function deleteContact(contactIndex) {
+    const contactId = allContacts[contactIndex].id;
+    allContacts.splice(contactIndex, 1);
+    removeContactFromTasks(contactId);
+    saveToStorage();  
+    renderContacts(); 
+    showDeleteConfirmation(); 
 }
 
+/**
+ * Removes a contact from all tasks.
+ * @param {string} contactId - The ID of the contact to remove.
+ */
+function removeContactFromTasks(contactId) {
+    allTasks.forEach(task => {
+        const filteredContacts = task.contacts.filter(contact => contact.id !== contactId);
+        task.contacts = filteredContacts;
+    });
+    saveTasksToStorage();
+}
+
+
+/**
+ * Saves the current state of `allTasks` array to storage.
+ */
+async function saveTasksToStorage() {
+    await setItem('tasks', JSON.stringify(allTasks));
+}
 
 /**
  * Clears all contacts from remote storage.
