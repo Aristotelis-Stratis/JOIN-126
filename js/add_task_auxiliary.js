@@ -246,14 +246,14 @@ function isClickInside(elementId, target) {
 function closeDropdownMenu(menuId, arrowIconId) {
     const dropdownMenu = document.getElementById(menuId);
     const arrowIcon = document.getElementById(arrowIconId);
-    const isVisible = dropdownMenu.classList.contains('visible') || dropdownMenu.style.display === 'flex';
-    if (isVisible) {
-        if (dropdownMenu.classList.contains('visible')) {
-            dropdownMenu.classList.remove('visible');
-        } else {
-            dropdownMenu.style.display = 'none';
-        }
-        if (arrowIcon) {
+    if (dropdownMenu && arrowIcon) {
+        const isVisible = dropdownMenu.classList.contains('visible') || dropdownMenu.style.display === 'flex';
+        if (isVisible) {
+            if (dropdownMenu.classList.contains('visible')) {
+                dropdownMenu.classList.remove('visible');
+            } else {
+                dropdownMenu.style.display = 'none';
+            }
             arrowIcon.style.transform = '';
         }
     }
