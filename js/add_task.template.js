@@ -58,7 +58,7 @@ function createEditInputField(subtaskText, subtaskIndex) {
     return `
         <div class="edit-container">
             <div class="edit-input-field-container">
-                <input type="text" id="editInputField_${subtaskIndex}" maxlength="15" class="edit-input-field subtask-edit-input" value="${subtaskText}">
+                <input type="text" id="editInputField_${subtaskIndex}" maxlength="15" class="edit-input-field subtask-edit-input" value="${subtaskText}" onkeydown="handleEditKeyDown(event, ${subtaskIndex})">
             </div>
             <div class="subtask-item-icons">
                 <img class="subtask-item-icon" src="assets/img/icons/trash.png" style="border-right: 1px solid rgba(209, 209, 209, 1);" onclick="deleteSubtask(${subtaskIndex})">

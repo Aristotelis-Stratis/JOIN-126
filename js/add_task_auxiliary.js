@@ -228,7 +228,6 @@ function showCreationConfirmation() {
 
 /**
  * Determines if a click event's target is within a specified element.
- * 
  * @param {string} elementId - The ID of the target element.
  * @param {EventTarget} target - The click event's target.
  * @returns {boolean} True if target is inside the element, false otherwise.
@@ -241,7 +240,6 @@ function isClickInside(elementId, target) {
 
 /**
  * Toggles the visibility of a dropdown menu, hiding it if visible, and resets the arrow icon's rotation.
- * 
  * @param {string} menuId - The ID of the dropdown menu.
  * @param {string} arrowIconId - The ID of the associated arrow icon.
  */
@@ -258,6 +256,32 @@ function closeDropdownMenu(menuId, arrowIconId) {
         if (arrowIcon) {
             arrowIcon.style.transform = '';
         }
+    }
+}
+
+
+/**
+ * Handles key down events on the subtask input field.
+ * Specifically, it checks for the 'Enter' key to add a subtask without submitting the form.
+ * @param {KeyboardEvent} event - The event object that contains information about the key pressed.
+ */
+function handleSubtaskKeyDown(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        addSubtask();
+    }
+}
+
+
+/**
+ * Handles key down events on the editSubtask input field.
+ * Specifically, it checks for the 'Enter' key to add a subtask without submitting the form.
+ * @param {KeyboardEvent} event - The event object that contains information about the key pressed.
+ */
+function handleEditKeyDown(event, subtaskIndex) {
+    if (event.key === "Enter") {
+        event.preventDefault();  // Verhindern Sie das Standardverhalten des Formulars
+        updateSubtask(subtaskIndex);  // Funktion, die die aktualisierte Subtask speichert
     }
 }
 

@@ -1574,7 +1574,7 @@ input[type=submit]:hover {
     display: none;
 }
 
-.subtask-item-icons {
+.subtask-item:hover .subtask-item-icons {
     display: block;
 }
 
