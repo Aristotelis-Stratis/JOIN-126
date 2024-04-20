@@ -1,106 +1,182 @@
-const STORAGE_TOKEN = 'H2YEPL3CRQ3H8CVECOHS7P5ERQPV02FEGTI9XIH6';
-const STORAGE_URL = 'https://remote-storage.developerakademie.org/item';
+let allUsers = [];
+const guestUser = {
+    id: 'guest',
+    name: 'Guest User',
+    email: 'guest@example.com',
+    password: '',
+    data: {
+        contacts: [],
+        tasks: [],
+        board: {},
+        summary: {}
+    }
+};
+
+// Datenstruktur der Benutzerdaten
+// {
+//     'id': 'unique-user-id',  // Eindeutige ID für den Benutzer
+//     'name': 'Sofia Müller',
+//     'email': 'sofiam@gmail.com',
+//     'password': 'hashedPassword',  // Das Passwort sollte gehasht gespeichert werden
+//     'contacts': [],  // Liste der Kontakte dieses Benutzers
+//     'tasks': [],  // Liste der Tasks dieses Benutzers
+//     'summary': {},  // Summary-Daten für den Benutzer
+//     'board': {}  // Daten für das Board
+// }
+
+let currentUser;
 
 
-let allUsers = [
-    {
-        'users': [
-            {
-                'name': 'Sofia Müller',
-                'email': 'sofiam@gmail.com',
-                'password': 'mypassword123',
-                'data': []
-            },
-            {
-                'name': 'Iv',
-                'email': 'a@a',
-                'password': '111QQQwwweee',
-                'data': []
-            }
-        ]
-    },
-    { 'guest': [] },
-    { 'currentUser': [] }
-];
-
-
-let currentUser; 
-
+// Initialisierungsfunktion, die den Gastbenutzer sicherstellt
+async function initializeUsers() {
+    await loadAllUserFromStorage();
+    if (allUsers.length === 0 || !allUsers.some(user => user.id === 'guest')) {
+        allUsers.unshift(guestUser); // Fügt den Gastbenutzer am Anfang des Arrays hinzu
+        await setItem('allUsers', JSON.stringify(allUsers)); // Speichert das aktualisierte Array
+    }
+}
 
 async function init() {
-    await loadAllUserFromStorage();
+    await initializeUsers(); // Stelle sicher, dass Gastbenutzer vorhanden ist
     console.log('allUsers: ', allUsers);
     const inputs = document.querySelectorAll('input');
 
     inputs.forEach((input) => {
         input.addEventListener('invalid', (evt) => {
             let inputId = evt.target.attributes.id.value;
-            let messageFieldId =  evt.target.attributes.id.value + 'ErrorField';
+            let messageFieldId = inputId + 'ErrorField';
             let errorMessage = evt.target.attributes.data.value;
-            console.log(inputId);
-            console.log(messageFieldId);
-            console.log(errorMessage);
             inputValidation(inputId, messageFieldId, errorMessage);
         });
     });
 }
 
 
-function initRegistry() {
-    checkPassword();
+async function initRegistry() {
     let username = document.getElementById('name').value;
     let email = document.getElementById('email').value;
     let password = document.getElementById('password').value;
-    let user = allUsers[0]['users'].find(u => u.email == email);
+    let userExists = await getUserByEmail(email);
 
-    if (!user) {
-        allUsers[0]['users'].push(
-            {
-                name: username,
-                email: email,
-                password: password,
-                data: []
-            }
-        );
-        saveToStorage();
+    if (!userExists) {
+        let newUser = createUser(username, email, password);
+        await saveUserToStorage(newUser);
         console.log('Du hast dich erfolgreich registriert!');
-        window.setTimeout('window.location = "login.html"',5000);
-    } else if (user) {
-        inputValidation('email', 'emailErrorField', 'Provide a valid email address.');
+        window.setTimeout(() => { window.location.href = "login.html"; }, 2500);
+    } else {
         console.log('Die Emailadresse existiert bereits!');
     }
-
-    let button = document.getElementById('register');
-    // document.getElementById('myForm').reset();
-    button.disabled = true;
-    console.log(allUsers);
 }
 
+function createUser(username, email, password) {
+    return {
+        id: generateUniqueId(),  // Generiere eine eindeutige Benutzer-ID
+        name: username,
+        email: email,
+        password: password,  // Das Passwort sollte sicher gespeichert werden (Hash)
+        data: {
+            contacts: [],
+            tasks: [],
+            board: {},
+            summary: {}
+        }
+    };
+}
 
-function initLogin() {
-    let email = document.getElementById('email').value;
-    let password = document.getElementById('password').value;
-    let user = allUsers[0]['users'].find(u => u.email == email && u.password == password);
+function generateUniqueId() {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+}
 
-    if (user) {
-        allUsers[2]['currentUser'].push(user);
-        setItem('allUsers', JSON.stringify(allUsers));
-        // window.location = 'summary.html'; // Weiterleitung zu Summary!
-        console.log('Du wurdest eingeloggt');
-        console.log('Das ist  der aktuelle User: ', allUsers[2]['currentUser']);
-    } else if (!user) {
-        inputValidation('password', 'passwordErrorField', 'Wrong password Ups! Try again.');
-        console.log('E-mail oder Password passen nicht!');
-    } else {
-        console.log('Etwas ist schiefgelaufen!!!');
+async function getUserByEmail(email) {
+    await loadAllUserFromStorage();  // Stelle sicher, dass die neuesten Benutzer geladen sind
+    return allUsers.find(user => user.email === email);
+}
+
+async function saveUserToStorage(user) {
+    try {
+        await loadAllUserFromStorage();  // Stelle sicher, dass die neuesten Benutzer geladen sind
+        allUsers.push(user);  // Füge den neuen Benutzer hinzu
+        await setItem('allUsers', JSON.stringify(allUsers));
+    } catch (error) {
+        console.error('Failed to save users:', error);
     }
 }
+
+
+
+async function initLogin() {
+    let email = document.getElementById('email').value;
+    let password = document.getElementById('password').value;  // Sollte mit einem Hash verglichen werden
+
+    let user = await getUserByEmail(email);
+    if (user && user.password === password) {  // Stelle sicher, dass die Passwortprüfung sicher ist
+        console.log('Login erfolgreich!');
+        setCurrentUser(user);  // Setze den aktuellen Benutzer lokal oder in einer Session
+        window.location.href = 'summary.html';
+    } else {
+        console.log('Login fehlgeschlagen. Bitte überprüfe deine Anmeldedaten und versuche es erneut.');
+    }
+}
+
+
+async function setCurrentUser(user) {
+    try {
+        // Speichere nur die notwendigen Daten des Benutzers für die Sitzung
+        const minimalUserData = {
+            id: user.id,
+            name: user.name,
+            email: user.email
+        };
+        await setItem('currentUser', JSON.stringify(minimalUserData));
+        console.log('Current user set successfully.');
+    } catch (error) {
+        console.error('Failed to set current user:', error);
+    }
+}
+
+async function getCurrentUser() {
+    try {
+        const userString = await getItem('currentUser');
+        if (userString) {
+            const user = JSON.parse(userString);
+            console.log('Current user retrieved:', user);
+            return user;
+        } else {
+            console.log('No current user found.');
+            return null;
+        }
+    } catch (error) {
+        console.error('Failed to get current user:', error);
+        return null;
+    }
+}
+
+
+async function logoutCurrentUser() {
+    try {
+        await setItem('currentUser', null);  // Lösche den aktuellen Benutzer aus dem Remote Storage
+        console.log('User has been logged out.');
+        window.location.href = 'login.html';  // Optional: Leite den Benutzer zur Login-Seite um
+    } catch (error) {
+        console.error('Failed to logout current user:', error);
+    }
+}
+
+
+
+
+
 
 
 function loginAsGuest() {
-    allUsers[2]['currentUser'].push(allUsers[1]);
-    console.log('Das ist  der aktuelle User: ', allUsers);
-    window.location = '/summary.html'; // Weiterleitung zu Summary!
+    const guestUser = allUsers.find(user => user.id === 'guest');
+    if (guestUser) {
+        setCurrentUser(guestUser);
+        console.log('Das ist der aktuelle User: ', guestUser);
+        window.location.href = '/summary.html'; // Weiterleitung zur Summary-Seite
+    } else {
+        console.error('Gastbenutzer nicht gefunden.');
+    }
 }
 
 
@@ -115,8 +191,6 @@ async function setItem(key, value) {
     return fetch(STORAGE_URL, { method: 'POST', body: JSON.stringify(payload) })
         .then(res => res.json());
 }
-
-
 async function getItem(key) {
     const url = `${STORAGE_URL}?key=${key}&token=${STORAGE_TOKEN}`;
     return await fetch(url)
@@ -134,13 +208,17 @@ async function loadAllUserFromStorage() {
     try {
         const usersString = await getItem('allUsers');
         if (usersString) {
-            const users = JSON.parse(usersString);
-            allUsers = users;
+            allUsers = JSON.parse(usersString);
+            if (!Array.isArray(allUsers)) {  // Prüfe, ob allUsers tatsächlich ein Array ist
+                allUsers = [];
+            }
         } else {
-            console.log('No Users found.');
+            console.log('No Users found, initializing an empty array.');
+            allUsers = [];  // Initialisiere als leeres Array, falls nichts gefunden wurde
         }
     } catch (e) {
-        console.warn('No Users found:', e);
+        console.warn('Failed to load users:', e);
+        allUsers = []; // Im Fehlerfall als leeres Array initialisieren
     }
 }
 
@@ -152,7 +230,7 @@ function deleteStorage() {
 
 
 function rebuildStorage() {
-    allUsers = [    {
+    allUsers = [{
         'users': [
             {
                 'name': 'Sofia Müller',
@@ -170,7 +248,7 @@ function rebuildStorage() {
     },
     { 'guest': [] },
     { 'currentUser': [] }
-];
+    ];
     setItem('allUsers', JSON.stringify(allUsers));
 }
 
