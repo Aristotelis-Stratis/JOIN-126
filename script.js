@@ -34,8 +34,24 @@ async function includeHTML() {
         }
     }
     activeMenu();
+    loadAllUsersFromStorage();
 }
 
+async function loadAllUsersFromStorage() {
+    try {
+      const usersString = await getItem('allUsers');
+      if (usersString) {
+        allUsers = JSON.parse(usersString);
+        console.log("All users loaded from storage:", allUsers);
+      } else {
+        console.log("No user data found in storage.");
+        allUsers = []; // Initialize to an empty array if no data is found
+      }
+    } catch (error) {
+      console.error("Error loading all users from storage:", error);
+      allUsers = []; // Initialize to an empty array in case of error
+    }
+  }
 
 /**
  * Updates the 'active' class on menu items based on the current path.

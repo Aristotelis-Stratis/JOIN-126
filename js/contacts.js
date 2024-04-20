@@ -5,10 +5,30 @@ let currentEditingId = null;
  * Initializes the application by loading all contacts.
  */
 async function initContacts() {
-    includeHTML();
-    await loadAllContacts();
+    await includeHTML();
+    await loadCurrentUser();
+    
+    if (!currentUser) {
+        console.log("Kein aktueller Benutzer geladen. Gastbenutzer wird verwendet.");
+        currentUser = guestUser;
+        await loadGuestData();
+    }
+    
     await loadTasksFromStorage();
-    console.log(allTasks);
+    await loadAllContacts();
+    console.log("Aufgaben geladen:", allTasks);
+    console.log("allUsers geladen", allUsers);
+}
+
+// Funktion zum Laden der Gastdaten, wenn keine aktuellen Benutzerdaten gefunden werden
+async function loadGuestData() {
+    let guestData = await getItem('guestData');
+    if (guestData) {
+        currentUser.data = JSON.parse(guestData);
+    } else {
+        console.log("Keine Gastdaten gefunden. Initialisierung leerer Datenstrukturen.");
+        currentUser.data = { contacts: [], tasks: [], board: {}, summary: {} };
+    }
 }
 
 
@@ -22,10 +42,15 @@ async function createContact() {
 
     if (areInputsValid([nameInput, emailInput, numberInput])) {
         let contact = createContactObject(nameInput.value, emailInput.value, numberInput.value);
-        allContacts.push(contact);
-        await saveToStorage();
-        renderContacts();
-        showCreationConfirmation();
+        // Füge den neuen Kontakt zur Kontaktliste des aktuellen Benutzers hinzu
+        if (currentUser && currentUser.data && currentUser.data.contacts) {
+            currentUser.data.contacts.push(contact);
+            await saveCurrentUser();  // Speichert den aktualisierten aktuellen Benutzer
+            renderContacts();
+            showCreationConfirmation();
+        } else {
+            console.error('Fehler: Kein gültiger aktueller Benutzer oder Kontaktliste nicht verfügbar.');
+        }
     }
 }
 
@@ -69,26 +94,28 @@ function areInputsValid(inputs) {
  * Saves the current state of `allContacts` array to storage.
  */
 async function saveToStorage() {
-    await setItem('contacts', JSON.stringify(allContacts));
+    if (currentUser && currentUser.data) {
+        console.log("Speichere aktuelle Benutzerdaten: ", JSON.stringify(currentUser.data));
+        await setItem('currentUserData', JSON.stringify(currentUser.data));
+    } else {
+        console.error("Kein aktueller Benutzer oder keine Daten zum Speichern.");
+    }
 }
-
 
 /**
  * Loads all contacts from storage and updates the `allContacts` array. Logs a message if no contacts are found.
  */
 async function loadAllContacts() {
     try {
-        const contactsString = await getItem('contacts');
-        if (contactsString) {
-            const contacts = JSON.parse(contactsString);
-            allContacts = contacts;
+        if (currentUser && currentUser.data.contacts) {
+            allContacts = currentUser.data.contacts;
+            console.log("Kontakte geladen:", allContacts);
+            renderContacts();
         } else {
-            console.log('No contacts found. Starting with an empty contacts list.');
+            console.error("Keine Kontaktdaten verfügbar für den aktuellen Benutzer.");
         }
-        renderContacts();
     } catch (e) {
-        console.warn('Could not load Contacts:', e);
-        allContacts = [];
+        console.error("Fehler beim Laden der Kontakte:", e);
     }
 }
 
@@ -97,19 +124,24 @@ async function loadAllContacts() {
  * Renders the contacts by sorting them and then displaying each in the designated container with separators for each letter.
  */
 function renderContacts() {
-    sortContactsByName();
+    if (!currentUser || !currentUser.data) {
+        console.error("Kein aktueller Benutzer oder keine Benutzerdaten geladen.");
+        return;  // Frühzeitig beenden, wenn keine Daten vorhanden sind.
+    }
+
+    const contacts = currentUser.data.contacts;
     const contactListContainer = document.getElementById('contact-container');
     contactListContainer.innerHTML = '';
     let currentInitial = '';
-    for (let i = 0; i < allContacts.length; i++) {
-        const contact = allContacts[i];
+
+    contacts.forEach((contact, i) => {
         const lastNameInitial = contact.name.split(' ').pop().charAt(0).toUpperCase();
         if (lastNameInitial !== currentInitial) {
             contactListContainer.innerHTML += createLetterContainerHTML(lastNameInitial);
             currentInitial = lastNameInitial;
         }
         contactListContainer.innerHTML += createNewContactHTML(contact, i);
-    }
+    });
 }
 
 /**

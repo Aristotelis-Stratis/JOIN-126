@@ -11,7 +11,6 @@ async function setItem(key, value) {
 async function getItem(key) {
     const url = `${STORAGE_URL}?key=${key}&token=${STORAGE_TOKEN}`;
     return await fetch(url)
-      .then((response) => response.json())
-      .then((response) => response.data.value);
-  }
-
+        .then((response) => response.json())
+        .then((response) => response.data.value);
+}

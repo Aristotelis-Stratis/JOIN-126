@@ -11,19 +11,6 @@ const guestUser = {
         summary: {}
     }
 };
-
-// Datenstruktur der Benutzerdaten
-// {
-//     'id': 'unique-user-id',  // Eindeutige ID für den Benutzer
-//     'name': 'Sofia Müller',
-//     'email': 'sofiam@gmail.com',
-//     'password': 'hashedPassword',  // Das Passwort sollte gehasht gespeichert werden
-//     'contacts': [],  // Liste der Kontakte dieses Benutzers
-//     'tasks': [],  // Liste der Tasks dieses Benutzers
-//     'summary': {},  // Summary-Daten für den Benutzer
-//     'board': {}  // Daten für das Board
-// }
-
 let currentUser;
 
 
@@ -71,6 +58,7 @@ async function initRegistry() {
     }
 }
 
+
 function createUser(username, email, password) {
     return {
         id: generateUniqueId(),  // Generiere eine eindeutige Benutzer-ID
@@ -86,14 +74,17 @@ function createUser(username, email, password) {
     };
 }
 
+
 function generateUniqueId() {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
 }
+
 
 async function getUserByEmail(email) {
     await loadAllUserFromStorage();  // Stelle sicher, dass die neuesten Benutzer geladen sind
     return allUsers.find(user => user.email === email);
 }
+
 
 async function saveUserToStorage(user) {
     try {
@@ -104,7 +95,6 @@ async function saveUserToStorage(user) {
         console.error('Failed to save users:', error);
     }
 }
-
 
 
 async function initLogin() {
@@ -122,20 +112,53 @@ async function initLogin() {
 }
 
 
+async function saveCurrentUser() {
+    if (currentUser) {
+        const userIndex = allUsers.findIndex(u => u.id === currentUser.id);
+        if (userIndex !== -1) {
+            allUsers[userIndex] = currentUser;
+        } else {
+            allUsers.push(currentUser);  // Handle cases where currentUser is not found (unusual case)
+        }
+        await setItem('allUsers', JSON.stringify(allUsers)); // Save the complete set of user data
+        console.log("User data saved successfully.");
+    } else {
+        console.error("No current user to save.");
+    }
+}
+
+
+async function loadCurrentUser() {
+    try {
+        const userString = await getItem('currentUser');
+        if (userString) {
+            currentUser = JSON.parse(userString);
+            console.log("Aktueller Benutzer geladen:", currentUser);
+            if (!currentUser.data) {
+                currentUser.data = { contacts: [], tasks: [], board: {}, summary: {} };
+                console.log("Keine Daten gefunden, Initialisierung leerer Datenstrukturen.");
+            }
+        } else {
+            console.log("Keine aktuellen Benutzerdaten gefunden.");
+            currentUser = null;
+        }
+    } catch (error) {
+        console.error("Fehler beim Laden des aktuellen Benutzers:", error);
+        currentUser = null;
+    }
+}
+
+
 async function setCurrentUser(user) {
     try {
-        // Speichere nur die notwendigen Daten des Benutzers für die Sitzung
-        const minimalUserData = {
-            id: user.id,
-            name: user.name,
-            email: user.email
-        };
-        await setItem('currentUser', JSON.stringify(minimalUserData));
+        currentUser = allUsers.find(u => u.id === user.id) || user; // Ensure full data load
+        await setItem('currentUser', JSON.stringify(currentUser));
         console.log('Current user set successfully.');
     } catch (error) {
         console.error('Failed to set current user:', error);
     }
 }
+
 
 async function getCurrentUser() {
     try {
@@ -157,18 +180,30 @@ async function getCurrentUser() {
 
 async function logoutCurrentUser() {
     try {
-        await setItem('currentUser', null);  // Lösche den aktuellen Benutzer aus dem Remote Storage
+        console.log("Preparing to log out current user. Current allUsers state:", JSON.stringify(allUsers));
+
+        // Only attempt to save to storage if the array is not empty
+        if (allUsers.length > 0) {
+            await setItem('allUsers', JSON.stringify(allUsers));
+        } else {
+            console.error("Attempting to save an empty allUsers array.");
+        }
+        console.log("Logging out current user.");
+
+        // Instead of setting to null, use an empty string or placeholder object
+        await setItem('currentUser', JSON.stringify("")); // Use empty string
+
         console.log('User has been logged out.');
-        window.location.href = 'login.html';  // Optional: Leite den Benutzer zur Login-Seite um
+
+        // Set a delay before redirecting to the login page
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 10000); // Delay of 10000 milliseconds (10 seconds)
+
     } catch (error) {
         console.error('Failed to logout current user:', error);
     }
 }
-
-
-
-
-
 
 
 function loginAsGuest() {
@@ -189,19 +224,6 @@ function resetCurrentUser() {
 }
 
 
-async function setItem(key, value) {
-    const payload = { key: key, value: value, token: STORAGE_TOKEN };
-    return fetch(STORAGE_URL, { method: 'POST', body: JSON.stringify(payload) })
-        .then(res => res.json());
-}
-async function getItem(key) {
-    const url = `${STORAGE_URL}?key=${key}&token=${STORAGE_TOKEN}`;
-    return await fetch(url)
-        .then((response) => response.json())
-        .then((response) => response.data.value);
-}
-
-
 async function saveToStorage() {
     await setItem('allUsers', JSON.stringify(allUsers));
 }
@@ -209,19 +231,16 @@ async function saveToStorage() {
 
 async function loadAllUserFromStorage() {
     try {
-        const usersString = await getItem('allUsers');
-        if (usersString) {
-            allUsers = JSON.parse(usersString);
-            if (!Array.isArray(allUsers)) {  // Prüfe, ob allUsers tatsächlich ein Array ist
-                allUsers = [];
-            }
+        const response = await getItem('allUsers');
+        if (response && response.length > 0) {
+            allUsers = JSON.parse(response);
         } else {
-            console.log('No Users found, initializing an empty array.');
-            allUsers = [];  // Initialisiere als leeres Array, falls nichts gefunden wurde
+            console.log('No users found in storage, using default array.');
+            allUsers = [guestUser];  // Reset to default with guest user
         }
-    } catch (e) {
-        console.warn('Failed to load users:', e);
-        allUsers = []; // Im Fehlerfall als leeres Array initialisieren
+    } catch (error) {
+        console.error('Failed to load users from storage:', error);
+        allUsers = [guestUser]; // Fallback to default on error
     }
 }
 
@@ -232,28 +251,28 @@ function deleteStorage() {
 }
 
 
-function rebuildStorage() {
-    allUsers = [{
-        'users': [
-            {
-                'name': 'Sofia Müller',
-                'email': 'sofiam@gmail.com',
-                'password': 'mypassword123',
-                'data': []
-            },
-            {
-                'name': 'Iv',
-                'email': 'a@a',
-                'password': '111QQQwwweee',
-                'data': []
-            }
-        ]
-    },
-    { 'guest': [] },
-    { 'currentUser': [] }
-    ];
-    setItem('allUsers', JSON.stringify(allUsers));
-}
+// function rebuildStorage() {
+//     allUsers = [{
+//         'users': [
+//             {
+//                 'name': 'Sofia Müller',
+//                 'email': 'sofiam@gmail.com',
+//                 'password': 'mypassword123',
+//                 'data': []
+//             },
+//             {
+//                 'name': 'Iv',
+//                 'email': 'a@a',
+//                 'password': '111QQQwwweee',
+//                 'data': []
+//             }
+//         ]
+//     },
+//     { 'guest': [] },
+//     { 'currentUser': [] }
+//     ];
+//     setItem('allUsers', JSON.stringify(allUsers));
+// }
 
 
 function changeIcon(inputField, inputIcon) {
@@ -337,6 +356,3 @@ function privacyPolicyCheck() {
         button.disabled = true;
     }
 }
-
-
-// Testpassword:    111QQQwwweee
