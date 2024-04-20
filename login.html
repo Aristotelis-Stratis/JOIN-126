@@ -26,13 +26,13 @@
 
             <div class="input-main-div d-column"> 
                 <div class="input-div d-flex-sb-c"> 
-                    <input data="Provide a valid email address." oninput="hideError('emailErrorField')" id="email" type="email" placeholder="Email" class="input" required>
+                    <input data="Provide a valid email address." oninput="hideError('emailErrorField','email')" id="email" type="email" placeholder="Email" class="input" required>
                     <img class="input-icon" src="assets/img/icons/mail.png" alt="IMG"> 
                 </div>
                 <small id="emailErrorField" class="error"></small> 
 
                 <div class="input-div d-flex-sb-c"> 
-                    <input data="Wrong Password, try again." name="password" oninput="hideError('passwordErrorField')" onfocus="changeIcon('password','passwordIcon')" onblur="changeIcon('password','passwordIcon')" id="password" type="password"
+                    <input data="Wrong Password, try again." name="password" oninput="hideError('passwordErrorField','password')" onfocus="changeIcon('password','passwordIcon')" onblur="changeIcon('password','passwordIcon')" id="password" type="password"
                         placeholder="Password" class="input" required>
                     <span onclick="showPassword('password','passwordIcon'); return false;" id="passwordIcon" class="input-icon password-def-img cursor-pointer disabled"></span>
                 </div>
