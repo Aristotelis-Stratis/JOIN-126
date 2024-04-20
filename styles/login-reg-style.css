@@ -214,6 +214,10 @@ body {
     color: red;
 }
 
+.error-div {
+    border-color: red;
+}
+
 .checkbox-div {
     width: 60%;
     margin-bottom: 32px;

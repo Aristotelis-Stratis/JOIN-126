@@ -40,7 +40,10 @@ async function init() {
     await initializeUsers(); // Stelle sicher, dass Gastbenutzer vorhanden ist
     console.log('allUsers: ', allUsers);
     const inputs = document.querySelectorAll('input');
+    startEventlistener(inputs);
+}
 
+function startEventlistener(inputs) {
     inputs.forEach((input) => {
         input.addEventListener('invalid', (evt) => {
             let inputId = evt.target.attributes.id.value;
@@ -294,9 +297,11 @@ function inputValidation(inputId, messageFieldId, errorMessage) {
 
     if (input.value === '') {
         document.getElementById(messageFieldId).innerHTML = 'This Field is required!';
+        input.parentNode.classList.add('error-div');
         event.preventDefault();
     } else {
         document.getElementById(messageFieldId).innerHTML = errorMessage;
+        input.parentNode.classList.add('error-div');
         event.preventDefault();
     }
 }
@@ -314,8 +319,9 @@ function checkPassword() {
 }
 
 
-function hideError(messageFieldId) {
+function hideError(messageFieldId, inputId) {
     document.getElementById(messageFieldId).textContent = '';
+    document.getElementById(inputId).parentNode.classList.remove('error-div');
 }
 
 
