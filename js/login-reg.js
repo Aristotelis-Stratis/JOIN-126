@@ -1,4 +1,5 @@
 let allUsers = [];
+let currentUser;
 const guestUser = {
     id: 'guest',
     name: 'Guest User',
@@ -11,7 +12,6 @@ const guestUser = {
         summary: {}
     }
 };
-let currentUser;
 
 
 // Initialisierungsfunktion, die den Gastbenutzer sicherstellt
@@ -97,34 +97,54 @@ async function saveUserToStorage(user) {
 }
 
 
-async function initLogin() {
+// Logik für reguläres Login
+async function login() {
     let email = document.getElementById('email').value;
-    let password = document.getElementById('password').value;  // Sollte mit einem Hash verglichen werden
+    let password = document.getElementById('password').value;
 
     let user = await getUserByEmail(email);
-    if (user && user.password === password) {  // Stelle sicher, dass die Passwortprüfung sicher ist
+    if (user && user.password === password) {
         console.log('Login erfolgreich!');
-        setCurrentUser(user);  // Setze den aktuellen Benutzer lokal oder in einer Session
+        setCurrentUser(user);
         window.location.href = 'summary.html';
     } else {
         console.log('Login fehlgeschlagen. Bitte überprüfe deine Anmeldedaten und versuche es erneut.');
     }
 }
 
+// Funktion für den Gästelogin
+function loginAsGuest() {
+    setCurrentUser(allUsers[0]);
+    console.log('Logged in as guest:', currentUser);
+    window.location.href = 'contacts.html';
+}
+
 
 async function saveCurrentUser() {
     if (currentUser) {
-        const userIndex = allUsers.findIndex(u => u.id === currentUser.id);
-        if (userIndex !== -1) {
-            allUsers[userIndex] = currentUser;
-        } else {
-            allUsers.push(currentUser);  // Handle cases where currentUser is not found (unusual case)
+        console.log("Speichere aktuellen Benutzer: ", currentUser);
+        try {
+            // Stellen Sie sicher, dass die Änderungen auch im allUsers Array gespeichert werden
+            const userIndex = allUsers.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                allUsers[userIndex] = currentUser;
+                await setItem('allUsers', JSON.stringify(allUsers)); // Speichern des gesamten Benutzerarrays
+            }
+            const result = await setItem('currentUser', JSON.stringify(currentUser));
+            console.log("Speichern erfolgreich: ", result);
+        } catch (error) {
+            console.error("Fehler beim Speichern des aktuellen Benutzers:", error);
         }
-        await setItem('allUsers', JSON.stringify(allUsers)); // Save the complete set of user data
-        console.log("User data saved successfully.");
     } else {
-        console.error("No current user to save.");
+        console.error("Kein aktueller Benutzer zum Speichern.");
     }
+}
+
+
+async function setCurrentUser(user) {
+    currentUser = user;
+    await setItem('currentUser', JSON.stringify(currentUser));
+    console.log('Current user set successfully:', currentUser);
 }
 
 
@@ -145,17 +165,6 @@ async function loadCurrentUser() {
     } catch (error) {
         console.error("Fehler beim Laden des aktuellen Benutzers:", error);
         currentUser = null;
-    }
-}
-
-
-async function setCurrentUser(user) {
-    try {
-        currentUser = allUsers.find(u => u.id === user.id) || user; // Ensure full data load
-        await setItem('currentUser', JSON.stringify(currentUser));
-        console.log('Current user set successfully.');
-    } catch (error) {
-        console.error('Failed to set current user:', error);
     }
 }
 
@@ -198,29 +207,11 @@ async function logoutCurrentUser() {
         // Set a delay before redirecting to the login page
         setTimeout(() => {
             window.location.href = 'login.html';
-        }, 10000); // Delay of 10000 milliseconds (10 seconds)
+        }, 3000); // Delay of 10000 milliseconds (10 seconds)
 
     } catch (error) {
         console.error('Failed to logout current user:', error);
     }
-}
-
-
-function loginAsGuest() {
-    const guestUser = allUsers.find(user => user.id === 'guest');
-    if (guestUser) {
-        setCurrentUser(guestUser);
-        console.log('Das ist der aktuelle User: ', guestUser);
-        window.location.href = '/summary.html'; // Weiterleitung zur Summary-Seite
-    } else {
-        console.error('Gastbenutzer nicht gefunden.');
-    }
-}
-
-
-function resetCurrentUser() {
-    allUsers[2]['currentUser'] = [];
-    setItem('allUsers', JSON.stringify(allUsers));
 }
 
 
@@ -249,30 +240,6 @@ function deleteStorage() {
     allUsers = [];
     setItem('allUsers', JSON.stringify(allUsers));
 }
-
-
-// function rebuildStorage() {
-//     allUsers = [{
-//         'users': [
-//             {
-//                 'name': 'Sofia Müller',
-//                 'email': 'sofiam@gmail.com',
-//                 'password': 'mypassword123',
-//                 'data': []
-//             },
-//             {
-//                 'name': 'Iv',
-//                 'email': 'a@a',
-//                 'password': '111QQQwwweee',
-//                 'data': []
-//             }
-//         ]
-//     },
-//     { 'guest': [] },
-//     { 'currentUser': [] }
-//     ];
-//     setItem('allUsers', JSON.stringify(allUsers));
-// }
 
 
 function changeIcon(inputField, inputIcon) {

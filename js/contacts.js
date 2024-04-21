@@ -5,30 +5,15 @@ let currentEditingId = null;
  * Initializes the application by loading all contacts.
  */
 async function initContacts() {
-    await includeHTML();
+    await includeHTML();  // Stellen Sie sicher, dass dies abgeschlossen ist, falls asynchron
     await loadCurrentUser();
-    
     if (!currentUser) {
-        console.log("Kein aktueller Benutzer geladen. Gastbenutzer wird verwendet.");
-        currentUser = guestUser;
-        await loadGuestData();
+        console.error("Kein aktueller Benutzer geladen.");
+        return;  // Frühzeitig beenden, wenn kein Benutzer geladen ist.
     }
-    
-    await loadTasksFromStorage();
+    await loadTasksFromStorage();  // Reihenfolge geändert für bessere Logik
     await loadAllContacts();
     console.log("Aufgaben geladen:", allTasks);
-    console.log("allUsers geladen", allUsers);
-}
-
-// Funktion zum Laden der Gastdaten, wenn keine aktuellen Benutzerdaten gefunden werden
-async function loadGuestData() {
-    let guestData = await getItem('guestData');
-    if (guestData) {
-        currentUser.data = JSON.parse(guestData);
-    } else {
-        console.log("Keine Gastdaten gefunden. Initialisierung leerer Datenstrukturen.");
-        currentUser.data = { contacts: [], tasks: [], board: {}, summary: {} };
-    }
 }
 
 
