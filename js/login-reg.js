@@ -111,7 +111,7 @@ async function login() {
         window.location.href = 'summary.html';
     } else {
         inputValidation('email', 'emailErrorField', ' ');
-        inputValidation('password', 'passwordErrorField', 'Invalid email or passwo');
+        inputValidation('password', 'passwordErrorField', 'Invalid email or password.');
         console.log('Login fehlgeschlagen. Bitte überprüfe deine Anmeldedaten und versuche es erneut.');
         // Hier kann die Fehlermeldung unter den beiden Inputfeldern geladen werden
     }
