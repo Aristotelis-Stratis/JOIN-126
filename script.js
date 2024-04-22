@@ -3,7 +3,20 @@ let allContacts = [];
 let selectedContacts = [];
 let subtasks = [];
 let selectedPriority = [];
-
+let allUsers = [];
+let currentUser;
+const guestUser = {
+    id: 'guest',
+    name: 'Guest User',
+    email: 'guest@example.com',
+    password: '',
+    data: {
+        contacts: [],
+        tasks: [],
+        board: {},
+        summary: {}
+    }
+};
 async function checkAuthentication() {
     const currentUser = await loadCurrentUser();
     if (!currentUser) {
@@ -37,6 +50,26 @@ async function loadCurrentUser() {
         console.error("Fehler beim Laden des aktuellen Benutzers:", error);
         // currentUser = null;
         return null;
+    }
+}
+
+async function saveCurrentUser() {
+    if (currentUser) {
+        console.log("Speichere aktuellen Benutzer: ", currentUser);
+        try {
+            // Stellen Sie sicher, dass die Änderungen auch im allUsers Array gespeichert werden
+            const userIndex = allUsers.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                allUsers[userIndex] = currentUser;
+                await setItem('allUsers', JSON.stringify(allUsers)); // Speichern des gesamten Benutzerarrays
+            }
+            const result = await setItem('currentUser', JSON.stringify(currentUser));
+            console.log("Speichern erfolgreich: ", result);
+        } catch (error) {
+            console.error("Fehler beim Speichern des aktuellen Benutzers:", error);
+        }
+    } else {
+        console.error("Kein aktueller Benutzer zum Speichern.");
     }
 }
 
