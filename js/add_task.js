@@ -4,11 +4,6 @@
 async function initTasks() {
     includeHTML();
     currentUser = await loadCurrentUser(); // Ersetze das direkte `currentUser`-Check mit einem Funktionsaufruf
-    if (!currentUser) {
-        alert("Please log in to continue.");
-        window.location.href = 'login.html';
-        return;
-    }
     await loadContactsFromStorage();
     renderTaskContactList();
     console.warn('All tasks are loaded for the current user:', currentUser.data.tasks);
@@ -71,34 +66,6 @@ function constructNewTask() {
 
 
 /**
- * Saves the current state of `allContacts` array to storage.
- */
-// async function saveToStorage() {
-//     await setItem('tasks', JSON.stringify(allTasks));
-// }
-
-/**
- * Asynchronously loads tasks from storage. If tasks are found, it updates the global tasks array with these tasks.
- * If no tasks are found or an error occurs during the loading process, it either logs that no tasks were found or warns of an error,
- * and resets the global tasks array to an empty array.
- * @async
- */
-// async function loadTasksFromStorage() {
-//     try {
-//         const tasksString = await getItem('tasks');
-//         if (tasksString) {
-//             const tasks = JSON.parse(tasksString);
-//             allTasks = tasks;     // Update the global tasks array
-//         } else {
-//             console.log('No tasks found. Starting with an empty task list.');
-//         }
-//     } catch (e) {
-//         console.warn('Could not load tasks:', e);
-//         allTasks = [];               // Reset the tasks array on failure
-//     }
-// }
-
-/**
  * Clears all tasks from remote storage.
  */
 function deleteStorage() {
@@ -147,10 +114,15 @@ function renderTaskContactList() {
     const contactListContainer = document.getElementById('task-contact-list');
     contactListContainer.innerHTML = '';
 
-    for (let i = 0; i < currentUser.data.contacts.length; i++) {
-        const contact = currentUser.data.contacts[i];
-        const isChecked = isSelected(contact);
-        contactListContainer.innerHTML += generateContactHTML(contact, i, isChecked);
+    // Stelle sicher, dass currentUser definiert und contacts vorhanden ist
+    if (currentUser && currentUser.data && Array.isArray(currentUser.data.contacts)) {
+        for (let i = 0; i < currentUser.data.contacts.length; i++) {
+            const contact = currentUser.data.contacts[i];
+            const isChecked = isSelected(contact);
+            contactListContainer.innerHTML += generateContactHTML(contact, i, isChecked);
+        }
+    } else {
+        console.error('Cannot render contacts. currentUser or currentUser.data.contacts is not defined.');
     }
 }
 

@@ -1,19 +1,3 @@
-// let allUsers = [];
-// let currentUser;
-// const guestUser = {
-//     id: 'guest',
-//     name: 'Guest User',
-//     email: 'guest@example.com',
-//     password: '',
-//     data: {
-//         contacts: [],
-//         tasks: [],
-//         board: {},
-//         summary: {}
-//     }
-// };
-
-
 // Initialisierungsfunktion, die den Gastbenutzer sicherstellt
 async function initializeUsers() {
     await loadAllUserFromStorage();
@@ -62,7 +46,7 @@ async function initRegistry() {
 
 function createUser(username, email, password) {
     return {
-        id: generateUniqueId(),  // Generiere eine eindeutige Benutzer-ID
+        id: generateUniqueId(),
         name: username,
         email: email,
         password: password,  // Das Passwort sollte sicher gespeichert werden (Hash)
@@ -82,15 +66,15 @@ function generateUniqueId() {
 
 
 async function getUserByEmail(email) {
-    await loadAllUserFromStorage();  // Stelle sicher, dass die neuesten Benutzer geladen sind
+    await loadAllUserFromStorage();
     return allUsers.find(user => user.email === email);
 }
 
 
 async function saveUserToStorage(user) {
     try {
-        await loadAllUserFromStorage();  // Stelle sicher, dass die neuesten Benutzer geladen sind
-        allUsers.push(user);  // Füge den neuen Benutzer hinzu
+        await loadAllUserFromStorage();
+        allUsers.push(user);
         await setItem('allUsers', JSON.stringify(allUsers));
     } catch (error) {
         console.error('Failed to save users:', error);
@@ -113,7 +97,6 @@ async function login() {
         inputValidation('email', 'emailErrorField', ' ');
         inputValidation('password', 'passwordErrorField', 'Invalid email or passwo');
         console.log('Login fehlgeschlagen. Bitte überprüfe deine Anmeldedaten und versuche es erneut.');
-        // Hier kann die Fehlermeldung unter den beiden Inputfeldern geladen werden
     }
 }
 
@@ -148,7 +131,6 @@ async function getCurrentUser() {
         return null;
     }
 }
-
 
 
 async function saveToStorage() {

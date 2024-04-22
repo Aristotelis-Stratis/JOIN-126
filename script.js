@@ -17,6 +17,8 @@ const guestUser = {
         summary: {}
     }
 };
+
+
 async function checkAuthentication() {
     const currentUser = await loadCurrentUser();
     if (!currentUser) {
@@ -35,7 +37,8 @@ async function loadCurrentUser() {
         const userString = await getItem('currentUser');
         if (userString) {
             currentUser = JSON.parse(userString);
-            console.log("Aktueller Benutzer geladen:", currentUser);
+            console.log(" Benutzer geladen:", currentUser);
+            setProfileInitials();
             return currentUser;
             // if (!currentUser.data) {
             //     currentUser.data = { contacts: [], tasks: [], board: {}, summary: {} };
@@ -178,5 +181,16 @@ async function loadTasksFromStorage() {
     } catch (e) {
         console.warn('Could not load tasks:', e);
         allTasks = [];               // Reset the tasks array on failure
+    }
+}
+
+
+function setProfileInitials() {
+    if (currentUser && currentUser.name) {
+        const initials = currentUser.name.split(' ').map((part) => part[0]).join('');
+        const profileInitialsSpans = document.querySelectorAll('#profile-button span');
+        profileInitialsSpans.forEach((span, index) => {
+            span.textContent = initials[index] || '';  // Setzt die Initialen oder leert den Text, falls keine Initialen vorhanden sind
+        });
     }
 }

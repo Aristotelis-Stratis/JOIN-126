@@ -6,11 +6,7 @@ let currentEditingId = null;
  */
 async function initContacts() {
     await includeHTML();  // Stellen Sie sicher, dass dies abgeschlossen ist, falls asynchron
-    await loadCurrentUser();
-    if (!currentUser) {
-        console.error("Kein aktueller Benutzer geladen.");
-        return;  // Frühzeitig beenden, wenn kein Benutzer geladen ist.
-    }
+    setProfileInitials();
     await loadTasksFromStorage();  // Reihenfolge geändert für bessere Logik
     await loadAllContacts();
     console.log("Aufgaben geladen:", allTasks);
@@ -27,10 +23,9 @@ async function createContact() {
 
     if (areInputsValid([nameInput, emailInput, numberInput])) {
         let contact = createContactObject(nameInput.value, emailInput.value, numberInput.value);
-        // Füge den neuen Kontakt zur Kontaktliste des aktuellen Benutzers hinzu
         if (currentUser && currentUser.data && currentUser.data.contacts) {
             currentUser.data.contacts.push(contact);
-            await saveCurrentUser();  // Speichert den aktualisierten aktuellen Benutzer
+            await saveCurrentUser();
             renderContacts();
             showCreationConfirmation();
         } else {
@@ -111,7 +106,7 @@ async function loadAllContacts() {
 function renderContacts() {
     if (!currentUser || !currentUser.data) {
         console.error("Kein aktueller Benutzer oder keine Benutzerdaten geladen.");
-        return;  // Frühzeitig beenden, wenn keine Daten vorhanden sind.
+        return;
     }
 
     const contacts = currentUser.data.contacts;
