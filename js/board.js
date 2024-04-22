@@ -321,11 +321,9 @@ function showAddTaskPopUpEdit(index) {
   let date = task.dueDate;
   let category = task.category;
   let subtasks = subtaskTemplateEdit(task.subtasks);
-  let usersHTML =  generateUserHTMLEdit(task.contacts);
+  let usersHTML = generateUserHTMLEdit(task.contacts);
   popUp.innerHTML = generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks);
 }
-
-
 
 
 function subtaskTemplateEdit(subtasks) {
@@ -346,4 +344,3 @@ function subtaskTemplateEdit(subtasks) {
   }
   return subtaskHTMLEdit;
 }
-

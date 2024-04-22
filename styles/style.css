@@ -2076,6 +2076,7 @@ input[type=submit]:hover {
     justify-content: space-between;
     align-items: center;
     gap: 8px;
+    width: 81px;
 }
 
 .popup-delete-and-edit img {
@@ -2096,12 +2097,10 @@ input[type=submit]:hover {
     gap: 8px;
     font-weight: 400;
     font-size: 16px;
-    color: rgba(42, 54, 71, 1)
+    color: rgba(42, 54, 71, 1);
+    width: 50px;
 }
 
-.popup-edit:hover {
-    font-weight: 700;
-}
 
 .popup-edit img {
     width: 24px;

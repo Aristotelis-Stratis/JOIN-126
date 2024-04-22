@@ -8,18 +8,18 @@ function generateAddTaksPopUpHTML() {
           </div>
           <form class="task-form" id="taskForm">
             <div class="form-left">
-              <div class="form-group-edit">
+              <div class="form-group">
                 <label for="title">Title<span class="form-required-color">*</span></label>
                 <input type="text" id="title" required placeholder="Enter a title"
                   oninput="hideValidationError('title', 'title-error-message')">
                 <span id="title-error-message" class="error-message">This field is required.</span>
               </div>
-              <div class="form-group-edit">
+              <div class="form-group">
                 <label for="description">Description</label>
                 <textarea class="no-validate" id="description" placeholder="Enter a Description"></textarea>
               </div>
               <!-- assign to list -->
-              <div class="form-group-edit">
+              <div class="form-group">
                 <label for="assignedTo">Assigned to</label>
                 <div class="drop-down-menu-container" onclick="toggleAssignDropdownMenu()">
                   <div class="drop-down-image-container">
@@ -132,7 +132,7 @@ function generateAddTaksPopUpHTML() {
           </div>
           <form class="task-form-edit" id="taskForm">
             <div class="form-left-edit">
-              <div class="form-group">
+              <div class="form-group-edit">
                 <label for="title">Title<span class="form-required-color">*</span></label>
                 <input type="text" id="title" required value="${task.title}"
                   oninput="hideValidationError('title', 'title-error-message')">
@@ -143,7 +143,7 @@ function generateAddTaksPopUpHTML() {
                 <textarea class="no-validate" id="description" placeholder="Enter a Description">${task.description}</textarea>
               </div>
               <!-- assign to list -->
-              <div class="form-group">
+              <div class="form-group-edit">
                 <label for="assignedTo">Assigned to</label>
                 <div class="drop-down-menu-container" onclick="toggleAssignDropdownMenu()">
                   <div class="drop-down-image-container">
@@ -156,16 +156,16 @@ function generateAddTaksPopUpHTML() {
                     <!-- render contact list here -->
                     <div class="task-contact-list" id="task-contact-list"></div>
                   </div>
-                  <div class="users-edit-flex">${usersHTML}</div>
+                  <div class="users-edit-flex"></div>
                 </div>
-                <div class="selected-contacts-container" id="selected-contacts-list"></div>
+                <div class="selected-contacts-container" id="selected-contacts-list-edit">${usersHTML}</div>
               </div>
             </div>
   
   
             <div class="form-right-edit">
               <!-- Date -->
-              <div class="form-group">
+              <div class="form-group-edit">
                 <label for="dueDate">Due date<span class="form-required-color"></span></label>
                 <input type="date" id="dueDate" required value="${date}" onchange="validateDueDate()">
                 <span id="date-error-message" class="error-message" style="display: none;">This
@@ -188,7 +188,7 @@ function generateAddTaksPopUpHTML() {
                 </div>
               </div>
   
-              <div class="form-group select-container">
+              <div class="form-group-edit select-container">
                 <label for="category">Category<span class="form-required-color">*</span></label>
                 <div class="select-dropdown" id="select-dropdown" onclick="toggleCategoryDropdownMenu()">
                   <div class="selected-option" id="selected-option">${category}</div>
