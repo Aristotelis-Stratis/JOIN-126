@@ -37,8 +37,8 @@
                 <small id="emailErrorField" class="error"></small>
 
                 <div class="input-div d-flex-sb-c">
-                    <input data="Please use 8+ characters, min 1 uppercase, min 1 number." oninput="hideError('passwordErrorField','password')" onfocus="changeIcon('password','passwordIcon')" onblur="changeIcon('password','passwordIcon')" id="password" type="password"
-                        placeholder="Password" class="input" required pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\S+$).{8,}$">
+                    <input data="Please use 8+ characters." oninput="hideError('passwordErrorField','password')" onfocus="changeIcon('password','passwordIcon')" onblur="changeIcon('password','passwordIcon')" id="password" type="password"
+                        placeholder="Password" class="input" required minlength="8">
                     <span onclick="showPassword('password','passwordIcon'); return false;" id="passwordIcon" class="input-icon password-def-img cursor-pointer disabled"></span> 
                 </div>
                 <small id="passwordErrorField" class="error"></small>
