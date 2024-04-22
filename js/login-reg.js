@@ -1,17 +1,17 @@
-let allUsers = [];
-let currentUser;
-const guestUser = {
-    id: 'guest',
-    name: 'Guest User',
-    email: 'guest@example.com',
-    password: '',
-    data: {
-        contacts: [],
-        tasks: [],
-        board: {},
-        summary: {}
-    }
-};
+// let allUsers = [];
+// let currentUser;
+// const guestUser = {
+//     id: 'guest',
+//     name: 'Guest User',
+//     email: 'guest@example.com',
+//     password: '',
+//     data: {
+//         contacts: [],
+//         tasks: [],
+//         board: {},
+//         summary: {}
+//     }
+// };
 
 
 // Initialisierungsfunktion, die den Gastbenutzer sicherstellt
@@ -121,34 +121,11 @@ function loginAsGuest() {
 }
 
 
-async function saveCurrentUser() {
-    if (currentUser) {
-        console.log("Speichere aktuellen Benutzer: ", currentUser);
-        try {
-            // Stellen Sie sicher, dass die Änderungen auch im allUsers Array gespeichert werden
-            const userIndex = allUsers.findIndex(u => u.id === currentUser.id);
-            if (userIndex !== -1) {
-                allUsers[userIndex] = currentUser;
-                await setItem('allUsers', JSON.stringify(allUsers)); // Speichern des gesamten Benutzerarrays
-            }
-            const result = await setItem('currentUser', JSON.stringify(currentUser));
-            console.log("Speichern erfolgreich: ", result);
-        } catch (error) {
-            console.error("Fehler beim Speichern des aktuellen Benutzers:", error);
-        }
-    } else {
-        console.error("Kein aktueller Benutzer zum Speichern.");
-    }
-}
-
-
 async function setCurrentUser(user) {
     currentUser = user;
     await setItem('currentUser', JSON.stringify(currentUser));
     console.log('Current user set successfully:', currentUser);
 }
-
-
 
 
 async function getCurrentUser() {

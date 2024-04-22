@@ -3,10 +3,15 @@
  */
 async function initTasks() {
     includeHTML();
+    currentUser = await loadCurrentUser(); // Ersetze das direkte `currentUser`-Check mit einem Funktionsaufruf
+    if (!currentUser) {
+        alert("Please log in to continue.");
+        window.location.href = 'login.html';
+        return;
+    }
     await loadContactsFromStorage();
-    await loadTasksFromStorage();
     renderTaskContactList();
-    console.warn('All Tasks are here:', allTasks);
+    console.warn('All tasks are loaded for the current user:', currentUser.data.tasks);
 }
 
 /**
@@ -17,11 +22,15 @@ async function initTasks() {
 async function createTask() {
     if (validateTaskInputs()) {
         const newTask = constructNewTask();
-        allTasks.push(newTask);
-        await saveToStorage();
-        console.log('Added task into allTask array:', allTasks);
+        if (!currentUser) {
+            console.error("No current user logged in. Task cannot be added.");
+            return;
+        }
+        currentUser.data.tasks.push(newTask);
+        await saveCurrentUser();  // Speichert den aktuellen Benutzer mit den neuen Aufgaben
+        console.log('Task added to current user tasks:', currentUser.data.tasks);
         resetUI();
-        initiateConfirmation('Task added to <img class="add-task-icon-board"src="assets/img/icons/board.png" alt="Board">');
+        initiateConfirmation('Task added to <img class="add-task-icon-board" src="assets/img/icons/board.png" alt="Board">');
         directToBoard();
     }
 }
@@ -64,9 +73,9 @@ function constructNewTask() {
 /**
  * Saves the current state of `allContacts` array to storage.
  */
-async function saveToStorage() {
-    await setItem('tasks', JSON.stringify(allTasks));
-}
+// async function saveToStorage() {
+//     await setItem('tasks', JSON.stringify(allTasks));
+// }
 
 /**
  * Asynchronously loads tasks from storage. If tasks are found, it updates the global tasks array with these tasks.
@@ -74,20 +83,20 @@ async function saveToStorage() {
  * and resets the global tasks array to an empty array.
  * @async
  */
-async function loadTasksFromStorage() {
-    try {
-        const tasksString = await getItem('tasks');
-        if (tasksString) {
-            const tasks = JSON.parse(tasksString);
-            allTasks = tasks;     // Update the global tasks array
-        } else {
-            console.log('No tasks found. Starting with an empty task list.');
-        }
-    } catch (e) {
-        console.warn('Could not load tasks:', e);
-        allTasks = [];               // Reset the tasks array on failure
-    }
-}
+// async function loadTasksFromStorage() {
+//     try {
+//         const tasksString = await getItem('tasks');
+//         if (tasksString) {
+//             const tasks = JSON.parse(tasksString);
+//             allTasks = tasks;     // Update the global tasks array
+//         } else {
+//             console.log('No tasks found. Starting with an empty task list.');
+//         }
+//     } catch (e) {
+//         console.warn('Could not load tasks:', e);
+//         allTasks = [];               // Reset the tasks array on failure
+//     }
+// }
 
 /**
  * Clears all tasks from remote storage.
@@ -138,8 +147,8 @@ function renderTaskContactList() {
     const contactListContainer = document.getElementById('task-contact-list');
     contactListContainer.innerHTML = '';
 
-    for (let i = 0; i < allContacts.length; i++) {
-        const contact = allContacts[i];
+    for (let i = 0; i < currentUser.data.contacts.length; i++) {
+        const contact = currentUser.data.contacts[i];
         const isChecked = isSelected(contact);
         contactListContainer.innerHTML += generateContactHTML(contact, i, isChecked);
     }
