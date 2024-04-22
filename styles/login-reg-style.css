@@ -218,6 +218,10 @@ body {
     border-color: red;
 }
 
+.error-div:focus-within {
+    border-color: red;
+}
+
 .checkbox-div {
     width: 60%;
     margin-bottom: 32px;

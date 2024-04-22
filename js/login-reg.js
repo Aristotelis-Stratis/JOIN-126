@@ -36,6 +36,7 @@ function startEventlistener(inputs) {
             let inputId = evt.target.attributes.id.value;
             let messageFieldId = inputId + 'ErrorField';
             let errorMessage = evt.target.attributes.data.value;
+            evt.preventDefault();
             inputValidation(inputId, messageFieldId, errorMessage);
         });
     });
@@ -101,6 +102,7 @@ async function saveUserToStorage(user) {
 async function login() {
     let email = document.getElementById('email').value;
     let password = document.getElementById('password').value;
+    const inputs = document.querySelectorAll('input');
 
     let user = await getUserByEmail(email);
     if (user && user.password === password) {
@@ -108,6 +110,8 @@ async function login() {
         setCurrentUser(user);
         window.location.href = 'summary.html';
     } else {
+        inputValidation('email', 'emailErrorField', ' ');
+        inputValidation('password', 'passwordErrorField', 'Invalid email or password!');
         console.log('Login fehlgeschlagen. Bitte überprüfe deine Anmeldedaten und versuche es erneut.');
     }
 }
@@ -284,11 +288,10 @@ function inputValidation(inputId, messageFieldId, errorMessage) {
     if (input.value === '') {
         document.getElementById(messageFieldId).innerHTML = 'This Field is required!';
         input.parentNode.classList.add('error-div');
-        event.preventDefault();
+
     } else {
         document.getElementById(messageFieldId).innerHTML = errorMessage;
         input.parentNode.classList.add('error-div');
-        event.preventDefault();
     }
 }
 

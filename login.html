@@ -21,7 +21,7 @@
     </header>
 
     <section class="main-container d-flex-sb-c d-column"> 
-        <form class="form d-flex-c-c d-column" onsubmit="initLogin(); return false;"> 
+        <form class="form d-flex-c-c d-column" onsubmit="login(); return false;"> 
             <h1 class="login-h1">Log in</h1> 
             <div class="h1-underline"></div> 
 
@@ -33,7 +33,7 @@
                 <small id="emailErrorField" class="error"></small> 
 
                 <div class="input-div d-flex-sb-c"> 
-                    <input data="Wrong Password, try again." name="password" oninput="hideError('passwordErrorField','password')" onfocus="changeIcon('password','passwordIcon')" onblur="changeIcon('password','passwordIcon')" id="password" type="password"
+                    <input data="Wrong Password Ups! Try again." name="password" oninput="hideError('passwordErrorField','password')" onfocus="changeIcon('password','passwordIcon')" onblur="changeIcon('password','passwordIcon')" id="password" type="password"
                         placeholder="Password" class="input" required>
                     <span onclick="showPassword('password','passwordIcon'); return false;" id="passwordIcon" class="input-icon password-def-img cursor-pointer disabled"></span>
                 </div>
@@ -49,7 +49,7 @@
             </div>
 
             <div class="login-btns-div d-flex-sb-c d-column650">
-                <button type="button" onclick="login()" class="btn login-btn">Log in</button>
+                <button type="submit" class="btn login-btn">Log in</button>
                 <button type="button" onclick="loginAsGuest()" class="btn guest-btn">Guest Log in</button>
             </div>
         </form>
