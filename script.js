@@ -27,7 +27,6 @@ async function checkAuthentication() {
         window.location.href = 'login.html';
     } else {
         console.log("Eingeloggt als:", currentUser.name);
-        // Führe zusätzliche Initialisierungen hier durch, wenn nötig
     }
 }
 
@@ -40,18 +39,12 @@ async function loadCurrentUser() {
             console.log(" Benutzer geladen:", currentUser);
             setProfileInitials();
             return currentUser;
-            // if (!currentUser.data) {
-            //     currentUser.data = { contacts: [], tasks: [], board: {}, summary: {} };
-            //     console.log("Keine Daten gefunden, Initialisierung leerer Datenstrukturen.");
-            // }
         } else {
             console.log("Keine aktuellen Benutzerdaten gefunden.");
-            // currentUser = null;
             return null;
         }
     } catch (error) {
         console.error("Fehler beim Laden des aktuellen Benutzers:", error);
-        // currentUser = null;
         return null;
     }
 }
