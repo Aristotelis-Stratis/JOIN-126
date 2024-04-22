@@ -109,6 +109,7 @@ async function login() {
         window.location.href = 'summary.html';
     } else {
         console.log('Login fehlgeschlagen. Bitte überprüfe deine Anmeldedaten und versuche es erneut.');
+        // Hier kann die Fehlermeldung unter den beiden Inputfeldern geladen werden
     }
 }
 
@@ -148,25 +149,6 @@ async function setCurrentUser(user) {
 }
 
 
-async function loadCurrentUser() {
-    try {
-        const userString = await getItem('currentUser');
-        if (userString) {
-            currentUser = JSON.parse(userString);
-            console.log("Aktueller Benutzer geladen:", currentUser);
-            if (!currentUser.data) {
-                currentUser.data = { contacts: [], tasks: [], board: {}, summary: {} };
-                console.log("Keine Daten gefunden, Initialisierung leerer Datenstrukturen.");
-            }
-        } else {
-            console.log("Keine aktuellen Benutzerdaten gefunden.");
-            currentUser = null;
-        }
-    } catch (error) {
-        console.error("Fehler beim Laden des aktuellen Benutzers:", error);
-        currentUser = null;
-    }
-}
 
 
 async function getCurrentUser() {
@@ -186,33 +168,6 @@ async function getCurrentUser() {
     }
 }
 
-
-async function logoutCurrentUser() {
-    try {
-        console.log("Preparing to log out current user. Current allUsers state:", JSON.stringify(allUsers));
-
-        // Only attempt to save to storage if the array is not empty
-        if (allUsers.length > 0) {
-            await setItem('allUsers', JSON.stringify(allUsers));
-        } else {
-            console.error("Attempting to save an empty allUsers array.");
-        }
-        console.log("Logging out current user.");
-
-        // Instead of setting to null, use an empty string or placeholder object
-        await setItem('currentUser', JSON.stringify("")); // Use empty string
-
-        console.log('User has been logged out.');
-
-        // Set a delay before redirecting to the login page
-        setTimeout(() => {
-            window.location.href = 'login.html';
-        }, 3000); // Delay of 10000 milliseconds (10 seconds)
-
-    } catch (error) {
-        console.error('Failed to logout current user:', error);
-    }
-}
 
 
 async function saveToStorage() {
