@@ -160,7 +160,7 @@ function renderFilteredContactList(filteredContacts) {
  */
 function renderSelectedContacts() {
     const container = document.querySelector('.selected-contacts-container');
-    container.innerHTML = ''; // Clear the container first
+     // container.innerHTML = ''; Clear the container first
 
     // Iterate through the selected contacts and add them to the container
     selectedContacts.forEach(contact => {
@@ -369,7 +369,7 @@ function deleteSubtask(subtaskIndex) {
  */
 function renderSubtasks() {
     let subtaskContainer = document.getElementById('subtaskContainer');
-    subtaskContainer.innerHTML = '';
+   /** subtaskContainer.innerHTML = ''; got deleted by Eduard */
     for (let index = 0; index < subtasks.length; index++) {
         const subtaskText = subtasks[index];
         const subtaskItemHTML = createSubtaskTemplate(subtaskText, index);

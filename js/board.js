@@ -320,9 +320,10 @@ function showAddTaskPopUpEdit(index) {
   let popUp = document.getElementById('pop-up');
   let date = task.dueDate;
   let category = task.category;
+  let priority = task.priority;
   let subtasks = subtaskTemplateEdit(task.subtasks);
   let usersHTML = generateUserHTMLEdit(task.contacts);
-  popUp.innerHTML = generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks);
+  popUp.innerHTML = generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks, priority);
 }
 
 
@@ -333,6 +334,7 @@ function subtaskTemplateEdit(subtasks) {
     subtaskHTMLEdit += `
       <div class="subtask-item" id="subtask_${index}">
         <div>
+          • 
           <span>${subtask}</span>
         </div>
         <div class="subtask-item-icons">
