@@ -122,7 +122,11 @@ function generateAddTaksPopUpHTML() {
   
   }
   
-  function generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks) {
+  function generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks, priority) {
+
+    function getPriorityButtonClass(buttonId) {
+      return priority === buttonId ? 'priority-button on-edit active' : 'priority-button on-edit';
+    }
     
     return `
     <div class="form-container">
@@ -176,13 +180,13 @@ function generateAddTaksPopUpHTML() {
               <div class="form-group priority">
                 <label>Prio</label>
                 <div class="priority-button-container">
-                  <button id="priority-urgent" class="priority-button on-edit" data-priority="urgent"
+                  <button id="priority-urgent" class="${getPriorityButtonClass('urgent')}" data-priority="urgent"
                     onclick="togglePriority('priority-urgent')"><span>Urgent</span> <img src="assets/img/icons/urgent.png"
                       alt="Urgent Priority"></button>
-                  <button id="priority-medium" class="priority-button on-edit" data-priority="medium"
+                  <button id="priority-medium" class="${getPriorityButtonClass('medium')}" data-priority="medium"
                     onclick="togglePriority('priority-medium')"><span>Medium</span> <img src="assets/img/icons/medium.png"
                       alt="Medium Priority"></button>
-                  <button id="priority-low" class="priority-button on-edit" data-priority="low"
+                  <button id="priority-low" class="${getPriorityButtonClass('low')}" data-priority="low"
                     onclick="togglePriority('priority-low')"><span>Low</span> <img src="assets/img/icons/low.png"
                       alt="Low Priority"></button>
                 </div>
