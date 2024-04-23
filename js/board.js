@@ -1,25 +1,52 @@
+// currentUser.data.board = {
+//   todo: [],
+//   inProgress: [],
+//   awaitFeedback: [],
+//   done: []
+// };
+
+
 async function init() {
   includeHTML();
-  await loadTasksFromStorage();
-  await loadContactsFromStorage();
-  console.log(allTasks);
-  showToDos();
+  currentUser = await loadCurrentUser();
+  if (currentUser && currentUser.data) {
+    await loadTasksFromStorage();
+    await loadContactsFromStorage();
+    console.warn('CurrentUser tasks are ===', currentUser.data.tasks);
+    showToDos();
+  } else {
+    console.error('currentUser is not defined');
+  }
 }
 
 async function loadTasksFromStorage() {
   try {
-    const tasksString = await getItem('tasks');
-    if (tasksString) {
-      const tasks = JSON.parse(tasksString);
-      allTasks = tasks;     // Update the global tasks array
+    const currentUserString = await getItem('currentUser');
+    if (currentUserString) {
+      const currentUser = JSON.parse(currentUserString);
+      allTasks = currentUser.data.tasks;  // Update the global tasks array with currentUser's tasks
+      console.log('Tasks loaded from currentUser:', allTasks);
     } else {
-      console.log('No tasks found. Starting with an empty task list.');
+      console.log('No tasks found in currentUser. Starting with an empty task list.');
+      allTasks = [];
     }
   } catch (e) {
-    console.warn('Could not load tasks:', e);
-    allTasks = [];               // Reset the tasks array on failure
+    console.warn('Could not load tasks from currentUser:', e);
+    allTasks = [];  // Reset the tasks array on failure
   }
 }
+
+
+// Später noch eine saveCurrentUserToStorage() erstellen die erst den User speichert und dann allUser
+
+
+
+
+
+
+
+
+
 
 
 function getCategoryBackgroundColor(category) {
@@ -85,25 +112,30 @@ function generateUserHTMLEdit(contacts) {
 
 
 function showToDos() {
-  let todo = document.getElementById('ToDos');
-  todo.innerHTML = '';
+  // Stelle sicher, dass currentUser und currentUser.data.board.todo verfügbar sind
+  if (!currentUser || !currentUser.data || !currentUser.data.board || !currentUser.data.board.todo) {
+    console.error("No todo tasks available to display.");
+    return;
+  }
 
-  for (let i = 0; i < allTasks.length; i++) {
-    const task = allTasks[i];
+  let todoTasks = currentUser.data.board.todo; // Zugriff auf die Todo-Tasks
+  let todoContainer = document.getElementById('ToDos');
+  todoContainer.innerHTML = ''; // Vorherige Inhalte löschen
+
+  for (let i = 0; i < todoTasks.length; i++) {
+    const task = todoTasks[i];
     let taskName = task.title;
     let taskDescription = task.description;
     let totalTasks = task.subtasks.length;
-    let completedTasks = 1;
+    let completedTasks = task.subtasks.filter(subtask => subtask.completed).length; // Annehmen, dass 'completed' eine Eigenschaft von subtasks ist
 
-
-
-    let completionPercentage = (completedTasks / totalTasks) * 100
+    let completionPercentage = (completedTasks / totalTasks) * 100;
     let priorityImage = setPriority(task.priority);
     let category = task.category;
     let usersHTML = generateUserHTML(task.contacts);
     let backgroundColor = getCategoryBackgroundColor(category);
 
-    todo.innerHTML += `
+    todoContainer.innerHTML += `
         <div draggable="true">
             <div class="cardA" onclick="showPopUp(${i})">
                   <span class="task-category-board" style="background-color: ${backgroundColor};">${category}</span>
@@ -191,7 +223,7 @@ function generateSubtasksHTML(subtasks) {
 
 
 function showPopUp(index) {
-  const task = allTasks[index];
+  const task = currentUser.data.tasks[index];
   let taskName = task.title;
   let taskDescription = task.description;
   let date = task.dueDate;
@@ -247,10 +279,21 @@ function showPopUp(index) {
 
 
 function deleteCard(index) {
-  allTasks.splice(index, 1);
-  setItem('tasks', JSON.stringify(allTasks));
-  showToDos();
-  closePopUp();
+  // Entferne den Task aus dem currentUser.data.tasks Array
+  currentUser.data.tasks.splice(index, 1);
+  // Aktualisiere die Boards mit den verbleibenden Tasks
+  distributeTasksToBoard();
+
+  // Speichere den aktualisierten currentUser
+  saveCurrentUser().then(() => {
+    console.log('Task successfully deleted and user saved');
+    // Aktualisiere das UI
+    showToDos();
+    // Schließe das Pop-up oder führe weitere UI-Aktualisierungen durch, wenn nötig
+    closePopUp();
+  }).catch(error => {
+    console.error('Error saving the user after deleting task:', error);
+  });
 }
 
 function closePopUp() {

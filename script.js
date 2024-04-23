@@ -30,7 +30,10 @@ async function checkAuthentication() {
     }
 }
 
-
+// "theoretisch" in jeder datei einmal folgendes setzen und dies dann später löschen
+// currentUser = await loadCurrentUser();
+// 
+//
 async function loadCurrentUser() {
     try {
         const userString = await getItem('currentUser');

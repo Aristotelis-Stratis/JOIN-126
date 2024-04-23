@@ -22,12 +22,24 @@ async function createTask() {
             return;
         }
         currentUser.data.tasks.push(newTask);
+        distributeTasksToBoard();
         await saveCurrentUser();  // Speichert den aktuellen Benutzer mit den neuen Aufgaben
         console.log('Task added to current user tasks:', currentUser.data.tasks);
         resetUI();
         initiateConfirmation('Task added to <img class="add-task-icon-board" src="assets/img/icons/board.png" alt="Board">');
         directToBoard();
     }
+}
+
+function distributeTasksToBoard() {
+    // Stelle sicher, dass currentUser.data.board existiert
+    if (!currentUser.data.board) {
+        currentUser.data.board = { todo: [], inProgress: [], awaitFeedback: [], done: [] };
+    }
+    currentUser.data.board.todo = currentUser.data.tasks.filter(task => task.status === "toDo");
+    currentUser.data.board.inProgress = currentUser.data.tasks.filter(task => task.status === "In Progress");
+    currentUser.data.board.awaitFeedback = currentUser.data.tasks.filter(task => task.status === "Await Feedback");
+    currentUser.data.board.done = currentUser.data.tasks.filter(task => task.status === "Done");
 }
 
 /**
@@ -112,7 +124,7 @@ async function loadContactsFromStorage() {
  */
 function renderTaskContactList() {
     const contactListContainer = document.getElementById('task-contact-list');
-    // contactListContainer.innerHTML = '';
+    contactListContainer.innerHTML = '';
 
     // Stelle sicher, dass currentUser definiert und contacts vorhanden ist
     if (currentUser && currentUser.data && Array.isArray(currentUser.data.contacts)) {
@@ -160,7 +172,7 @@ function renderFilteredContactList(filteredContacts) {
  */
 function renderSelectedContacts() {
     const container = document.querySelector('.selected-contacts-container');
-     // container.innerHTML = ''; Clear the container first
+    container.innerHTML = ''; // Clear the container first
 
     // Iterate through the selected contacts and add them to the container
     selectedContacts.forEach(contact => {
@@ -369,7 +381,7 @@ function deleteSubtask(subtaskIndex) {
  */
 function renderSubtasks() {
     let subtaskContainer = document.getElementById('subtaskContainer');
-   /** subtaskContainer.innerHTML = ''; got deleted by Eduard */
+    subtaskContainer.innerHTML = '';
     for (let index = 0; index < subtasks.length; index++) {
         const subtaskText = subtasks[index];
         const subtaskItemHTML = createSubtaskTemplate(subtaskText, index);
