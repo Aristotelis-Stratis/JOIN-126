@@ -112,7 +112,7 @@ async function loadContactsFromStorage() {
  */
 function renderTaskContactList() {
     const contactListContainer = document.getElementById('task-contact-list');
-    contactListContainer.innerHTML = '';
+    // contactListContainer.innerHTML = '';
 
     // Stelle sicher, dass currentUser definiert und contacts vorhanden ist
     if (currentUser && currentUser.data && Array.isArray(currentUser.data.contacts)) {

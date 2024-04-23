@@ -7,12 +7,14 @@ async function initializeUsers() {
     }
 }
 
+
 async function init() {
     await initializeUsers(); // Stelle sicher, dass Gastbenutzer vorhanden ist
     console.log('allUsers: ', allUsers);
     const inputs = document.querySelectorAll('input');
     startEventlistener(inputs);
 }
+
 
 function startEventlistener(inputs) {
     inputs.forEach((input) => {
