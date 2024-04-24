@@ -242,3 +242,7 @@ function privacyPolicyCheck() {
         button.disabled = true;
     }
 }
+
+function initLogoAnimation() {
+    
+}

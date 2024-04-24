@@ -46,18 +46,18 @@ body {
     padding: 46px 48px 0px 48px;
 }
 
+.main-logo {
+    height: 120px;
+    width: 100px;
+    object-fit: contain;
+}
+
 .signup-nav {
     height: 50px;
     width: 280px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-
-.header-reg-logo {
-    height: 120px;
-    width: 100px;
-    object-fit: contain;
 }
 
 /* MAIN SECTION PROPERTIES */
@@ -394,6 +394,81 @@ button { <---- Wird das bei anderen Buttons gebraucht? Guest Login???
 }
 
 
+/* ANIMATION PROPERTIES */
+
+.overlay {
+    z-index: 999;
+    position: absolute;
+    inset: 0 0 0 0;
+    background-color: rgb(246, 247, 248);
+    animation: opacityAnim 1.5s ease 0.75s forwards;
+}
+
+.animated-logo {
+    position: relative;
+    inset: 50% 0 0 50%;
+    height: 40%;
+    width: 30%;
+    background-image: url('../assets/img/favicon/JOIN-logo-dark.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    transform: translate(-50%, -50%);
+    animation: myAnim 1.5s ease 0.75s forwards;
+}
+
+/* KEYFRAMES */
+
+@keyframes opacityAnim {
+    from {
+
+    }
+
+    to {
+        background-color: transparent;
+    }
+}
+
+@keyframes myAnim {
+    from {
+        inset: 50% 0 0 50%;
+        transform: translate(-50%, -50%);
+        height: 40%;
+        width: 30%;
+    }
+
+    to {
+        top: 46px;
+        left: 48px;
+        transform: none;
+        height: 120px;
+        width: 100px;
+    }
+}
+
+@media(max-width: 680px) {
+    .animated-logo {
+        background-image: url('../assets/img/favicon/JOIN-logo-white.png');
+        animation: myAnim 1.5s ease 0.75s forwards;
+    }
+
+    .overlay {
+        background-color: rgb(43, 54, 71);
+    }
+    
+    @keyframes myAnim {
+    
+        to {
+            top: 22px;
+            left: 24px;
+            transform: none;
+            height: 88px;
+            width: 64px;
+            background-image: url('../assets/img/favicon/JOIN-logo-dark.png');
+        }
+    }
+}
+
+
 /* MAX WIDTH 680PX */
 
 @media(max-width: 680px) {
@@ -402,15 +477,9 @@ button { <---- Wird das bei anderen Buttons gebraucht? Guest Login???
         padding: 16px 24px 0px 24px;
     }
 
-    .header-reg-logo {
-        height: 80px;
+    .main-logo {
+        height: 88px;
         width: 64px;
-        margin-top: 8px;
-    }
-
-    .animated-logo {
-        height: 80px;
-        object-fit: cover;
     }
 
     .register-form {
