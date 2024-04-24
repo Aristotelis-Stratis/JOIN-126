@@ -30,7 +30,10 @@ async function checkAuthentication() {
     }
 }
 
-
+// "theoretisch" in jeder datei einmal folgendes setzen und dies dann später löschen
+// currentUser = await loadCurrentUser();
+// 
+//
 async function loadCurrentUser() {
     try {
         const userString = await getItem('currentUser');
@@ -89,7 +92,7 @@ async function logoutCurrentUser() {
         // Set a delay before redirecting to the login page
         setTimeout(() => {
             window.location.href = 'login.html';
-        }, 3000); // Delay of 10000 milliseconds (10 seconds)
+        }, 2500);
 
     } catch (error) {
         console.error('Failed to logout current user:', error);

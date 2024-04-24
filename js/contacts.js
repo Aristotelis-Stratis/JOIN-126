@@ -9,7 +9,7 @@ async function initContacts() {
     setProfileInitials();
     await loadTasksFromStorage();  // Reihenfolge geändert für bessere Logik
     await loadAllContacts();
-    console.log("Aufgaben geladen:", allTasks);
+    console.log("Aufgaben geladen:", currentUser.data.tasks);
 }
 
 
