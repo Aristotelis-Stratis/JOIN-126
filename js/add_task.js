@@ -198,7 +198,7 @@ function toggleContactSelection(index) {
         setCheckboxImage(contactItem, true);
     }
     renderSelectedContacts();
-    renderSelectedContactsNoClear();
+    
    
 }
 

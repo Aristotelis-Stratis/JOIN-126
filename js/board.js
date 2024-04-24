@@ -45,10 +45,6 @@ async function loadTasksFromStorage() {
 
 
 
-
-
-
-
 function getCategoryBackgroundColor(category) {
   if (category === 'Technical Task') {
     return '#1FD7C1';
@@ -56,60 +52,6 @@ function getCategoryBackgroundColor(category) {
     return '#038ff0';
   }
 }
-
-function generateUserHTMLplusName(contacts) {
-  let usersHTML = '';
-
-  for (let j = 0; j < contacts.length; j++) {
-    const user = contacts[j];
-    let userInitials = user.initials;
-    let userColor = user.color;
-    let userName = user.name;
-
-    usersHTML += `
-        <div class="username-HTML">
-            <span class="contact-icon board-icon" style="background-color: ${userColor};">${userInitials}</span>
-            <div>${userName}</div>
-        </div>
-        `;
-  }
-
-  return usersHTML;
-}
-
-
-function generateUserHTML(contacts) {
-  let usersHTML = '';
-
-  for (let j = 0; j < contacts.length; j++) {
-    const user = contacts[j];
-    let userInitials = user.initials;
-    let userColor = user.color;
-
-    usersHTML += `
-        <span class="contact-icon board-icon" style="background-color: ${userColor};">${userInitials}</span>
-        `;
-  }
-
-  return usersHTML;
-}
-
-function generateUserHTMLEdit(contacts) {
-  let usersHTML = '';
-
-  for (let j = 0; j < contacts.length; j++) {
-    const user = contacts[j];
-    let userInitials = user.initials;
-    let userColor = user.color;
-
-    usersHTML += `
-        <span class="contact-icon edit-icon" style="background-color: ${userColor};">${userInitials}</span>
-        `;
-  }
-
-  return usersHTML;
-}
-
 
 function showToDos() {
   // Stelle sicher, dass currentUser und currentUser.data.board.todo verfügbar sind
@@ -124,42 +66,8 @@ function showToDos() {
 
   for (let i = 0; i < todoTasks.length; i++) {
     const task = todoTasks[i];
-    let taskName = task.title;
-    let taskDescription = task.description;
-    let totalTasks = task.subtasks.length;
-    let completedTasks = 1;
-    let completionPercentage = (completedTasks / totalTasks) * 100
-    let priorityImage = setPriority(task.priority);
-    let category = task.category;
-    let usersHTML = generateUserHTML(task.contacts);
-    let backgroundColor = getCategoryBackgroundColor(category);
-
-    todoContainer.innerHTML += `
-        <div draggable="true">
-            <div class="cardA" onclick="showPopUp(${i})">
-                  <span class="task-category-board" style="background-color: ${backgroundColor};">${category}</span>
-                  <div class="card-middle-part">
-                    <h4 class="task-name">${taskName}</h4>
-                    <span class="task-description">${taskDescription}</span>
-                  </div>
-                  <div class="subtasks">
-                    <div class="subtask-bar">
-                      <div class="filled-subtask-bar" style="width: ${completionPercentage}%;"></div>
-                    </div><span>1/${totalTasks} Subtasks</span>
-                  </div>
-                 <div class="asigned-to-flex"> 
-                  <div class="asigned-to">
-                    <div class="asigned-to-icons">
-                        ${usersHTML}
-                    </div>
-                  </div>
-                  <div class="asigned-to-image-container">
-                      <img src="${priorityImage}" alt="medium-png">
-                  </div>
-                 </div>
-            </div>
-        </div>
-        `;
+    const todoHTML = generateTodoHTML(task, i);
+    todoContainer.innerHTML += todoHTML;
   }
 }
 
@@ -192,8 +100,19 @@ function toggleSubtaskCheck(subtaskcheck) {
   } else {
     check.src = "./assets/img/icons/checkbox-checked-black-24.png";
   }
+}
 
-  saveToStorage();
+function toggleUserSelection(contactId, element) {
+  // Hier die Logik zum Umschalten der Auswahl basierend auf contactId implementieren
+  const isChecked = element.querySelector('.user-selection-icon').src.includes('checkbox-checked-black-24.png');
+
+  if (isChecked) {
+    element.querySelector('.user-selection-icon').src = './assets/img/icons/checkbox-empty-black-24.png';
+    // Hier Logik für Deselektierung des Benutzers implementieren
+  } else {
+    element.querySelector('.user-selection-icon').src = './assets/img/icons/checkbox-checked-black-24.png';
+    // Hier Logik für Selektierung des Benutzers implementieren
+  }
 }
 
 function showOverlayAndPopUp() {
@@ -204,78 +123,14 @@ function showOverlayAndPopUp() {
   popUp.classList.add('slide-in-animation');
 }
 
-function generateSubtasksHTML(subtasks) {
-  let subtasksHTML = '';
-
-  for (let i = 0; i < subtasks.length; i++) {
-    let subtask = subtasks[i];
-    subtasksHTML += `
-          <div class="popup-subtasks">
-              <img src="./assets/img/icons/checkbox-empty-black-24.png" id="subtask-check${i}" onclick="toggleSubtaskCheck('subtask-check${i}')" alt="Box-Empty">
-              <div>${subtask}</div>
-          </div>
-      `;
-  }
-
-  return subtasksHTML;
-}
-
 
 function showPopUp(index) {
   const task = currentUser.data.tasks[index];
-  let taskName = task.title;
-  let taskDescription = task.description;
-  let date = task.dueDate;
-  let priority = task.priority;
-  let priorityImage = setPriority(task.priority);
-  let usersHTML = generateUserHTMLplusName(task.contacts);
-  let category = task.category;
-  let backgroundColor = getCategoryBackgroundColor(category);
+  const popUpHTML = generatePopUpHTML(task, index)
   showOverlayAndPopUp();
   let popUp = document.getElementById('pop-up');
-  let subtasksHTML = generateSubtasksHTML(task.subtasks);
-
-
-  popUp.innerHTML = `
-    <div class="pop-up-headline-flex">
-        <div class="board-pop-up-headline" style="background-color: ${backgroundColor}">${category}</div>
-        <img onclick="closePopUp()" src="./assets/img/icons/close.png" alt="Close-PNG">
-      </div>
-      <div class="board-task-pop-up-headline">${taskName}</div>
-      <div class="board-pop-up-description">${taskDescription}</div>
-      <div class="popup-date-container">
-        <span class="popup-blue-span">Due date:</span> <span>${date}</span>
-      </div>
-      <div class="popup-prio-container">
-        <span class="popup-blue-span">Priority:</span> <span class="popup-medium-image">${priority}<img
-            src="${priorityImage}" alt="Medium-Image"></span>
-      </div>
-      <div class="popup-assignedto-container">
-        <span class="popup-blue-span">Assigned To:</span>
-        <div class="popup-names-container">
-          <div class="popup-names">
-            ${usersHTML}
-          </div>
-        </div>
-      </div>
-      <div class="popup-subtask-container">
-        <span class="popup-blue-span">Subtasks</span>
-        <div id="subtasks">${subtasksHTML}</div>
-      </div>
-      <div class="popup-del-edit-container">
-        <div onclick="deleteCard(${index})" class="popup-delete-and-edit">
-          <img src="./assets/img/icons/trash.png" alt="Trash-Image">
-          <span class="weight-700">Delete</span>
-        </div>
-        <span>|</span>
-        <div class="popup-edit" onclick="showAddTaskPopUpEdit(${index})">
-          <img src="./assets/img/icons/edit_dark.png" alt="edit-Image">
-          <span class="weight-700">Edit</span>
-        </div>
-      </div>
-    `;
+  popUp.innerHTML = popUpHTML;
 }
-
 
 function deleteCard(index) {
   // Entferne den Task aus dem currentUser.data.tasks Array
@@ -320,7 +175,6 @@ function showAddTaskPopUp() {
   overlay.classList.remove('d-none-board');
   addTaskPopUp.classList.remove('closing-animation');
   addTaskPopUp.classList.add('slide-in-animation');
-
 }
 
 function closeAddTaskPopUp() {
@@ -348,11 +202,16 @@ function doNotCloseAddTaskPopUp(event) {
 async function createTaskOnBoard() {
   if (validateTaskInputs()) {
     const newTask = constructNewTask();
-    allTasks.push(newTask);
-    await saveToStorage();
-    console.log('Added task into allTask array:', allTasks);
+    if (!currentUser) {
+      console.error("No current user logged in. Task cannot be added.");
+      return;
+    }
+    currentUser.data.tasks.push(newTask);
+    distributeTasksToBoard();
+    await saveCurrentUser();  // Speichert den aktuellen Benutzer mit den neuen Aufgaben
+    console.log('Task added to current user tasks:', currentUser.data.tasks);
     resetUI();
-    initiateConfirmation('Task added to <img class="add-task-icon-board"src="assets/img/icons/board.png" alt="Board">');
+    initiateConfirmation('Task added to <img class="add-task-icon-board" src="assets/img/icons/board.png" alt="Board">');
     closeAddTaskPopUp();
   }
 }
@@ -368,24 +227,4 @@ function showAddTaskPopUpEdit(index) {
   popUp.innerHTML = generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks, priority);
 }
 
-
-function subtaskTemplateEdit(subtasks) {
-  let subtaskHTMLEdit = '';
-  for (let index = 0; index < subtasks.length; index++) {
-    const subtask = subtasks[index];
-    subtaskHTMLEdit += `
-      <div class="subtask-item" id="subtask_${index}">
-        <div>
-          • 
-          <span>${subtask}</span>
-        </div>
-        <div class="subtask-item-icons">
-          <img class="subtask-item-icon" style="border-right: 1px solid rgba(209, 209, 209, 1);" src="assets/img/icons/edit_dark.png" alt="" onclick="editSubtask(${index})">
-          <img class="subtask-item-icon" src="assets/img/icons/trash.png" alt="" onclick="deleteSubtask(${index})">
-        </div>
-      </div>
-    `;
-  }
-  return subtaskHTMLEdit;
-}
 
