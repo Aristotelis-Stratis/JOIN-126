@@ -13,6 +13,7 @@ async function init() {
     console.log('allUsers: ', allUsers);
     const inputs = document.querySelectorAll('input');
     startEventlistener(inputs);
+    animationValidation();
 }
 
 
@@ -243,6 +244,20 @@ function privacyPolicyCheck() {
     }
 }
 
-function initLogoAnimation() {
-    
+function animationValidation() {   
+    if(document.getElementById('overlay')){
+        removeOverlay();
+    } else {
+        return false;
+    }
+}
+
+function removeOverlay() {
+    let overlay = document.getElementById('overlay');
+    let logo = document.getElementById('main-logo');
+
+    setTimeout(() => {
+        overlay.classList.add('d-none');
+        logo.classList.remove('d-none');
+    }, 2000);
 }
