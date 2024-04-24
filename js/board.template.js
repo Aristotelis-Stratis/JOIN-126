@@ -127,7 +127,7 @@ function generateAddTaksPopUpHTML() {
     function getPriorityButtonClass(buttonId) {
       return priority === buttonId ? 'priority-button on-edit active' : 'priority-button on-edit';
     }
-    
+
     return `
     <div class="form-container">
           <div class="task-title-popup-edit">
@@ -162,7 +162,9 @@ function generateAddTaksPopUpHTML() {
                   </div>
                   <div class="users-edit-flex"></div>
                 </div>
-                <div class="selected-contacts-container" id="selected-contacts-list-edit">${usersHTML}</div>
+                <div class="selected-contacts-container" id="selected-contacts-list-edit">
+                  ${usersHTML}
+                </div>
               </div>
             </div>
   
@@ -194,7 +196,7 @@ function generateAddTaksPopUpHTML() {
   
               <div class="form-group-edit select-container">
                 <label for="category">Category<span class="form-required-color">*</span></label>
-                <div class="select-dropdown" id="select-dropdown" onclick="toggleCategoryDropdownMenu()">
+                <div class="select-dropdown" style="pointer-events: none; color: lightgrey;" id="select-dropdown" onclick="toggleCategoryDropdownMenu()">
                   <div class="selected-option" id="selected-option">${category}</div>
                   <div class="drop-down-image-container">
                     <img id="arrow-category" src="assets/img/icons/arrow_drop_down.png" alt="">

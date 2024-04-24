@@ -160,7 +160,7 @@ function renderFilteredContactList(filteredContacts) {
  */
 function renderSelectedContacts() {
     const container = document.querySelector('.selected-contacts-container');
-     // container.innerHTML = ''; Clear the container first
+    container.innerHTML = ''; // Clear the container first
 
     // Iterate through the selected contacts and add them to the container
     selectedContacts.forEach(contact => {
@@ -186,6 +186,8 @@ function toggleContactSelection(index) {
         setCheckboxImage(contactItem, true);
     }
     renderSelectedContacts();
+    renderSelectedContactsNoClear();
+   
 }
 
 
@@ -369,7 +371,7 @@ function deleteSubtask(subtaskIndex) {
  */
 function renderSubtasks() {
     let subtaskContainer = document.getElementById('subtaskContainer');
-   /** subtaskContainer.innerHTML = ''; got deleted by Eduard */
+   subtaskContainer.innerHTML = ''; 
     for (let index = 0; index < subtasks.length; index++) {
         const subtaskText = subtasks[index];
         const subtaskItemHTML = createSubtaskTemplate(subtaskText, index);
