@@ -128,9 +128,6 @@ function showToDos() {
     let taskDescription = task.description;
     let totalTasks = task.subtasks.length;
     let completedTasks = 1;
-
-
-
     let completionPercentage = (completedTasks / totalTasks) * 100
     let priorityImage = setPriority(task.priority);
     let category = task.category;
