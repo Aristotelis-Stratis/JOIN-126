@@ -102,19 +102,6 @@ function toggleSubtaskCheck(subtaskcheck) {
   }
 }
 
-function toggleUserSelection(contactId, element) {
-  // Hier die Logik zum Umschalten der Auswahl basierend auf contactId implementieren
-  const isChecked = element.querySelector('.user-selection-icon').src.includes('checkbox-checked-black-24.png');
-
-  if (isChecked) {
-    element.querySelector('.user-selection-icon').src = './assets/img/icons/checkbox-empty-black-24.png';
-    // Hier Logik für Deselektierung des Benutzers implementieren
-  } else {
-    element.querySelector('.user-selection-icon').src = './assets/img/icons/checkbox-checked-black-24.png';
-    // Hier Logik für Selektierung des Benutzers implementieren
-  }
-}
-
 function showOverlayAndPopUp() {
   let overlay = document.getElementById('overlay');
   let popUp = document.getElementById('pop-up');
