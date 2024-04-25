@@ -578,7 +578,7 @@ button { <---- Wird das bei anderen Buttons gebraucht? Guest Login???
     }
 
     .form-titel-container {
-        margin-top: 16px;
+        margin-top: 10px;
         margin-bottom: 8px;
     }
 
@@ -609,7 +609,7 @@ button { <---- Wird das bei anderen Buttons gebraucht? Guest Login???
     }
 
     .h1-underline {
-        margin-bottom: 16px;
+        margin-bottom: 10px;
     }
 
     .error {
@@ -653,5 +653,9 @@ button { <---- Wird das bei anderen Buttons gebraucht? Guest Login???
 
     .registry-checkbox {
         margin-bottom: 0px;
+    }
+
+    .margin380 {
+        margin: 8px 8px 8px 0px;
     }
 }
