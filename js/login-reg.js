@@ -38,6 +38,9 @@ async function initRegistry() {
 
     if (!userExists) {
         let newUser = createUser(username, email, password);
+        // Füge den Benutzer zu seinen eigenen Kontakten hinzu
+        let newContact = createContactObject(username, email, ''); // Hier kein Telefonnummer vorgegeben
+        newUser.data.contacts.push(newContact);
         await saveUserToStorage(newUser);
         console.log('Du hast dich erfolgreich registriert!');
         window.setTimeout(() => { window.location.href = "login.html"; }, 2500);
@@ -244,8 +247,8 @@ function privacyPolicyCheck() {
     }
 }
 
-function animationValidation() {   
-    if(document.getElementById('overlay')){
+function animationValidation() {
+    if (document.getElementById('overlay')) {
         removeOverlay();
     } else {
         return false;

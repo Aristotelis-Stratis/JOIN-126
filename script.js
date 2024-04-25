@@ -112,11 +112,27 @@ function openSubMenu() {
 }
 
 
+function checkUserLogin() {
+    loadCurrentUser().then(currentUser => {
+        if (!currentUser) {
+            // Kein Benutzer ist eingeloggt
+            const menuChoices = document.querySelectorAll('.menu-choice');
+            const profileContainers = document.querySelectorAll('.profile-container');
+            menuChoices.forEach(menu => menu.style.display = 'none');
+            profileContainers.forEach(profile => profile.style.display = 'none');
+        }
+    });
+}
+
 /**
  * Loads and embeds HTML content into elements with 'w3-include-html' attributes from specified URLs.
  */
-async function includeHTML() {
+async function includeHTML(callback) {
     let includeElements = document.querySelectorAll('[w3-include-html]');
+    if (callback && typeof callback === "function") {
+        callback();
+    }
+
     for (let i = 0; i < includeElements.length; i++) {
         const element = includeElements[i];
         file = element.getAttribute("w3-include-html");
@@ -133,19 +149,19 @@ async function includeHTML() {
 
 async function loadAllUsersFromStorage() {
     try {
-      const usersString = await getItem('allUsers');
-      if (usersString) {
-        allUsers = JSON.parse(usersString);
-        console.log("All users loaded from storage:", allUsers);
-      } else {
-        console.log("No user data found in storage.");
-        allUsers = []; // Initialize to an empty array if no data is found
-      }
+        const usersString = await getItem('allUsers');
+        if (usersString) {
+            allUsers = JSON.parse(usersString);
+            console.log("All users loaded from storage:", allUsers);
+        } else {
+            console.log("No user data found in storage.");
+            allUsers = []; // Initialize to an empty array if no data is found
+        }
     } catch (error) {
-      console.error("Error loading all users from storage:", error);
-      allUsers = []; // Initialize to an empty array in case of error
+        console.error("Error loading all users from storage:", error);
+        allUsers = []; // Initialize to an empty array in case of error
     }
-  }
+}
 
 /**
  * Updates the 'active' class on menu items based on the current path.
