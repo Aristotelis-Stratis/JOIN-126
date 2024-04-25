@@ -189,7 +189,7 @@ function renderSelectedContacts() {
 function toggleContactSelection(index) {
     event.stopPropagation();
     const contactItem = document.getElementById(`contact-item-${index}`);
-    const contact = allContacts[index];
+    const contact = currentUser.data.contacts[index];
     if (isSelected(contact)) {
         removeContact(contact);
         setCheckboxImage(contactItem, false);
