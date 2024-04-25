@@ -205,7 +205,6 @@ function inputValidation(inputId, messageFieldId, errorMessage) {
     if (input.value === '') {
         document.getElementById(messageFieldId).innerHTML = 'This Field is required!';
         input.parentNode.classList.add('error-div');
-
     } else {
         document.getElementById(messageFieldId).innerHTML = errorMessage;
         input.parentNode.classList.add('error-div');
@@ -221,6 +220,7 @@ function checkPassword() {
         inputValidation('confirmPassword', 'confirmPasswordErrorField', "Ups! Your password don't match.");
     } else {
         document.getElementById('confirmPasswordErrorField').innerHTML = '';
+        document.getElementById('confirmPassword').parentNode.classList.remove('error-div');
     }
 }
 

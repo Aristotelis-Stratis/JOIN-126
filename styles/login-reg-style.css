@@ -191,6 +191,7 @@ body {
     height: 24px;
     width: 24px;
     object-fit: contain;
+    background-position: center;
     background-repeat: no-repeat;
     background-color: transparent;
 }
@@ -612,8 +613,8 @@ button { <---- Wird das bei anderen Buttons gebraucht? Guest Login???
     }
 
     .error {
-        height: 16px;
-        padding: 5px;
+        height: 14px;
+        padding: 3px;
     }
 
     .checkbox-div {
@@ -651,6 +652,6 @@ button { <---- Wird das bei anderen Buttons gebraucht? Guest Login???
     }
 
     .registry-checkbox {
-        margin-bottom: 8px;
+        margin-bottom: 0px;
     }
 }
