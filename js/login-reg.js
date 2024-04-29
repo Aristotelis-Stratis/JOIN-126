@@ -31,7 +31,7 @@ function startEventlistener(inputs) {
 }
 
 function eventListenerKeyup(inputs) {
-    if(checkbox){
+    if(getById('checkbox')){
     inputs.forEach((input) => {
         input.addEventListener('keyup', (evt) => {
             console.log('Event funktioniert on keyup!');
