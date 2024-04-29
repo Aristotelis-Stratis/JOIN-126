@@ -2240,6 +2240,10 @@ input[type=submit]:hover {
     margin-bottom: 16px;
 }
 
+.subtask-edit-container {
+    display: flex;
+    flex-direction: column;
+}
 
 /*BOARD END*/
 
