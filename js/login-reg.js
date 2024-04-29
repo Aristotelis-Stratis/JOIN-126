@@ -14,6 +14,7 @@ async function init() {
     const inputs = document.querySelectorAll('input');
     startEventlistener(inputs);
     animationValidation();
+    eventListenerKeyup(inputs);
 }
 
 
@@ -27,6 +28,42 @@ function startEventlistener(inputs) {
             inputValidation(inputId, messageFieldId, errorMessage);
         });
     });
+}
+
+function eventListenerKeyup(inputs) {
+    if(checkbox){
+    inputs.forEach((input) => {
+        input.addEventListener('keyup', (evt) => {
+            console.log('Event funktioniert on keyup!');
+            checkButton();
+        });
+    });
+    } else {
+        return false;
+    }
+}
+
+function checkButton() {
+    if (enableButtonRequirement()) {
+        document.getElementById('register').disabled = false;
+    } else {
+        document.getElementById('register').disabled = true;
+    }
+}
+
+function enableButtonRequirement() {
+    let requirement = getById('checkbox').checked && getValue('name') !== '' && getValue('email') !== '' && getValue('password') !== '' && getValue('confirmPassword') !== '';
+    return requirement;
+}
+
+function getValue(id) {
+    let element = document.getElementById(id).value;
+    return element;
+}
+
+function getById(id) {
+    let element = document.getElementById(id);
+    return element;
 }
 
 
@@ -236,14 +273,13 @@ function hideError(messageFieldId, inputId) {
 
 function privacyPolicyCheck() {
     let checkbox = document.getElementById('checkbox');
-    let button = document.getElementById('register');
 
     if (!checkbox.checked) {
         checkbox.checked = true;
-        button.disabled = false;
+        checkButton();
     } else if (checkbox.checked) {
         checkbox.checked = false;
-        button.disabled = true;
+        checkButton();
     }
 }
 
