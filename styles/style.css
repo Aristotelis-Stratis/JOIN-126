@@ -2363,6 +2363,15 @@ input[type=submit]:hover {
         width: 100%;
     }
 
+    .add-task-popup {
+        overflow-y: scroll;
+    }
+
+    .add-task-popup::-webkit-scrollbar {
+        width: 0;
+        display: none;
+    }
+
 }
 
 @media (max-width: 1050px) {
