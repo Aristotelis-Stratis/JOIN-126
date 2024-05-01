@@ -206,6 +206,7 @@ function showAddTaskPopUpEdit(index) {
   let priority = task.priority;
   let subtasks = generateSubtaskHTMLEdit(task.subtasks);
   let usersHTML = generateUserHTMLEdit(task.contacts);
+
   popUp.innerHTML = generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks, priority);
 }
 
@@ -339,8 +340,8 @@ function generateSubtaskHTMLEdit(subtasks) {
   for (let i = 0; i < subtasks.length; i++) {
     const subtask = subtasks[i];
     subtaskHTML += `
-          <div class="subtask-edit-container">
-            <div class="subtask-item" id="subTask_${i}">
+          <div class="subtask-edit-container" id="subTask_${i}">
+            <div class="subtask-item" id="subTaskItem_${i}">
               <div>
                 •
                 <span id="subTask_${i}_span">${subtask}</span>
@@ -408,7 +409,7 @@ function clearInputFieldEdit() {
 
 
 function editSubtaskEdit(subtaskIndex) {
-  let subtaskItem = document.getElementById(`subTask_${subtaskIndex}`);
+  let subtaskItem = document.getElementById(`subTaskItem_${subtaskIndex}`);
   let subtaskSpan = document.getElementById(`subTask_${subtaskIndex}_span`);
   let subtaskText = subtaskSpan.innerHTML.trim();
   let subtaskInput = `<div class="edit-subtask-under-container">
@@ -440,20 +441,30 @@ function editSubtaskEdit(subtaskIndex) {
 function saveEditedSubtask(subtaskIndex) {
   let subtaskInput = document.getElementById(`subTask_${subtaskIndex}_input`);
   let newText = subtaskInput.value.trim();
-  let subtaskItem = document.getElementById(`subTask_${subtaskIndex}`);
+  let subtaskItem = document.getElementById(`subTaskItem_${subtaskIndex}`);
   subtaskItem.innerHTML = `
-  <div class="subtask-item-edit">
-    <div>
-      •
-      <span id="subTask_${subtaskIndex}_span">${newText}</span>
-    </div>
-    <div class="subtask-item-icons">
-        <img class="subtask-item-icon" style="border-right: 1px solid rgba(209, 209, 209, 1);" src="assets/img/icons/edit_dark.png" alt="" onclick="editSubtaskEdit(${subtaskIndex})">
-         <img class="subtask-item-icon" src="assets/img/icons/trash.png" alt="" onclick="deleteSubtaskEdit(${subtaskIndex})">
-    </div>
-  </div>
-  `;
+            <div class="subtask-item-edit" id="subTaskItem_${subtaskIndex}">
+              <div>
+                •
+                <span id="subTask_${subtaskIndex}_span">${newText}</span>
+              </div>
+              <div class="subtask-item-icons">
+                <img class="subtask-item-icon" style="border-right: 1px solid rgba(209, 209, 209, 1);" src="assets/img/icons/edit_dark.png" alt="" onclick="editSubtaskEdit(${subtaskIndex})">
+                <img class="subtask-item-icon" src="assets/img/icons/trash.png" alt="" onclick="deleteSubtaskEdit(${subtaskIndex})">
+              </div>
+            </div>
+      `;
 }
+
+function deleteSubtaskEdit(subtaskIndex) {
+  // Entferne den Subtask an der angegebenen Indexposition
+  currentUser.data.tasks[subtaskIndex].subtasks.splice(subtaskIndex, 1);
+
+  // Aktualisiere den HTML-Inhalt des Containers für die Subtasks
+  let subtaskContainer = document.getElementById(`subTask_${subtaskIndex}`);
+  subtaskContainer.innerHTML = generateSubtaskHTMLEdit(subtaskIndex);
+}
+
 
 function updateSubtaskEdit(){
   
