@@ -329,8 +329,8 @@ function generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks,
             </div>
           </form>
             <div class="edit-btn-position">
-                <button class="fb rb" onclick="createTaskOnBoard(); showToDos();">OK<img src="assets/img/icons/check.png"
-                  alt="Create Task"></button>
+                <button class="fb rb" onclick="updateSubtaskEdit()">OK<img src="assets/img/icons/check.png"
+                  alt="Update Task"></button>
                 </div>
             </div>
         </div>
@@ -348,7 +348,7 @@ function generateSubtaskHTMLEdit(subtasks) {
             <div class="subtask-item" id="subTask_${i}">
               <div>
                 •
-                <span>${subtask}</span>
+                <span id="subTask_${i}_span">${subtask}</span>
               </div>
               <div class="subtask-item-icons">
                 <img class="subtask-item-icon" style="border-right: 1px solid rgba(209, 209, 209, 1);" src="assets/img/icons/edit_dark.png" alt="" onclick="editSubtaskEdit(${i})">
@@ -409,29 +409,60 @@ function updateElementVisibilityEdit(element, shouldDisplay) {
 function clearInputFieldEdit() {
   const subtaskInput = document.getElementById('subTaskInputEdit');
   subtaskInput.value = '';
-  toggleAddButtonImageEdit();
 }
+
 
 function editSubtaskEdit(subtaskIndex) {
   let subtaskItem = document.getElementById(`subTask_${subtaskIndex}`);
-  let subtaskSpan = document.querySelector(`#subTask_${subtaskIndex} span`);
+  let subtaskSpan = document.getElementById(`subTask_${subtaskIndex}_span`);
   let subtaskText = subtaskSpan.innerHTML.trim();
-  let subtaskInput = `<input type="text" id="subTask_${subtaskIndex}_input" value="${subtaskText}">`;
+  let subtaskInput = `<div class="edit-subtask-under-container">
+                      <input class="edit-input" type="text" id="subTask_${subtaskIndex}_input" value="${subtaskText}">
+                      <div class="sub-image-container-edit" id="image-container">
+                      <img id="addBtnEdit" src="assets/img/icons/check_blue.png" alt="" onclick="addSubtaskEditWindow()" style="display: block;">
+                      <div id="sub-seperator" class="subtask-seperator-edit" style="display: block;">
+                      </div>
+                      <img id="closeBtn" src="./assets/img/icons/trash.png" onclick="clearInputFieldEdit(), toggleAddButtonImageEdit()" alt="" style="display: block;">
+                      </div>
+                      </div>
+                    `;
   subtaskItem.innerHTML = subtaskInput;
 
-  document.querySelector(`#subTask_${subtaskIndex}_input`).focus();
+  document.getElementById(`subTask_${subtaskIndex}_input`).focus();
 
-  document.querySelector(`#subTask_${subtaskIndex}_input`).addEventListener('keydown', function(event) {
+  let subtaskInputElement = document.getElementById(`subTask_${subtaskIndex}_input`);
+  subtaskInputElement.focus();
+
+  // Ereignislistener für die Eingabetaste hinzufügen
+  subtaskInputElement.addEventListener('keydown', function(event) {
     if (event.key === 'Enter') { 
-      saveEditedSubtask(subtaskIndex); 
+      event.preventDefault(); 
+      saveEditedSubtask(subtaskIndex); // Änderungen speichern
     }
   });
 }
 
 function saveEditedSubtask(subtaskIndex) {
-  let subtaskInput = document.querySelector(`#subTask_${subtaskIndex}_input`);
+  let subtaskInput = document.getElementById(`subTask_${subtaskIndex}_input`);
   let newText = subtaskInput.value.trim();
-
-  document.getElementById(`subTask_${subtaskIndex}`).innerHTML = `• <span>${newText}</span>`;
+  let subtaskItem = document.getElementById(`subTask_${subtaskIndex}`);
+  subtaskItem.innerHTML = `
+  <div class="subtask-item-edit">
+    <div>
+      •
+      <span id="subTask_${subtaskIndex}_span">${newText}</span>
+    </div>
+    <div class="subtask-item-icons">
+        <img class="subtask-item-icon" style="border-right: 1px solid rgba(209, 209, 209, 1);" src="assets/img/icons/edit_dark.png" alt="" onclick="editSubtaskEdit(${subtaskIndex})">
+         <img class="subtask-item-icon" src="assets/img/icons/trash.png" alt="" onclick="deleteSubtaskEdit(${subtaskIndex})">
+    </div>
+  </div>
+  `;
 }
+
+function updateSubtaskEdit(){
+  
+}
+
+
 
