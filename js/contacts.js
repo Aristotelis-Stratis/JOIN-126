@@ -75,8 +75,10 @@ function areInputsValid(inputs) {
  */
 async function saveToStorage() {
     if (currentUser && currentUser.data) {
+        currentUser.data.contacts = allContacts;  // Aktualisieren der Kontakte im currentUser
         console.log("Speichere aktuelle Benutzerdaten: ", JSON.stringify(currentUser.data));
         await setItem('currentUserData', JSON.stringify(currentUser.data));
+        await setItem('allUsers', JSON.stringify(allUsers)); // Stellen Sie sicher, dass allUsers auch aktualisiert wird
     } else {
         console.error("Kein aktueller Benutzer oder keine Daten zum Speichern.");
     }
@@ -258,6 +260,10 @@ function saveContactUpdates(contactIndex, name, email, number) {
     allContacts[contactIndex].email = email;
     allContacts[contactIndex].number = number;
     allContacts[contactIndex].initials = getInitials(name);
+    if (currentUser) {
+        currentUser.data.contacts = allContacts;
+        saveCurrentUser();
+    }
 }
 
 
@@ -287,12 +293,17 @@ function saveUpdatedContact() {
  * @param {number} contactIndex - The index of the contact to be deleted.
  */
 function deleteContact(contactIndex) {
-    const contactId = allContacts[contactIndex].id;
-    allContacts.splice(contactIndex, 1);
-    removeContactFromTasks(contactId);
-    saveToStorage();  
-    renderContacts(); 
-    showDeleteConfirmation(); 
+    if (currentUser && currentUser.data && currentUser.data.contacts) {
+        const contactId = allContacts[contactIndex].id;
+        allContacts.splice(contactIndex, 1);
+        currentUser.data.contacts = allContacts;
+        removeContactFromTasks(contactId);
+        saveCurrentUser();
+        renderContacts();
+        showDeleteConfirmation();
+    } else {
+        console.error("Keine gültigen Kontaktinformationen verfügbar.");
+    }
 }
 
 /**
