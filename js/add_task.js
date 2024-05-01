@@ -145,7 +145,7 @@ function renderTaskContactList() {
  * @param {string} input - The user's input used for filtering contacts by name.
  */
 function filterContacts(input) {
-    const filteredContacts = allContacts.filter(contact =>
+    const filteredContacts = currentUser.data.contacts.filter(contact =>
         contact.name.toLowerCase().includes(input.toLowerCase())
     );
     renderFilteredContactList(filteredContacts);

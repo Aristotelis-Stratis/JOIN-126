@@ -40,11 +40,6 @@ async function loadTasksFromStorage() {
 // Später noch eine saveCurrentUserToStorage() erstellen die erst den User speichert und dann allUser
 
 
-
-
-
-
-
 function getCategoryBackgroundColor(category) {
   if (category === 'Technical Task') {
     return '#1FD7C1';
