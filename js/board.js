@@ -207,12 +207,12 @@ function showAddTaskPopUpEdit(index) {
   let subtasks = generateSubtaskHTMLEdit(task.subtasks);
   let usersHTML = generateUserHTMLEdit(task.contacts);
 
-  popUp.innerHTML = generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks, priority);
+  popUp.innerHTML = generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks, priority, index);
 }
 
 
 
-function generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks, priority) {
+function generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks, priority, index) {
   
   return `
     <div class="form-container">
@@ -308,7 +308,7 @@ function generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks,
                 <div class="drop-down-menu-container">
   
                   <div class="sub-image-container" id="image-container">
-                    <img id="addBtnEdit" src="assets/img/icons/add.png" alt="" onclick="addSubtaskEditWindow()">
+                    <img id="addBtnEdit" src="assets/img/icons/add.png" alt="" onclick="addSubtaskToEditWindow()">
                     <div id="sub-seperator" class="subtask-seperator" style="display:none;">
                     </div>
                     <img id="closeBtn" src="assets/img/icons/close.png"
@@ -316,7 +316,7 @@ function generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks,
                   </div>
   
                   <input class="no-validate subtask" type="text" id="subTaskInputEdit" maxlength="15"
-                    placeholder="Add new subtask" oninput="toggleAddButtonImageEdit()">
+                    placeholder="Add new subtask" onkeypress="handleKeyPress(event, ${index})" oninput="toggleAddButtonImageEdit()">
                 </div>
                 <div class="subtask-container-edit" id="subtaskContainerEdit">
                   ${subtasks}
@@ -357,7 +357,7 @@ function generateSubtaskHTMLEdit(subtasks) {
   return subtaskHTML;
 }
 
-function addSubtaskEditWindow() {
+function addSubtaskToEditWindow() {
   let newSubtask = document.getElementById('subTaskInputEdit').value;
 
   if (newSubtask.trim() !== '') {
@@ -382,6 +382,15 @@ function addSubtaskEditWindow() {
 
   }
 }
+
+function toggleAddButtonImageEdit() {
+  const subtaskInputValue = document.getElementById('subTaskInputEdit').value.trim();
+  const isInputNotEmpty = subtaskInputValue !== '';
+  updateAddButtonEdit(isInputNotEmpty);
+  updateElementVisibilityEdit(document.getElementById('closeBtn'), isInputNotEmpty);
+  updateElementVisibilityEdit(document.getElementById('sub-seperator'), isInputNotEmpty);
+}
+
 
 function toggleAddButtonImageEdit() {
   const subtaskInputValue = document.getElementById('subTaskInputEdit').value.trim();
@@ -469,5 +478,10 @@ function updateSubtaskEdit(){
   
 }
 
-
+function handleKeyPress(event, index) {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    addSubtaskToEditWindow(index);
+  }
+}
 
