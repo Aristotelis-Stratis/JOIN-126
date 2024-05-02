@@ -415,10 +415,10 @@ function editSubtaskEdit(subtaskIndex) {
   let subtaskInput = `<div class="edit-subtask-under-container">
                       <input class="edit-input" type="text" id="subTask_${subtaskIndex}_input" value="${subtaskText}">
                       <div class="sub-image-container-edit" id="image-container">
-                      <img id="addBtnEdit" src="assets/img/icons/check_blue.png" alt="" onclick="addSubtaskEditWindow()" style="display: block;">
+                      <img id="addBtnEdit" src="assets/img/icons/check_blue.png" alt="" onclick="saveEditedSubtask(${subtaskIndex})" style="display: block;">
                       <div id="sub-seperator" class="subtask-seperator-edit" style="display: block;">
                       </div>
-                      <img id="closeBtn" src="./assets/img/icons/trash.png" onclick="clearInputFieldEdit(), toggleAddButtonImageEdit()" alt="" style="display: block;">
+                      <img id="closeBtn" src="./assets/img/icons/trash.png" onclick="deleteSubtaskEdit(${subtaskIndex})" alt="" style="display: block;">
                       </div>
                       </div>
                     `;
@@ -429,7 +429,6 @@ function editSubtaskEdit(subtaskIndex) {
   let subtaskInputElement = document.getElementById(`subTask_${subtaskIndex}_input`);
   subtaskInputElement.focus();
 
-  // Ereignislistener für die Eingabetaste hinzufügen
   subtaskInputElement.addEventListener('keydown', function(event) {
     if (event.key === 'Enter') { 
       event.preventDefault(); 
