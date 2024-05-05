@@ -5,6 +5,8 @@
 //   done: []
 // };
 
+let subtaskIndexCounter = 0;
+
 
 async function init() {
   includeHTML();
@@ -213,7 +215,7 @@ function showAddTaskPopUpEdit(index) {
 
 
 function generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks, priority, index) {
-  
+
   return `
     <div class="form-container">
           <div class="task-title-popup-edit">
@@ -308,7 +310,7 @@ function generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks,
                 <div class="drop-down-menu-container">
   
                   <div class="sub-image-container" id="image-container">
-                    <img id="addBtnEdit" src="assets/img/icons/add.png" alt="" onclick="addSubtaskToEditWindow()">
+                    <img id="addBtnEdit" src="assets/img/icons/add.png" alt="" onclick="addSubtaskToEditWindow(${index})">
                     <div id="sub-seperator" class="subtask-seperator" style="display:none;">
                     </div>
                     <img id="closeBtn" src="assets/img/icons/close.png"
@@ -325,7 +327,7 @@ function generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks,
             </div>
           </form>
             <div class="edit-btn-position">
-                <button class="fb rb" onclick="updateSubtaskEdit()">OK<img src="assets/img/icons/check.png"
+                <button class="fb rb" onclick="updateSubtaskEdit(${index})">OK<img src="assets/img/icons/check.png"
                   alt="Update Task"></button>
                 </div>
             </div>
@@ -339,20 +341,7 @@ function generateSubtaskHTMLEdit(subtasks) {
   let subtaskHTML = '';
   for (let i = 0; i < subtasks.length; i++) {
     const subtask = subtasks[i];
-    subtaskHTML += `
-          <div class="subtask-edit-container" id="subTask_${i}">
-            <div class="subtask-item" id="subTaskItem_${i}">
-              <div>
-                •
-                <span id="subTask_${i}_span">${subtask}</span>
-              </div>
-              <div class="subtask-item-icons">
-                <img class="subtask-item-icon" style="border-right: 1px solid rgba(209, 209, 209, 1);" src="assets/img/icons/edit_dark.png" alt="" onclick="editSubtaskEdit(${i})">
-                <img class="subtask-item-icon" src="assets/img/icons/trash.png" alt="" onclick="deleteSubtaskEdit(${i})">
-              </div>
-            </div>
-          </div>
-      `;
+    subtaskHTML += generateSubtaskHTML(subtaskIndexCounter++, subtask);
   }
   return subtaskHTML;
 }
@@ -361,26 +350,27 @@ function addSubtaskToEditWindow() {
   let newSubtask = document.getElementById('subTaskInputEdit').value;
 
   if (newSubtask.trim() !== '') {
-    let newSubtaskHTML = `
-    <div class="subtask-edit-container">
-    <div class="subtask-item">
-      <div>
-        •
-        <span>${newSubtask}</span>
-      </div>
-      <div class="subtask-item-icons">
-        <img class="subtask-item-icon" style="border-right: 1px solid rgba(209, 209, 209, 1);" src="assets/img/icons/edit_dark.png" alt="" onclick="editSubtaskEdit()">
-        <img class="subtask-item-icon" src="assets/img/icons/trash.png" alt="" onclick="deleteSubtaskEdit(0)">
-      </div>
-    </div>
-    </div>
-    `;
-
     let subtaskContainer = document.getElementById('subtaskContainerEdit');
-    subtaskContainer.innerHTML += newSubtaskHTML;
+    subtaskContainer.insertAdjacentHTML('beforeend', generateSubtaskHTML(subtaskIndexCounter++, newSubtask));
     document.getElementById('subTaskInputEdit').value = '';
-
   }
+}
+
+function generateSubtaskHTML(index, subtask) {
+  return `
+    <div class="subtask-edit-container" id="subTask_${index}">
+      <div class="subtask-item" id="subTaskItem_${index}">
+        <div>
+          •
+          <span id="subTask_${index}_span">${subtask}</span>
+        </div>
+        <div class="subtask-item-icons">
+          <img class="subtask-item-icon" style="border-right: 1px solid rgba(209, 209, 209, 1);" src="assets/img/icons/edit_dark.png" alt="" onclick="editSubtaskEdit(${index})">
+          <img class="subtask-item-icon" src="assets/img/icons/trash.png" alt="" onclick="deleteSubtaskEdit(${index})">
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 function toggleAddButtonImageEdit() {
@@ -438,9 +428,9 @@ function editSubtaskEdit(subtaskIndex) {
   let subtaskInputElement = document.getElementById(`subTask_${subtaskIndex}_input`);
   subtaskInputElement.focus();
 
-  subtaskInputElement.addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') { 
-      event.preventDefault(); 
+  subtaskInputElement.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
       saveEditedSubtask(subtaskIndex); // Änderungen speichern
     }
   });
@@ -464,18 +454,25 @@ function saveEditedSubtask(subtaskIndex) {
       `;
 }
 
-function deleteSubtaskEdit(subtaskIndex) {
-  // Entferne den Subtask an der angegebenen Indexposition
-  currentUser.data.tasks[subtaskIndex].subtasks.splice(subtaskIndex, 1);
+function deleteSubtaskEdit(index) {
+  let subtaskContainer = document.getElementById(`subTask_${index}`);
+  subtaskContainer.remove();
+}
 
-  // Aktualisiere den HTML-Inhalt des Containers für die Subtasks
-  let subtaskContainer = document.getElementById(`subTask_${subtaskIndex}`);
-  subtaskContainer.innerHTML = generateSubtaskHTMLEdit(subtaskIndex);
+function saveTasksToLocalStorage(tasks) {
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+function getTasksFromLocalStorage() {
+  const tasksJSON = localStorage.getItem('tasks');
+  return JSON.parse(tasksJSON);
 }
 
 
-function updateSubtaskEdit(){
-  
+function updateSubtaskEdit(index) {
+  saveTasksToLocalStorage(index);
+  showPopUp(index); 
+ 
 }
 
 function handleKeyPress(event, index) {
@@ -484,4 +481,5 @@ function handleKeyPress(event, index) {
     addSubtaskToEditWindow(index);
   }
 }
+
 
