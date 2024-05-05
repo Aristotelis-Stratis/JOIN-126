@@ -190,7 +190,7 @@ function generateAddTaksPopUpHTML() {
                   </div>
   
                   <input class="no-validate subtask" type="text" id="subTaskInput" maxlength="15"
-                    placeholder="Add new subtask" oninput="toggleAddButtonImage()">
+                    placeholder="Add new subtask" oninput="toggleAddButtonImage()" onkeydown="handleSubtaskKeyDown(event)">
                 </div>
                 <div class="subtask-container" id="subtaskContainer">
                   <!-- Hier werden die Subtasks gerendert -->
@@ -286,3 +286,9 @@ function generateSubtasksHTML(subtasks) {
   return subtasksHTML;
 }
 
+function handleSubtaskKeyDown(event) {
+  if (event.key === "Enter") {
+      event.preventDefault();
+      addSubtask();
+  }
+}
