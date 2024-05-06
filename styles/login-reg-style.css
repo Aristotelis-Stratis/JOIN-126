@@ -417,13 +417,43 @@ button { <---- Wird das bei anderen Buttons gebraucht? Guest Login???
     animation: myAnim 1.5s ease 0.75s forwards;
 }
 
+.reg-overlay {
+    z-index: 999;
+    position: absolute;
+    inset: 0 0 0 0;
+}
+
+.animated-message {
+    position: relative;
+    inset: 50% 0 0 50%;
+    height: 80px;
+    width: 320px;
+    transform: translate(-50%, 700%);
+    text-align: center;
+    background-color: #2A3647;
+    border-radius: 16px;
+    animation: slideInUp 0.75s ease forwards;
+}
+
+.reg-text {
+    color: white;
+}
+
 /* KEYFRAMES */
 
-@keyframes opacityAnim {
+@keyframes slideInUp {
     from {
-
+        transform: translate(-50%, 700%);
+        opacity: 0;
     }
 
+    to {
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
+}
+
+@keyframes opacityAnim {
     to {
         background-color: transparent;
     }
@@ -633,10 +663,14 @@ button { <---- Wird das bei anderen Buttons gebraucht? Guest Login???
         width: 160px;
     }
 
-
     .register-btn {
         width: 160px;
         margin-bottom: 16px;
+    }
+
+    .animated-message {
+        height: 64px;
+        width: 260px;
     }
 
     .margin-b56 {
@@ -657,5 +691,11 @@ button { <---- Wird das bei anderen Buttons gebraucht? Guest Login???
 
     .margin380 {
         margin: 8px 8px 8px 0px;
+    }
+
+    @keyframes slideInUp {
+        to {
+            transform: translate(-50%, 200%);
+        }
     }
 }

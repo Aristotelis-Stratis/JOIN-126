@@ -80,6 +80,7 @@ async function initRegistry() {
         newUser.data.contacts.push(newContact);
         await saveUserToStorage(newUser);
         console.log('Du hast dich erfolgreich registriert!');
+        startSlideInUpAnim();
         window.setTimeout(() => { window.location.href = "login.html"; }, 2500);
     } else {
         console.log('Die Emailadresse existiert bereits!');
@@ -299,4 +300,8 @@ function removeOverlay() {
         overlay.classList.add('d-none');
         logo.classList.remove('d-none');
     }, 2000);
+}
+
+function startSlideInUpAnim() {
+    getById('reg-overlay').classList.remove('d-none');
 }
