@@ -15,6 +15,7 @@ async function init() {
     startEventlistener(inputs);
     animationValidation();
     eventListenerKeyup(inputs);
+    loadRememberData();
 }
 
 
@@ -135,6 +136,7 @@ async function login() {
     let user = await getUserByEmail(email);
     if (user && user.password === password) {
         console.log('Login erfolgreich!');
+        rememberCheck();
         setCurrentUser(user);
         window.location.href = 'summary.html';
     } else {
@@ -275,13 +277,53 @@ function hideError(messageFieldId, inputId) {
 function privacyPolicyCheck() {
     let checkbox = document.getElementById('checkbox');
 
+    checkCheckbox(checkbox);
+    checkButton();
+}
+
+function checkCheckbox(checkbox) {
     if (!checkbox.checked) {
         checkbox.checked = true;
-        checkButton();
     } else if (checkbox.checked) {
         checkbox.checked = false;
-        checkButton();
     }
+}
+
+function loadRememberData() {
+    try {
+    let rememberEmail = JSON.parse(localStorage.getItem('email'));
+    let rememberPassword = JSON.parse(localStorage.getItem('password'));
+
+    if(rememberEmail != null && rememberPassword != null) {
+        changeIcon('password','passwordIcon');
+        getById('email').value = rememberEmail;
+        getById('password').value = rememberPassword;
+        getById('rememberCheckbox').checked = true;
+        getById('passwordIcon').classList.add('enabled');
+    }
+    } catch (e) {
+        return false;
+    }
+}
+
+function rememberCheck() {
+    let checkbox = getById('rememberCheckbox');
+
+    if(checkbox.checked) {
+        saveUserData();
+    } else if(!checkbox.checked) {
+        deleteUserData();
+    }
+}
+
+function deleteUserData() {
+    localStorage.setItem('email', '');
+    localStorage.setItem('password', '');
+}
+
+function saveUserData() {
+    localStorage.setItem('email', `"${getValue('email')}"`);
+    localStorage.setItem('password', `"${getValue('password')}"`);
 }
 
 function animationValidation() {
