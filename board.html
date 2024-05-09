@@ -52,17 +52,17 @@
                   <img onclick="showAddTaskPopUp()" src="./assets/img/icons/plus_button_dark.png"
                     alt="dark-blue-plus-sign">
                 </div>
-                <div id="ToDos">
+                <div id="ToDos" ondrop="moveTo('ToDos')" ondragover="allowDrop(event)">
                   <div class="no-task-box">No tasks To do</div>
                 </div>
               </div>
-              <div class="column-properties">
+              <div class="column-properties"> 
                 <div class="taskflow-board">
                   <div class="column-titles">In Progress</div>
                   <img onclick="showAddTaskPopUp()" src="./assets/img/icons/plus_button_dark.png"
                     alt="dark-blue-plus-sign">
                 </div>
-                <div id="progress-container">
+                <div id="progress-container" ondrop="moveTo('progress-container')" ondragover="allowDrop(event)">
                   <div class="no-task-box">No Task is in Progress</div>
                 </div>
               </div>
