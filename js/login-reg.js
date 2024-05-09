@@ -82,7 +82,12 @@ async function initRegistry() {
                 initials: initials // Initialen hinzufügen
             }],
             tasks: [],
-            board: {},
+            board: [{
+                todo: "",
+                inProgress: "",
+                awaitFeedback: "",
+                done:""
+            }],
             summary: {}
         };
 
@@ -513,4 +518,57 @@ function startSlideInUpAnim() {
 //     startEventlistener(inputs);
 //     animationValidation();
 //     eventListenerKeyup(inputs);
+// }
+
+
+
+
+
+
+
+
+
+
+// BACKUP VON DER REGISTRIERUNGSFUNKTION BEVOR ALLES KAPUTT GEHT, LETZTE CHANCE BEVOR WIR DURCHDREHEN
+
+
+// async function initRegistry() {
+//     let username = document.getElementById('name').value;
+//     let email = document.getElementById('email').value;
+//     let password = document.getElementById('password').value;
+//     // Entferne Sonderzeichen aus der E-Mail-Adresse
+//     let cleanedEmail = email.replace(/[^\w\s]/gi, ''); // Entfernt alle Sonderzeichen
+//     let userExists = await loadData(`users/${btoa(email)}`);
+
+//     if (!userExists) {
+//         // Generiere Initialen für den Benutzer
+//         const initials = getInitials(username);
+
+//         let newUser = {
+//             name: username,
+//             email: email,
+//             password: password,
+//             contacts: [{
+//                 name: username,
+//                 email: email,
+//                 number: "",
+//                 initials: initials // Initialen hinzufügen
+//             }],
+//             tasks: [],
+//             board: [{
+//                 todo: "",
+//                 inProgress: "",
+//                 awaitFeedback: "",
+//                 done:""
+//             }],
+//             summary: {}
+//         };
+
+//         await postData(`users/${cleanedEmail}`, newUser);
+//         console.log('Du hast dich erfolgreich registriert!');
+//         startSlideInUpAnim();
+//         window.setTimeout(() => { window.location.href = "login.html"; }, 2500);
+//     } else {
+//         console.log('Die Emailadresse existiert bereits!');
+//     }
 // }
