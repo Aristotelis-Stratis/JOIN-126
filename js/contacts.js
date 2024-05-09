@@ -1,21 +1,15 @@
 let i;
 let currentEditingId = null;
 
-/**
- * Initializes the application by loading all contacts.
- */
+
 async function initContacts() {
-    await includeHTML();  // Stellen Sie sicher, dass dies abgeschlossen ist, falls asynchron
+    await includeHTML();  // Falls asynchron
     setProfileInitials();
-    await loadTasksFromStorage();  // Reihenfolge geändert für bessere Logik
-    await loadAllContacts();
-    console.log("Aufgaben geladen:", currentUser.data.tasks);
+    await loadCurrentUser();  // Lädt den aktuellen Benutzer korrekt
+    //console.log("Aufgaben geladen:", currentUser.data.tasks);
 }
 
 
-/**
- * Validates inputs and creates a new contact if valid, then updates the UI and storage.
- */
 async function createContact() {
     let nameInput = document.getElementById('inputName');
     let emailInput = document.getElementById('inputEmail');
@@ -23,11 +17,24 @@ async function createContact() {
 
     if (areInputsValid([nameInput, emailInput, numberInput])) {
         let contact = createContactObject(nameInput.value, emailInput.value, numberInput.value);
-        if (currentUser && currentUser.data && currentUser.data.contacts) {
+        if (currentUser && currentUser.data) {
             currentUser.data.contacts.push(contact);
-            await saveCurrentUser();
-            renderContacts();
-            showCreationConfirmation();
+            const newContactIndex = currentUser.data.contacts.length - 1;  // Index des neuen Kontakts
+
+            // Verwenden der cleanedEmail aus dem LocalStorage, unabhängig davon, ob es sich um einen Gast oder regulären Benutzer handelt
+            const cleanedEmail = localStorage.getItem('cleanedEmail');
+            const userId = localStorage.getItem('currentUserId');
+            const basePath = `users/${cleanedEmail}/${userId}`;
+            const contactPath = `${basePath}/contacts/${newContactIndex}`;
+
+            try {
+                await updateData(contactPath, contact);
+                localStorage.setItem('currentUser', JSON.stringify(currentUser)); // Aktualisieren des currentUser im Local Storage
+                renderContacts(); // UI aktualisieren
+                showCreationConfirmation(); // Bestätigung der Kontakterstellung anzeigen
+            } catch (error) {
+                console.error('Fehler beim Hinzufügen des Kontakts zu Firebase:', error);
+            }
         } else {
             console.error('Fehler: Kein gültiger aktueller Benutzer oder Kontaktliste nicht verfügbar.');
         }
@@ -84,45 +91,59 @@ async function saveToStorage() {
     }
 }
 
-/**
- * Loads all contacts from storage and updates the `allContacts` array. Logs a message if no contacts are found.
- */
+
 async function loadAllContacts() {
+    if (currentUser && currentUser.data && currentUser.data.contacts) {
+        allContacts = currentUser.data.contacts;
+        console.log("Kontakte geladen:", allContacts);
+        renderContacts();
+    } else {
+        console.error("Keine Kontaktdaten verfügbar für den aktuellen Benutzer.");
+    }
+}
+
+async function saveCurrentUser() {
     try {
-        if (currentUser && currentUser.data.contacts) {
-            allContacts = currentUser.data.contacts;
-            console.log("Kontakte geladen:", allContacts);
-            renderContacts();
+        const userId = localStorage.getItem('currentUserId');
+        const currentUserData = JSON.parse(localStorage.getItem('currentUser'));
+
+        if (userId && currentUserData) {
+            await postData(`users/${userId}`, currentUserData);
+            console.log('Benutzerdaten erfolgreich aktualisiert:', currentUserData);
         } else {
-            console.error("Keine Kontaktdaten verfügbar für den aktuellen Benutzer.");
+            console.error('Fehler: Keine Benutzer-ID oder Benutzerdaten im Local Storage gefunden.');
         }
-    } catch (e) {
-        console.error("Fehler beim Laden der Kontakte:", e);
+    } catch (error) {
+        console.error('Fehler beim Speichern des aktuellen Benutzers:', error);
     }
 }
 
 
-/**
- * Renders the contacts by sorting them and then displaying each in the designated container with separators for each letter.
- */
-function renderContacts() {
-    if (!currentUser || !currentUser.data) {
-        console.error("Kein aktueller Benutzer oder keine Benutzerdaten geladen.");
-        return;
-    }
 
+
+function renderContacts() {
     const contacts = currentUser.data.contacts;
     const contactListContainer = document.getElementById('contact-container');
     contactListContainer.innerHTML = '';
     let currentInitial = '';
 
-    contacts.forEach((contact, i) => {
+    // Erweiterte Sortierfunktion, die erst nach dem Nachnamen und dann nach dem Vornamen sortiert
+    contacts.sort((a, b) => {
+        const lastNameA = a.name.split(' ').pop();
+        const lastNameB = b.name.split(' ').pop();
+        if (lastNameA === lastNameB) {
+            return a.name.localeCompare(b.name);
+        }
+        return lastNameA.localeCompare(lastNameB);
+    });
+
+    contacts.forEach((contact, index) => {
         const lastNameInitial = contact.name.split(' ').pop().charAt(0).toUpperCase();
         if (lastNameInitial !== currentInitial) {
             contactListContainer.innerHTML += createLetterContainerHTML(lastNameInitial);
             currentInitial = lastNameInitial;
         }
-        contactListContainer.innerHTML += createNewContactHTML(contact, i);
+        contactListContainer.innerHTML += createNewContactHTML(contact, index);
     });
 }
 
@@ -219,16 +240,28 @@ function setContactDataToUI(name, email, number) {
  * Prepares the UI for editing a contact by displaying the contact overlay and filling in the contact's current data.
  * @param {number} i - The index of the contact to edit.
  */
-function editContact(i) {
-    const contact = allContacts[i];
+async function editContact(contactId) {
+    const contactIndex = currentUser.data.contacts.findIndex(contact => contact.id === contactId);
+
+    if (contactIndex === -1) {
+        console.error("Kontakt nicht gefunden.");
+        return;
+    }
+
+    // Zugriff auf den Kontakt im currentUser basierend auf dem gefundenen Index
+    const contact = currentUser.data.contacts[contactIndex];
     currentEditingId = contact.id;
-    document.getElementById('aco').style.display = 'flex';
-    const { name, email, number } = getContactDataFromUI(i);
+
+    // Holen der Daten aus dem UI
+    const { name, email, number } = getContactDataFromUI(contactIndex);
     setContactDataToUI(name, email, number);
+
+    // Kontaktaktualisierungs-Overlay anzeigen
+    document.getElementById('aco').style.display = 'flex';
     const acoIcon = document.getElementById('aco-icon');
     acoIcon.innerHTML = `
-    <div class="details-1-icon" id="details-1-icon"style="background-color:${contact.color}">
-        <span>${contact.initials.split("").join("</span><span>")}</span>
+    <div class="details-1-icon" id="details-1-icon" style="background-color:${contact.color}">
+        <span>${getInitials(name)}</span>
     </div>`;
     editContactContent();
 }
@@ -270,19 +303,51 @@ function saveContactUpdates(contactIndex, name, email, number) {
 /**
  * Main function to save the updated contact information and refresh the UI to reflect these changes.
  */
-function saveUpdatedContact() {
+async function saveUpdatedContact() {
     const updatedName = document.getElementById('inputName').value;
     const updatedEmail = document.getElementById('inputEmail').value;
     const updatedNumber = document.getElementById('inputNumber').value;
-    const contactIndex = allContacts.findIndex(contact => contact.id === currentEditingId);
+
+    // Index des bearbeiteten Kontakts im currentUser finden
+    const contactIndex = currentUser.data.contacts.findIndex(contact => contact.id === currentEditingId);
 
     if (contactIndex !== -1) {
-        saveContactUpdates(contactIndex, updatedName, updatedEmail, updatedNumber);
-        updateContactUI(contactIndex, updatedName, updatedEmail, updatedNumber);
-        updateInitials(contactIndex, updatedName);
-        saveToStorage();
-        renderContacts();
-        openContactDetails(contactIndex);
+        // Aktualisierte Daten für den Kontakt erstellen
+        const updatedContact = {
+            ...currentUser.data.contacts[contactIndex],
+            name: updatedName,
+            email: updatedEmail,
+            number: updatedNumber,
+            initials: getInitials(updatedName)  // Stellen Sie sicher, dass die Initialen auch aktualisiert werden
+        };
+
+        // Update currentUser's contacts locally before pushing to Firebase
+        currentUser.data.contacts[contactIndex] = updatedContact;
+
+        // Konstruktion des Pfades für die spezifische Kontaktaktualisierung
+        const cleanedEmail = localStorage.getItem('cleanedEmail');
+        const userId = localStorage.getItem('currentUserId');
+        const basePath = `users/${cleanedEmail}/${userId}`;
+        const contactPath = `${basePath}/contacts/${contactIndex}`;
+
+        try {
+            // Update the specific contact in Firebase
+            await updateData(contactPath, updatedContact);
+            console.log('Kontaktdaten erfolgreich aktualisiert:', updatedContact);
+
+            // Aktualisieren des currentUser im localStorage
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+            // UI aktualisieren
+            updateContactUI(contactIndex, updatedName, updatedEmail, updatedNumber);
+            renderContacts();
+            openContactDetails(contactIndex);
+            showEditConfirmation();
+        } catch (error) {
+            console.error('Fehler beim Speichern der aktualisierten Kontaktdaten:', error);
+        }
+    } else {
+        console.error('Kontaktindex nicht gefunden.');
     }
 }
 
@@ -292,17 +357,49 @@ function saveUpdatedContact() {
  * Also removes the contact from all tasks.
  * @param {number} contactIndex - The index of the contact to be deleted.
  */
-function deleteContact(contactIndex) {
-    if (currentUser && currentUser.data && currentUser.data.contacts) {
-        const contactId = allContacts[contactIndex].id;
-        allContacts.splice(contactIndex, 1);
-        currentUser.data.contacts = allContacts;
-        removeContactFromTasks(contactId);
-        saveCurrentUser();
-        renderContacts();
-        showDeleteConfirmation();
-    } else {
+async function deleteContact(contactId) {
+    // Loggt die ID des zu löschenden Kontakts
+    console.log("Gewünschte zu löschende Kontakt-ID:", contactId);
+    
+    // Überprüft, ob aktuelle Benutzerdaten vorhanden und korrekt geladen sind
+    if (!currentUser || !currentUser.data || !currentUser.data.contacts) {
         console.error("Keine gültigen Kontaktinformationen verfügbar.");
+        return;
+    }
+
+    // Loggt alle IDs der Kontakte des aktuellen Benutzers
+    console.log("Aktuelle Kontakt-IDs im currentUser:", currentUser.data.contacts.map(c => c.id));
+
+    // Sucht den Index des zu löschenden Kontakts anhand der ID
+    const contactIndex = currentUser.data.contacts.findIndex(contact => contact.id === contactId);
+    console.log("Gefundener Index für Kontakt-ID", contactId, "ist", contactIndex);
+
+    // Prüft, ob der Kontakt gefunden wurde
+    if (contactIndex === -1) {
+        console.error("Kontakt nicht gefunden.");
+        return;
+    }
+
+    // Entfernt den Kontakt aus dem lokalen Speicher (Array)
+    currentUser.data.contacts.splice(contactIndex, 1);
+    // Aktualisiert die lokale Speicherung der Nutzerdaten
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+    // Bereitet den Pfad zur Kontaktliste in Firebase vor
+    const cleanedEmail = localStorage.getItem('cleanedEmail');
+    const userId = localStorage.getItem('currentUserId');
+    const basePath = `users/${cleanedEmail}/${userId}`;
+
+    try {
+        // Aktualisiert die gesamte Kontaktliste in Firebase
+        await updateData(`${basePath}/contacts`, currentUser.data.contacts);
+        console.log('Kontakt erfolgreich gelöscht und Kontaktliste aktualisiert');
+        // Aktualisiert die Benutzeroberfläche
+        renderContacts();
+        // Zeigt eine Bestätigungsnachricht an
+        showDeleteConfirmation();
+    } catch (error) {
+        console.error("Fehler beim Löschen des Kontakts:", error);
     }
 }
 
@@ -412,31 +509,22 @@ function initiateConfirmation(message) {
 
 
 /**
- * Generates initials from a given name. If the name consists of multiple parts, initials of the first and last parts are used.
- * @param {string} name - The full name from which to generate initials.
- * @return {string} The generated initials, in uppercase.
- */
-function getInitials(name) {
-    let parts = name.split(' ');
-    if (parts.length > 1) {
-        let initials = parts[0].charAt(0) + parts[parts.length - 1].charAt(0);
-        return initials.toUpperCase();
-    }
-    return name.charAt(0).toUpperCase();
-}
-
-
-/**
  * Updates the initials displayed for a contact in the contact list.
  * @param {number} contactIndex - The index of the contact whose initials are to be updated.
  * @param {string} updatedName - The updated name of the contact, from which new initials are generated.
  */
-function updateInitials(contactIndex, updatedName) {
+async function updateInitials(contactIndex, updatedName) {
     let newInitials = getInitials(updatedName);
     let contactIconDiv = document.querySelector(`#contact-item-${contactIndex} .contact-icon`);
     contactIconDiv.innerHTML = `<span>${newInitials.charAt(0)}</span>` + (newInitials.length > 1 ? `<span>${newInitials.charAt(1)}</span>` : '');
-}
 
+    // Benutzerdaten auf Firebase aktualisieren
+    const cleanedEmail = localStorage.getItem('cleanedEmail');
+    const userId = localStorage.getItem('currentUserId');
+    const updatedContacts = [...currentUser.data.contacts]; // Kopie der Kontaktliste erstellen
+    updatedContacts[contactIndex].initials = newInitials; // Aktualisierte Initialen für den Kontakt einfügen
+    await updateData(`users/${cleanedEmail}/${userId}`, { contacts: updatedContacts });
+}
 
 /**
  * Generates a random hex color code.
@@ -498,3 +586,79 @@ function clearInputFields() {
     document.getElementById('inputEmail').value = '';
     document.getElementById('inputNumber').value = '';
 }
+
+
+//OLD
+
+/**
+ * Renders the contacts by sorting them and then displaying each in the designated container with separators for each letter.
+ */
+// function renderContacts() {
+//     if (!currentUser || !currentUser.data) {
+//         console.error("Kein aktueller Benutzer oder keine Benutzerdaten geladen.");
+//         return;
+//     }
+
+//     const contacts = currentUser.data.contacts;
+//     const contactListContainer = document.getElementById('contact-container');
+//     contactListContainer.innerHTML = '';
+//     let currentInitial = '';
+
+//     contacts.forEach((contact, i) => {
+//         const lastNameInitial = contact.name.split(' ').pop().charAt(0).toUpperCase();
+//         if (lastNameInitial !== currentInitial) {
+//             contactListContainer.innerHTML += createLetterContainerHTML(lastNameInitial);
+//             currentInitial = lastNameInitial;
+//         }
+//         contactListContainer.innerHTML += createNewContactHTML(contact, i);
+//     });
+// }
+
+/**
+ * Initializes the application by loading all contacts.
+ */
+// async function initContacts() {
+//     await includeHTML();  // Stellen Sie sicher, dass dies abgeschlossen ist, falls asynchron
+//     setProfileInitials();
+//    // await loadTasksFromStorage();  // Reihenfolge geändert für bessere Logik
+//     await loadAllContacts();
+//     console.log("Aufgaben geladen:", currentUser.data.tasks);
+// }
+
+/**
+ * Validates inputs and creates a new contact if valid, then updates the UI and storage.
+ */
+// async function createContact() {
+//     let nameInput = document.getElementById('inputName');
+//     let emailInput = document.getElementById('inputEmail');
+//     let numberInput = document.getElementById('inputNumber');
+
+//     if (areInputsValid([nameInput, emailInput, numberInput])) {
+//         let contact = createContactObject(nameInput.value, emailInput.value, numberInput.value);
+//         if (currentUser && currentUser.data && currentUser.data.contacts) {
+//             currentUser.data.contacts.push(contact);
+//             await saveCurrentUser();
+//             renderContacts();
+//             showCreationConfirmation();
+//         } else {
+//             console.error('Fehler: Kein gültiger aktueller Benutzer oder Kontaktliste nicht verfügbar.');
+//         }
+//     }
+// }
+
+/**
+ * Loads all contacts from storage and updates the `allContacts` array. Logs a message if no contacts are found.
+ */
+// async function loadAllContacts() {
+//     try {
+//         if (currentUser && currentUser.data.contacts) {
+//             allContacts = currentUser.data.contacts;
+//             console.log("Kontakte geladen:", allContacts);
+//             renderContacts();
+//         } else {
+//             console.error("Keine Kontaktdaten verfügbar für den aktuellen Benutzer.");
+//         }
+//     } catch (e) {
+//         console.error("Fehler beim Laden der Kontakte:", e);
+//     }
+// }

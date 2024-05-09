@@ -6,12 +6,13 @@
  * @returns {string} HTML string representing the contact item.
  */
 function createNewContactHTML(contact, index) {
+    const initials = contact.initials || ''; // Überprüfung, ob contact.initials definiert ist
     return `
     <div id="contact-item-${index}" class="contact-item">
         <div class="contact-container" onclick="openContactDetails(${index})">
             <div class="contact-icon" style="background-color:${contact.color};">
-                <span>${contact.initials.charAt(0)}</span>
-                ${contact.initials.length > 1 ? `<span>${contact.initials.charAt(1)}</span>` : ''}
+                <span>${initials.charAt(0)}</span>
+                ${initials.length > 1 ? `<span>${initials.charAt(1)}</span>` : ''}
             </div>
             <div class="contact-info">
                 <div class="contact-name">
@@ -56,11 +57,11 @@ function contactDetailsHTML(contact, index) {
                         <span>${contact.name}</span>
                     </div>
                     <div class="details-1-edit">
-                        <div class="edit-contact" onclick="editContact(${index})">
+                        <div class="edit-contact" onclick="editContact('${contact.id}')">
                             <img src="assets/img/icons/edit_dark.png" alt="Edit">
                             <span class="details-1-text">Edit</span>
                         </div>
-                        <div class="delete-contact" onclick="deleteContact(${index})">
+                        <div class="delete-contact" onclick="deleteContact('${contact.id}')">
                             <img src="assets/img/icons/trash.png" alt="Delete">
                             <span>Delete</span>
                         </div>
@@ -96,7 +97,7 @@ function contactDetailsHTML(contact, index) {
                 <img class="tw" src="assets/img/icons/edit_white.png" alt="Edit">
                 <span class="edit-menu-1-text">Edit</span>
             </div>
-            <div class="edit-menu-choice" onclick="deleteContact(${index})">
+            <div class="edit-menu-choice" onclick="deleteContact('${contact.id}')">
                 <img class="tw" src="assets/img/icons/trash_white.png" alt="Delete">
                 <span class="edit-menu-1-text">Delete</span>
             </div>
