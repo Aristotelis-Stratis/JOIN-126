@@ -114,6 +114,7 @@ async function login() {
         let user = usersData[userKey];
 
         if (user && user.password === password) {
+            rememberCheck();
             console.log('Login erfolgreich!');
             await setCurrentUser(user, userKey, cleanedEmail); // cleanedEmail als Argument übergeben
 
