@@ -328,11 +328,14 @@ async function saveUpdatedContact() {
         const cleanedEmail = localStorage.getItem('cleanedEmail');
         const userId = localStorage.getItem('currentUserId');
         const basePath = `users/${cleanedEmail}/${userId}`;
-        const contactPath = `${basePath}/contacts/${contactIndex}`;
+        const contactsPath = `${basePath}/contacts`;
+
+        console.log('Aktualisiere Kontakt:', updatedContact);
+        console.log('Kontakte Pfad:', contactsPath);
 
         try {
-            // Update the specific contact in Firebase
-            await updateData(contactPath, updatedContact);
+            // Update the contacts list in Firebase
+            await updateData(contactsPath, currentUser.data.contacts);
             console.log('Kontaktdaten erfolgreich aktualisiert:', updatedContact);
 
             // Aktualisieren des currentUser im localStorage
@@ -360,7 +363,7 @@ async function saveUpdatedContact() {
 async function deleteContact(contactId) {
     // Loggt die ID des zu löschenden Kontakts
     console.log("Gewünschte zu löschende Kontakt-ID:", contactId);
-    
+
     // Überprüft, ob aktuelle Benutzerdaten vorhanden und korrekt geladen sind
     if (!currentUser || !currentUser.data || !currentUser.data.contacts) {
         console.error("Keine gültigen Kontaktinformationen verfügbar.");
@@ -401,6 +404,7 @@ async function deleteContact(contactId) {
     } catch (error) {
         console.error("Fehler beim Löschen des Kontakts:", error);
     }
+    document.getElementById('contact-overview').innerHTML = '';
 }
 
 /**
@@ -559,14 +563,6 @@ function responsiveContactContent() {
         contactContainer.style.display = 'flex';
         contactList.style.display = 'none';
     }
-}
-
-/**
- * Generates a unique identifier using the current timestamp and a random string.
- * @return {string} The generated unique identifier.
- */
-function generateUniqueId() {
-    return Date.now() + Math.random().toString(36).substr(2, 9);
 }
 
 /**
