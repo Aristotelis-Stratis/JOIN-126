@@ -251,3 +251,11 @@ function getInitials(name) {
 function randomColor() {
     return '#' + Math.floor(Math.random() * 16777215).toString(16);
 }
+
+/**
+ * Generates a unique identifier using the current timestamp and a random string.
+ * @return {string} The generated unique identifier.
+ */
+function generateUniqueId() {
+    return Date.now() + Math.random().toString(36).substr(2, 9);
+}

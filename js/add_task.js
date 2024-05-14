@@ -374,7 +374,7 @@ function getSubtaskInputValue(subtaskIndex) {
 function deleteSubtask(subtaskIndex) {
     subtasks.splice(subtaskIndex, 1);
     renderSubtasks();
-}
+}6
 
 
 /**

@@ -76,6 +76,8 @@ async function initRegistry() {
             email: email,
             password: password,
             contacts: [{
+                id: generateUniqueId(),  // Generiere eine eindeutige ID für den Kontakt
+                color: randomColor(),
                 name: username,
                 email: email,
                 number: "",
@@ -194,9 +196,14 @@ async function ensureGuestUserExists() {
             name: "Guest",
             email: guestEmail,
             password: "", // Optional: Passwort, falls benötigt
-            contacts: [
-                { name: "Initial Contact", email: "contact@example.com", number: "1234567890", initials: "IC" }
-            ],
+            contacts: [{
+                id: generateUniqueId(),  // Generiere eine eindeutige ID für den Kontakt
+                color: randomColor(),
+                name: "Max Mustermann",
+                email: "max@mustermann.com",
+                number: "1234567890",
+                initials: "MM"
+            }],
             tasks: [
                 { title: "Initial Task", description: "Do something important.", completed: false }
             ],
