@@ -81,12 +81,23 @@ async function initRegistry() {
                 number: "",
                 initials: initials // Initialen hinzufügen
             }],
-            tasks: [],
+            tasks: [
+                {
+                    title: "TestTask",
+                    description: "TestDescription",
+                    dueDate: "12.12.12",
+                    priority: "urgent",
+                    contacts: "",
+                    subtasks: "",
+                    status: "toDo",
+                    category: "User Story"
+                }
+            ],
             board: [{
-                todo: "",
-                inProgress: "",
-                awaitFeedback: "",
-                done:""
+                todo: [],
+                inProgress: [],
+                awaitFeedback: [],
+                done: []
             }],
             summary: {}
         };
@@ -321,16 +332,16 @@ function removeOverlay() {
 
 function loadRememberData() {
     try {
-    let rememberEmail = JSON.parse(localStorage.getItem('email'));
-    let rememberPassword = JSON.parse(localStorage.getItem('password'));
+        let rememberEmail = JSON.parse(localStorage.getItem('email'));
+        let rememberPassword = JSON.parse(localStorage.getItem('password'));
 
-    if(rememberEmail != null && rememberPassword != null) {
-        changeIcon('password','passwordIcon');
-        getById('email').value = rememberEmail;
-        getById('password').value = rememberPassword;
-        getById('rememberCheckbox').checked = true;
-        getById('passwordIcon').classList.add('enabled');
-    }
+        if (rememberEmail != null && rememberPassword != null) {
+            changeIcon('password', 'passwordIcon');
+            getById('email').value = rememberEmail;
+            getById('password').value = rememberPassword;
+            getById('rememberCheckbox').checked = true;
+            getById('passwordIcon').classList.add('enabled');
+        }
     } catch (e) {
         return false;
     }
@@ -339,9 +350,9 @@ function loadRememberData() {
 function rememberCheck() {
     let checkbox = getById('rememberCheckbox');
 
-    if(checkbox.checked) {
+    if (checkbox.checked) {
         saveUserData();
-    } else if(!checkbox.checked) {
+    } else if (!checkbox.checked) {
         deleteUserData();
     }
 }

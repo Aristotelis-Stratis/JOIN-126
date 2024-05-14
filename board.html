@@ -15,11 +15,12 @@
   <script src="./js/add_task.js"></script>
   <script src="./js/add_task_auxiliary.js"></script>
   <script src="./js/add_task.template.js"></script>
+  <script src="./js/contacts.js"></script>
   <script src="./js/templates.js"></script>
   <script src="./js/board.template.js"></script>
 </head>
 
-<body onload="init(); checkAuthentication();">
+<body onload="init()">
   <section class="main-container">
     <!-- left part of website fixed menu -->
     <div w3-include-html="./assets/templates/nav.html"></div>
@@ -56,7 +57,7 @@
                   <div class="no-task-box">No tasks To do</div>
                 </div>
               </div>
-              <div class="column-properties"> 
+              <div class="column-properties">
                 <div class="taskflow-board">
                   <div class="column-titles">In Progress</div>
                   <img onclick="showAddTaskPopUp()" src="./assets/img/icons/plus_button_dark.png"

@@ -5,41 +5,44 @@
 //   done: []
 //    };
 
-  let subtaskIndexCounter = 0;
-  let currentDraggedElement;
+let subtaskIndexCounter = 0;
+let currentDraggedElement;
 
-  async function init() {
+async function init() {
   includeHTML();
-  currentUser = await loadCurrentUser();
-  if (currentUser && currentUser.data) {
-    await loadTasksFromStorage();
-    await loadContactsFromStorage();
-    console.warn('CurrentUser tasks are ===', currentUser.data.tasks);
-    showToDos();
-  } else {
-    console.error('currentUser is not defined');
-  }
+  await loadCurrentUserBoard();
+  //await loadAllContacts();
+  showToDos();
 }
 
-async function loadTasksFromStorage() {
+async function loadCurrentUserBoard() {
   try {
-    const currentUserString = await getItem('currentUser');
-    if (currentUserString) {
-      const currentUser = JSON.parse(currentUserString);
-      allTasks = currentUser.data.tasks;  // Update the global tasks array with currentUser's tasks
-      console.log('Tasks loaded from currentUser:', allTasks);
+    const cleanedEmail = localStorage.getItem('cleanedEmail');
+    const userId = localStorage.getItem('currentUserId');
+
+    // Konstruieren Sie den Pfad für die Firebase-Anfrage.
+    let path;
+    if (cleanedEmail && userId) {
+      path = `users/${cleanedEmail}/${userId}`;
     } else {
-      console.log('No tasks found in currentUser. Starting with an empty task list.');
-      allTasks = [];
+      console.error("Keine gereinigte E-Mail-Adresse oder Benutzer-ID im Local Storage gefunden.");
+      return; // Frühes Beenden der Funktion, falls keine gültigen Daten vorhanden sind
     }
-  } catch (e) {
-    console.warn('Could not load tasks from currentUser:', e);
-    allTasks = [];  // Reset the tasks array on failure
+
+    // Lade die Benutzerdaten basierend auf dem konstruierten Pfad.
+    const userData = await loadData(path);
+
+    if (userData && userData.name) { // Überprüfen Sie auch, ob ein Name vorhanden ist
+      currentUser = { id: userId, data: userData }; // Speichern Sie die vollständigen Benutzerdaten in currentUser
+      setProfileInitials();  // Aufruf hier, nachdem currentUser aktualisiert wurde
+      console.log('Loaded currentUser:', currentUser); // Ausgabe des geladenen Benutzers in der Konsole
+    } else {
+      console.error("Keine vollständigen Benutzerdaten gefunden.");
+    }
+  } catch (error) {
+    console.error("Fehler beim Laden des aktuellen Benutzers:", error);
   }
 }
-
-
-// Später noch eine saveCurrentUserToStorage() erstellen die erst den User speichert und dann allUser
 
 
 function getCategoryBackgroundColor(category) {
@@ -52,14 +55,12 @@ function getCategoryBackgroundColor(category) {
 
 function showToDos() {
   // Stelle sicher, dass currentUser und currentUser.data.board.todo verfügbar sind
-  if (!currentUser || !currentUser.data || !currentUser.data.board || !currentUser.data.board.todo) {
+  if (!currentUser || !currentUser.data || !currentUser.data.tasks) {
     console.error("No todo tasks available to display.");
     return;
   }
 
-
-
-  let todoTasks = currentUser.data.board.todo.filter(task => task.status == "toDo"); // Zugriff auf die Todo-Tasks
+  let todoTasks = currentUser.data.tasks;
   let todoContainer = document.getElementById('ToDos');
   todoContainer.innerHTML = ''; // Vorherige Inhalte löschen
 
@@ -69,7 +70,8 @@ function showToDos() {
     todoContainer.innerHTML += todoHTML;
   }
 
-  let inProgressTask = currentUser.data.board.inProgress.filter(task => task.status == "In Progress"); 
+  //let inProgressTask = currentUser.data.board.inProgress.filter(task => task.status == "In Progress");
+  let inProgressTask = currentUser.data.tasks;
   let inProgressContainer = document.getElementById('progress-container');
   inProgressContainer.innerHTML = '';
 
@@ -77,7 +79,7 @@ function showToDos() {
     const task = inProgressTask[i];
     const inProgressHTML = generateTodoHTML(task, i);
     inProgressContainer.innerHTML += inProgressHTML;
-    
+
   }
 }
 
@@ -214,7 +216,7 @@ async function createTaskOnBoard() {
 }
 
 function showAddTaskPopUpEdit(index) {
-  const task = allTasks[index];
+  const task = currentUser.data.tasks[index];
   let popUp = document.getElementById('pop-up');
   let date = task.dueDate;
   let category = task.category;
@@ -342,7 +344,7 @@ function handleKeyPress(event, index) {
   }
 }
 
-function startdragging(id){
+function startdragging(id) {
   currentDraggedElement = id;
 }
 
@@ -350,13 +352,13 @@ function allowDrop(ev) {
   ev.preventDefault();
 }
 
-function moveTo(status){
+function moveTo(status) {
   console.log('Moving task to:', status);
   currentUser.data.board.todo[currentDraggedElement]['status'] = status;
   const movedTask = currentUser.data.board.todo.splice(currentDraggedElement, 1)[0];
   currentUser.data.board.inProgress.push(movedTask);
 
-  showToDos(); 
+  showToDos();
 }
 
 
