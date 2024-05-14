@@ -76,6 +76,7 @@ async function initRegistry() {
             email: email,
             password: password,
             contacts: [{
+                color: randomColor(),
                 name: username,
                 email: email,
                 number: "",
