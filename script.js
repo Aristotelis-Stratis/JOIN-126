@@ -243,3 +243,11 @@ function getInitials(name) {
     }
     return name.charAt(0).toUpperCase();
 }
+
+/**
+ * Generates a random hex color code.
+ * @return {string} The generated hex color code.
+ */
+function randomColor() {
+    return '#' + Math.floor(Math.random() * 16777215).toString(16);
+}

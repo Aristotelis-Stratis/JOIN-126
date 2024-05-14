@@ -526,14 +526,6 @@ async function updateInitials(contactIndex, updatedName) {
     await updateData(`users/${cleanedEmail}/${userId}`, { contacts: updatedContacts });
 }
 
-/**
- * Generates a random hex color code.
- * @return {string} The generated hex color code.
- */
-function randomColor() {
-    return '#' + Math.floor(Math.random() * 16777215).toString(16);
-}
-
 
 /**
  * Sorts the global contact array by last name, then by first name if the last names are identical. Only the first three letters are considered for comparison.
