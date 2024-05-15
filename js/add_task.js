@@ -3,10 +3,15 @@
  */
 async function initTasks() {
     includeHTML();
+    setProfileInitials();
     currentUser = await loadCurrentUser(); // Ersetze das direkte `currentUser`-Check mit einem Funktionsaufruf
-    await loadContactsFromStorage();
-    renderTaskContactList();
-    console.warn('All tasks are loaded for the current user:', currentUser.data.tasks);
+    if (currentUser) { // Überprüfen, ob currentUser erfolgreich geladen wurde
+        await loadTasksFromFirebase(); // Neue Funktion, um Tasks zu laden
+        renderTaskContactList();
+        console.warn('All tasks are loaded for the current user:', currentUser.data.tasks);
+    } else {
+        console.error("Current user could not be loaded.");
+    }
 }
 
 /**
@@ -21,25 +26,31 @@ async function createTask() {
             console.error("No current user logged in. Task cannot be added.");
             return;
         }
-        currentUser.data.tasks.push(newTask);
-        distributeTasksToBoard();
-        await saveCurrentUser();  // Speichert den aktuellen Benutzer mit den neuen Aufgaben
-        console.log('Task added to current user tasks:', currentUser.data.tasks);
-        resetUI();
-        initiateConfirmation('Task added to <img class="add-task-icon-board" src="assets/img/icons/board.png" alt="Board">');
-        directToBoard();
-    }
-}
 
-function distributeTasksToBoard() {
-    // Stelle sicher, dass currentUser.data.board existiert
-    if (!currentUser.data.board) {
-        currentUser.data.board = { todo: [], inProgress: [], awaitFeedback: [], done: [] };
+        // Bestimme den neuen Task-Index basierend auf der Länge des tasks-Arrays
+        const newTaskIndex = currentUser.data.tasks.length;
+
+        // Füge die neue Aufgabe in das lokale currentUser-Objekt ein
+        currentUser.data.tasks[newTaskIndex] = newTask;
+
+        // Verwenden der cleanedEmail und userId aus dem LocalStorage
+        const cleanedEmail = localStorage.getItem('cleanedEmail');
+        const userId = localStorage.getItem('currentUserId');
+        const basePath = `users/${cleanedEmail}/${userId}`;
+        const taskPath = `${basePath}/tasks/${newTaskIndex}`;
+
+        try {
+            // Speichern der neuen Aufgabe in Firebase
+            await updateData(taskPath, newTask);
+            localStorage.setItem('currentUser', JSON.stringify(currentUser)); // Aktualisieren des currentUser im Local Storage
+
+            resetUI();
+            initiateConfirmation('Task added to <img class="add-task-icon-board" src="assets/img/icons/board.png" alt="Board">');
+           // directToBoard();
+        } catch (error) {
+            console.error('Fehler beim Hinzufügen der Aufgabe zu Firebase:', error);
+        }
     }
-    currentUser.data.board.todo = currentUser.data.tasks.filter(task => task.status === "toDo");
-    currentUser.data.board.inProgress = currentUser.data.tasks.filter(task => task.status === "In Progress");
-    currentUser.data.board.awaitFeedback = currentUser.data.tasks.filter(task => task.status === "Await Feedback");
-    currentUser.data.board.done = currentUser.data.tasks.filter(task => task.status === "Done");
 }
 
 /**
@@ -69,8 +80,8 @@ function constructNewTask() {
         description,
         dueDate,
         priority,
-        contacts: selectedContacts,
-        subtasks: subtasks,
+        contacts: selectedContacts ||[],
+        subtasks: subtasks ||[],
         status: "toDo",
         category
     };
@@ -113,9 +124,55 @@ function resetUI() {
 /**
  * Loads contacts into the application from storage.
  */
-async function loadContactsFromStorage() {
-    let response = await getItem('contacts');
-    allContacts = JSON.parse(response);
+async function loadContactsFromFirebase() {
+    const cleanedEmail = localStorage.getItem('cleanedEmail');
+    const userId = localStorage.getItem('currentUserId');
+    const contactsPath = `users/${cleanedEmail}/${userId}/contacts`;
+    
+    try {
+        const contactsData = await loadData(contactsPath);
+        if (contactsData) {
+            // Convert contactsData object to an array
+            currentUser.data.contacts = Object.values(contactsData);
+        } else {
+            currentUser.data.contacts = [];
+        }
+        console.log('Contacts successfully loaded from Firebase:', currentUser.data.contacts);
+    } catch (error) {
+        console.error('Error loading contacts from Firebase:', error);
+        currentUser.data.contacts = [];
+    }
+}
+
+
+async function loadAllContacts() {
+    await loadContactsFromFirebase(); // Firebase-Kontakte laden
+    if (currentUser && currentUser.data && currentUser.data.contacts) {
+        allContacts = currentUser.data.contacts;
+        console.log("Kontakte geladen:", allContacts);
+    } else {
+        console.error("Keine Kontaktdaten verfügbar für den aktuellen Benutzer.");
+    }
+}
+
+
+async function loadTasksFromFirebase() {
+    const cleanedEmail = localStorage.getItem('cleanedEmail');
+    const userId = localStorage.getItem('currentUserId');
+    const tasksPath = `users/${cleanedEmail}/${userId}/tasks`;
+
+    try {
+        const tasksData = await loadData(tasksPath);
+        if (tasksData) {
+            currentUser.data.tasks = Object.values(tasksData);
+        } else {
+            currentUser.data.tasks = [];
+        }
+        console.log('Tasks successfully loaded from Firebase:', currentUser.data.tasks);
+    } catch (error) {
+        console.error('Error loading tasks from Firebase:', error);
+        currentUser.data.tasks = [];
+    }
 }
 
 
@@ -374,7 +431,7 @@ function getSubtaskInputValue(subtaskIndex) {
 function deleteSubtask(subtaskIndex) {
     subtasks.splice(subtaskIndex, 1);
     renderSubtasks();
-}6
+}
 
 
 /**

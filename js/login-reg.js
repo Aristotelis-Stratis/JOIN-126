@@ -89,8 +89,8 @@ async function initRegistry() {
                     description: "TestDescription",
                     dueDate: "12.12.12",
                     priority: "urgent",
-                    contacts: "",
-                    subtasks: "",
+                    contacts: [],  // Leeres Array für Kontakte
+                    subtasks: [],  // Leeres Array für Unteraufgaben
                     status: "toDo",
                     category: "User Story"
                 }
