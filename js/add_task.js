@@ -46,7 +46,7 @@ async function createTask() {
 
             resetUI();
             initiateConfirmation('Task added to <img class="add-task-icon-board" src="assets/img/icons/board.png" alt="Board">');
-           // directToBoard();
+            directToBoard();
         } catch (error) {
             console.error('Fehler beim Hinzufügen der Aufgabe zu Firebase:', error);
         }
@@ -80,8 +80,8 @@ function constructNewTask() {
         description,
         dueDate,
         priority,
-        contacts: selectedContacts ||[],
-        subtasks: subtasks ||[],
+        contacts: selectedContacts || [],
+        subtasks: subtasks || [],
         status: "toDo",
         category
     };
@@ -128,7 +128,7 @@ async function loadContactsFromFirebase() {
     const cleanedEmail = localStorage.getItem('cleanedEmail');
     const userId = localStorage.getItem('currentUserId');
     const contactsPath = `users/${cleanedEmail}/${userId}/contacts`;
-    
+
     try {
         const contactsData = await loadData(contactsPath);
         if (contactsData) {
@@ -255,8 +255,8 @@ function toggleContactSelection(index) {
         setCheckboxImage(contactItem, true);
     }
     renderSelectedContacts();
-    
-   
+
+
 }
 
 
@@ -440,7 +440,7 @@ function deleteSubtask(subtaskIndex) {
  */
 function renderSubtasks() {
     let subtaskContainer = document.getElementById('subtaskContainer');
-    subtaskContainer.innerHTML = ''; 
+    subtaskContainer.innerHTML = '';
     for (let index = 0; index < subtasks.length; index++) {
         const subtaskText = subtasks[index];
         const subtaskItemHTML = createSubtaskTemplate(subtaskText, index);
