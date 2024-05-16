@@ -44,7 +44,6 @@ async function loadCurrentUserBoard() {
   }
 }
 
-
 function getCategoryBackgroundColor(category) {
   if (category === 'Technical Task') {
     return '#1FD7C1';
