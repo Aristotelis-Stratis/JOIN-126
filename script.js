@@ -29,12 +29,12 @@ async function loadCurrentUser() {
             path = `users/${cleanedEmail}/${userId}`;
         } else {
             console.error("Keine gereinigte E-Mail-Adresse oder Benutzer-ID im Local Storage gefunden.");
-            return null; 
+            return null;
         }
 
         const userData = await loadData(path);
 
-        if (userData && userData.name) { 
+        if (userData && userData.name) {
             currentUser = { id: userId, data: userData };
             //await loadAllContacts();
             return currentUser;

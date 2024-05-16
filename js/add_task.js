@@ -4,7 +4,6 @@ async function initTasks() {
     includeHTML();
     currentUser = await loadCurrentUser();
     if (currentUser) {
-        setProfileInitials();
         await loadTasksFromFirebase();
         await loadAllContacts();
         filteredContacts = currentUser.data.contacts;

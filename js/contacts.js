@@ -6,7 +6,6 @@ async function initContacts() {
     await includeHTML();
     await loadCurrentUser();
     await loadAllContacts();
-    setProfileInitials();
 }
 
 
