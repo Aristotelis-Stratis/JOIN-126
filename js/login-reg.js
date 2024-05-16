@@ -205,16 +205,24 @@ async function ensureGuestUserExists() {
                 initials: "MM"
             }],
             tasks: [
-                { title: "Initial Task", description: "Do something important.", completed: false }
+                {
+                    title: "TestTask",
+                    description: "TestDescription",
+                    dueDate: "12.12.12",
+                    priority: "urgent",
+                    contacts: [],  // Leeres Array für Kontakte
+                    subtasks: [],  // Leeres Array für Unteraufgaben
+                    status: "toDo",
+                    category: "User Story"
+                }
             ],
-            board: {
-                name: "Initial Board",
-                items: [{ title: "Task 1", status: "pending" }]
-            },
-            summary: {
-                totalTasks: 1,
-                completedTasks: 0
-            }
+            board: [{
+                todo: [],
+                inProgress: [],
+                awaitFeedback: [],
+                done: []
+            }],
+            summary: {}
         };
         let response = await updateData(path, newUser);
         console.log('Attempt to create/update guest user:', response);
