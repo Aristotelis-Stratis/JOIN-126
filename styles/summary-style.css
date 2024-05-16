@@ -35,10 +35,16 @@ body {
     border-radius: 3px;
 }
 
+.sec-2-seperator-vertical {
+    background-color: rgb(246, 247, 248);
+    height: 60%;
+    width: 3px;
+    border-radius: 3px;
+}
+
 /* MAIN CONTENT PROPERTIES*/
 
 .sum-container {
-    height: 62vh;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -46,7 +52,7 @@ body {
 }
 
 .greet-container {
-    margin-left: 48px;
+    margin-left: 8px;
 }
 
 .greet-container span {
@@ -62,22 +68,69 @@ body {
 }
 
 .container {
-    height: 195px;
+    height: 188px;
     border-radius: 48px;
     box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.2);
     background-color: white;
+    cursor: pointer;
+    margin: 8px;
+}
+
+.container:hover {
+    background-color: rgb(43, 54, 71);
+    border: 8px solid rgb(43, 54, 71);
+    margin: 0px;
+    color: white;
 }
 
 .sec-1-container {
-    width: 48%;
+    width: 264px;
 }
 
 .sec-2-container {
-    width: 100%;
+    width: 540px;
 }
 
 .sec-3-container {
-    width: 30%;
+    width: 188px;
+}
+
+.sum-img {
+    height: 64px;
+    width: 64px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.todo-img {
+    background-image: url("../assets/img/icons/to-do-img.png");
+}
+
+.container:hover .todo-img {
+    background-image: url("../assets/img/icons/to-do-white-img.png");
+}
+
+.done-img {
+    background-image: url("../assets/img/icons/done-img.png");
+}
+
+.container:hover .done-img {
+    background-image: url("../assets/img/icons/done-white-img.png");
+}
+
+.urgent-img {
+    background-image: url("../assets/img/icons/red_arrows_upwards.png");
+}
+
+h2 {
+    font-size: 58px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.font-size20px {
+    font-size: 20px;
 }
 
 
@@ -87,7 +140,7 @@ body {
 
 .d-flex-sb-c {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between !important;
     align-items: center;
 }
 
@@ -115,10 +168,27 @@ body {
     margin-bottom: 24px;
 }
 
-
-@media(max-width: 1000px){
-
-.d-none1000 {
-    display: none;
+.margin-l16px {
+    margin-left: 16px;
 }
+
+.margin-0 {
+    margin: 0px;
+}
+
+.text-align-c {
+    text-align: center;
+}
+
+
+@media(max-width: 1300px) {
+
+    .sum-container {
+        justify-content: center;
+
+    }
+
+    .d-none1300 {
+        display: none;
+    }
 }
