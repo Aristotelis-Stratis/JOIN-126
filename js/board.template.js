@@ -1,7 +1,7 @@
 function generateTodoHTML(task, i) {
   let taskName = task.title;
   let taskDescription = task.description;
-  let totalTasks = task.subtasks.length;
+  let totalTasks = task.subtasks ? task.subtasks.length : 0;
   let completedTasks = 1;
   let completionPercentage = (completedTasks / totalTasks) * 100
   let priorityImage = setPriority(task.priority);
@@ -241,14 +241,17 @@ function generateUserHTMLplusName(contacts) {
 function generateUserHTML(contacts) {
   let usersHTML = '';
 
-  for (let j = 0; j < contacts.length; j++) {
-    const user = contacts[j];
-    let userInitials = user.initials;
-    let userColor = user.color;
+  // Überprüfen, ob contacts definiert ist
+  if (contacts && Array.isArray(contacts)) {
+    for (let j = 0; j < contacts.length; j++) {
+      const user = contacts[j];
+      let userInitials = user.initials;
+      let userColor = user.color;
 
-    usersHTML += `
-        <span class="contact-icon board-icon" style="background-color: ${userColor};">${userInitials}</span>
-        `;
+      usersHTML += `
+          <span class="contact-icon board-icon" style="background-color: ${userColor};">${userInitials}</span>
+          `;
+    }
   }
 
   return usersHTML;

@@ -11,7 +11,6 @@ let currentDraggedElement;
 async function init() {
   includeHTML();
   await loadCurrentUserBoard();
-  //await loadAllContacts();
   showToDos();
 }
 
@@ -44,15 +43,6 @@ async function loadCurrentUserBoard() {
   }
 }
 
-
-function getCategoryBackgroundColor(category) {
-  if (category === 'Technical Task') {
-    return '#1FD7C1';
-  } else if (category === 'User Story') {
-    return '#038ff0';
-  }
-}
-
 function showToDos() {
   // Stelle sicher, dass currentUser und currentUser.data.board.todo verfügbar sind
   if (!currentUser || !currentUser.data || !currentUser.data.tasks) {
@@ -80,6 +70,14 @@ function showToDos() {
     const inProgressHTML = generateTodoHTML(task, i);
     inProgressContainer.innerHTML += inProgressHTML;
 
+  }
+}
+
+function getCategoryBackgroundColor(category) {
+  if (category === 'Technical Task') {
+    return '#1FD7C1';
+  } else if (category === 'User Story') {
+    return '#038ff0';
   }
 }
 
