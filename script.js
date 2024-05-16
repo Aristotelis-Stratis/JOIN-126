@@ -75,13 +75,15 @@ function openSubMenu() {
 }
 
 
-function checkUserLogin() {
+function checkUserLogin(callback) {
     loadCurrentUser().then(currentUser => {
         if (!currentUser) {
             const menuChoices = document.querySelectorAll('.menu-choice');
             const profileContainers = document.querySelectorAll('.profile-container');
             menuChoices.forEach(menu => menu.style.display = 'none');
             profileContainers.forEach(profile => profile.style.display = 'none');
+        } else if (callback && typeof callback === 'function') {
+            callback();
         }
     });
 }
@@ -89,13 +91,9 @@ function checkUserLogin() {
 
 async function includeHTML(callback) {
     let includeElements = document.querySelectorAll('[w3-include-html]');
-    if (callback && typeof callback === "function") {
-        callback();
-    }
-
     for (let i = 0; i < includeElements.length; i++) {
         const element = includeElements[i];
-        file = element.getAttribute("w3-include-html");
+        const file = element.getAttribute("w3-include-html");
         let resp = await fetch(file);
         if (resp.ok) {
             element.innerHTML = await resp.text();
@@ -103,8 +101,10 @@ async function includeHTML(callback) {
             element.innerHTML = 'Page not found';
         }
     }
+    if (callback && typeof callback === "function") {
+        callback();
+    }
     activeMenu();
-    
 }
 
 

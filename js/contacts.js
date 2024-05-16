@@ -377,15 +377,15 @@ async function removeContactFromTasks(contactId) {
 }
 
 
-async function saveTasksToStorage() {
-    await setItem('tasks', JSON.stringify(allTasks));
-}
+// async function saveTasksToStorage() {
+//     await setItem('tasks', JSON.stringify(allTasks));
+// }
 
 
-function deleteStorage() {
-    allContacts = [];
-    setItem('contacts', JSON.stringify(allContacts));
-}
+// function deleteStorage() {
+//     allContacts = [];
+//     setItem('contacts', JSON.stringify(allContacts));
+// }
 
 
 function editContactContent() {
