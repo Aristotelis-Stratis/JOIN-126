@@ -108,9 +108,9 @@ async function initRegistry() {
                         category: "General"
                     }
                 ],
-                inProgress: [],
-                awaitFeedback: [],
-                done: []
+                inProgress: [{}],
+                awaitFeedback: [{}],
+                done: [{}]
             },
             summary: {}
         };

@@ -20,7 +20,7 @@
   <script src="./js/board.template.js"></script>
 </head>
 
-<body onload="includeHTML(() => { checkUserLogin(setProfileInitials); })">
+<body onload="includeHTML(() => { checkUserLogin(setProfileInitials); }), init();">
   <section class="main-container">
     <!-- left part of website fixed menu -->
     <div w3-include-html="./assets/templates/nav.html"></div>
