@@ -83,18 +83,7 @@ async function initRegistry() {
                 number: "",
                 initials: initials // Initialen hinzufügen
             }],
-            tasks: [
-                {
-                    title: "TestTask",
-                    description: "TestDescription",
-                    dueDate: "12.12.12",
-                    priority: "urgent",
-                    contacts: [],  // Leeres Array für Kontakte
-                    subtasks: [],  // Leeres Array für Unteraufgaben
-                    status: "toDo",
-                    category: "User Story"
-                }
-            ],
+            tasks: [],
             board: [{
                 todo: [],
                 inProgress: [],
