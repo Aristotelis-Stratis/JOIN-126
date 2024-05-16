@@ -220,18 +220,20 @@ function generateAddTaskPopUpHTML() {
 function generateUserHTMLplusName(contacts) {
   let usersHTML = '';
 
-  for (let j = 0; j < contacts.length; j++) {
-    const user = contacts[j];
-    let userInitials = user.initials;
-    let userColor = user.color;
-    let userName = user.name;
+  if (contacts && Array.isArray(contacts)) {
+    for (let j = 0; j < contacts.length; j++) {
+      const user = contacts[j];
+      let userInitials = user.initials;
+      let userColor = user.color;
+      let userName = user.name;
 
-    usersHTML += `
+      usersHTML += `
         <div class="username-HTML">
             <span class="contact-icon board-icon" style="background-color: ${userColor};">${userInitials}</span>
             <div>${userName}</div>
         </div>
         `;
+    }
   }
 
   return usersHTML;
@@ -259,7 +261,7 @@ function generateUserHTML(contacts) {
 
 function generateSubtasksHTML(subtasks) {
   let subtasksHTML = '';
-  
+
   if (subtasks && Array.isArray(subtasks)) {
     for (let i = 0; i < subtasks.length; i++) {
       let subtask = subtasks[i];
@@ -277,8 +279,8 @@ function generateSubtasksHTML(subtasks) {
 
 function handleSubtaskKeyDown(event) {
   if (event.key === "Enter") {
-      event.preventDefault();
-      addSubtask();
+    event.preventDefault();
+    addSubtask();
   }
 }
 

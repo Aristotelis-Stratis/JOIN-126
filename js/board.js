@@ -149,12 +149,9 @@ async function deleteCard(index) {
     await deleteData(taskPath);
 
     // Aktualisiere das UI
-    resetUI();
+    
     closePopUp();
     showToDos();
-
-    // Speichere den aktualisierten currentUser
-    await saveCurrentUser();
 
     console.log('Task successfully deleted and user saved');
   } catch (error) {
