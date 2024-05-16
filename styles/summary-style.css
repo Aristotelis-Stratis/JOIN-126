@@ -1,10 +1,14 @@
-/* HEADLINE DIV PROPERTIES*/
+body {
+    font-family: 'Inter';
+    background-color: rgb(246, 247, 248);
+    margin: 0;
+}
 
+/* HEADLINE DIV PROPERTIES*/
 
 .headline-div {
     height: 73px;
     width: 624px;
-    margin-top: 64px;
 }
 
 .headline-div h1 {
@@ -33,15 +37,88 @@
 
 /* MAIN CONTENT PROPERTIES*/
 
+.sum-container {
+    height: 62vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 64px;
+}
 
+.greet-container {
+    margin-left: 48px;
+}
+
+.greet-container span {
+    font-size: 36px;
+    height: 48px;
+    width: 300px;
+}
+
+.greet-container h2 {
+    font-size: 50px;
+    margin: 0px;
+    color: #29ABE2;
+}
+
+.container {
+    height: 195px;
+    border-radius: 48px;
+    box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.2);
+    background-color: white;
+}
+
+.sec-1-container {
+    width: 48%;
+}
+
+.sec-2-container {
+    width: 100%;
+}
+
+.sec-3-container {
+    width: 30%;
+}
 
 
 
 /* DISPLAY FLEX PROPERTIES */
 
 
-.d-flex-c-sb {
+.d-flex-sb-c {
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
+}
+
+.d-flex-c-c {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.d-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.width-height100Pro {
+    height: 100%;
+    width: 100%;
+}
+
+.padding-24px {
+    padding: 24px;
+}
+
+.margin-b24px {
+    margin-bottom: 24px;
+}
+
+
+@media(max-width: 1000px){
+
+.d-none1000 {
+    display: none;
+}
 }

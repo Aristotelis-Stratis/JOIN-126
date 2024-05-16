@@ -65,7 +65,7 @@ async function loadCurrentUser() {
             path = `users/${cleanedEmail}/${userId}`;
         } else {
             console.error("Keine gereinigte E-Mail-Adresse oder Benutzer-ID im Local Storage gefunden.");
-            return; // Frühes Beenden der Funktion, falls keine gültigen Daten vorhanden sind
+            return null; // Frühes Beenden der Funktion, falls keine gültigen Daten vorhanden sind
         }
 
         // Lade die Benutzerdaten basierend auf dem konstruierten Pfad.
@@ -75,11 +75,14 @@ async function loadCurrentUser() {
             currentUser = { id: userId, data: userData }; // Speichern Sie die vollständigen Benutzerdaten in currentUser
             setProfileInitials();  // Aufruf hier, nachdem currentUser aktualisiert wurde
             await loadAllContacts(); // Funktion zum Laden aller Kontakte des Benutzers
+            return currentUser; // currentUser zurückgeben
         } else {
             console.error("Keine vollständigen Benutzerdaten gefunden.");
+            return null;
         }
     } catch (error) {
         console.error("Fehler beim Laden des aktuellen Benutzers:", error);
+        return null;
     }
 }
 

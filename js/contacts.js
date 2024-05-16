@@ -91,8 +91,30 @@ async function saveToStorage() {
     }
 }
 
+async function loadContactsFromFirebase() {
+    const cleanedEmail = localStorage.getItem('cleanedEmail');
+    const userId = localStorage.getItem('currentUserId');
+    const contactsPath = `users/${cleanedEmail}/${userId}/contacts`;
+    
+    try {
+        const contactsData = await loadData(contactsPath);
+        if (contactsData) {
+            // Convert contactsData object to an array
+            currentUser.data.contacts = Object.values(contactsData);
+        } else {
+            currentUser.data.contacts = [];
+        }
+        console.log('Contacts successfully loaded from Firebase:', currentUser.data.contacts);
+        renderContacts(); // UI aktualisieren
+    } catch (error) {
+        console.error('Error loading contacts from Firebase:', error);
+        currentUser.data.contacts = [];
+    }
+}
+
 
 async function loadAllContacts() {
+    await loadContactsFromFirebase(); // Firebase-Kontakte laden
     if (currentUser && currentUser.data && currentUser.data.contacts) {
         allContacts = currentUser.data.contacts;
         console.log("Kontakte geladen:", allContacts);
@@ -385,8 +407,6 @@ async function deleteContact(contactId) {
 
     // Entfernt den Kontakt aus dem lokalen Speicher (Array)
     currentUser.data.contacts.splice(contactIndex, 1);
-    // Aktualisiert die lokale Speicherung der Nutzerdaten
-    localStorage.setItem('currentUser', JSON.stringify(currentUser));
 
     // Bereitet den Pfad zur Kontaktliste in Firebase vor
     const cleanedEmail = localStorage.getItem('cleanedEmail');
@@ -394,9 +414,16 @@ async function deleteContact(contactId) {
     const basePath = `users/${cleanedEmail}/${userId}`;
 
     try {
+        // Entfernt den Kontakt aus allen Tasks
+        await removeContactFromTasks(contactId);
+
         // Aktualisiert die gesamte Kontaktliste in Firebase
         await updateData(`${basePath}/contacts`, currentUser.data.contacts);
         console.log('Kontakt erfolgreich gelöscht und Kontaktliste aktualisiert');
+
+        // Aktualisiert die lokale Speicherung der Nutzerdaten
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
         // Aktualisiert die Benutzeroberfläche
         renderContacts();
         // Zeigt eine Bestätigungsnachricht an
@@ -407,16 +434,46 @@ async function deleteContact(contactId) {
     document.getElementById('contact-overview').innerHTML = '';
 }
 
+
+
 /**
- * Removes a contact from all tasks.
+ * Removes a contact from all tasks and updates Firebase.
  * @param {string} contactId - The ID of the contact to remove.
  */
-function removeContactFromTasks(contactId) {
-    allTasks.forEach(task => {
-        const filteredContacts = task.contacts.filter(contact => contact.id !== contactId);
-        task.contacts = filteredContacts;
-    });
-    saveTasksToStorage();
+async function removeContactFromTasks(contactId) {
+    const cleanedEmail = localStorage.getItem('cleanedEmail');
+    const userId = localStorage.getItem('currentUserId');
+    const tasksPath = `users/${cleanedEmail}/${userId}/tasks`;
+
+    try {
+        const tasksData = await loadData(tasksPath);
+        if (tasksData) {
+            const tasks = Object.entries(tasksData);
+
+            for (const [taskId, task] of tasks) {
+                if (Array.isArray(task.contacts)) {
+                    const filteredContacts = task.contacts.filter(contact => contact.id !== contactId);
+                    task.contacts = filteredContacts;
+
+                    // Update the task in currentUser's local data
+                    currentUser.data.tasks[taskId].contacts = filteredContacts;
+                } else {
+                    console.error(`Task ${taskId} does not have an array of contacts.`);
+                }
+                // Update the task in Firebase
+                await updateData(`${tasksPath}/${taskId}`, task);
+            }
+
+            // Update currentUser in localStorage
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+            console.log(`Contact with ID ${contactId} successfully removed from all tasks.`);
+        } else {
+            console.error('No tasks found for the current user.');
+        }
+    } catch (error) {
+        console.error('Error removing contact from tasks in Firebase:', error);
+    }
 }
 
 
