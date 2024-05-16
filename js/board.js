@@ -129,22 +129,38 @@ function showPopUp(index) {
   popUp.innerHTML = popUpHTML;
 }
 
-function deleteCard(index) {
-  // Entferne den Task aus dem currentUser.data.tasks Array
-  currentUser.data.tasks.splice(index, 1);
-  // Aktualisiere die Boards mit den verbleibenden Tasks
-  distributeTasksToBoard();
+async function deleteCard(index) {
+  try {
+    if (!currentUser || !currentUser.data || !currentUser.data.tasks) {
+      console.error("No current user or tasks available. Task cannot be deleted.");
+      return;
+    }
 
-  // Speichere den aktualisierten currentUser
-  saveCurrentUser().then(() => {
-    console.log('Task successfully deleted and user saved');
+    // Entferne den Task aus dem currentUser.data.tasks Array
+    currentUser.data.tasks.splice(index, 1)[0];
+
+    // Bestimme den Pfad zum zu löschenden Task in Firebase
+    const cleanedEmail = localStorage.getItem('cleanedEmail');
+    const userId = localStorage.getItem('currentUserId');
+    const basePath = `users/${cleanedEmail}/${userId}`;
+    const taskPath = `${basePath}/tasks/${index}`;
+
+    // Lösche den Task aus Firebase
+    await deleteData(taskPath);
+
     // Aktualisiere das UI
-    showToDos();
-    // Schließe das Pop-up oder führe weitere UI-Aktualisierungen durch, wenn nötig
+    resetUI();
     closePopUp();
-  }).catch(error => {
-    console.error('Error saving the user after deleting task:', error);
-  });
+    showToDos();
+
+    // Speichere den aktualisierten currentUser
+    await saveCurrentUser();
+
+    console.log('Task successfully deleted and user saved');
+  } catch (error) {
+    console.error('Error deleting task:', error);
+  }
+  
 }
 
 function closePopUp() {
@@ -190,28 +206,39 @@ function doNotCloseAddTaskPopUp(event) {
   event.stopPropagation();
 }
 
-
-/**
- * Creates a new task and adds it to the task list if all input validations pass.
- * It saves the updated task list to storage and resets the user interface.
- * @async
- */
 async function createTaskOnBoard() {
   if (validateTaskInputs()) {
-    const newTask = constructNewTask();
-    if (!currentUser) {
-      console.error("No current user logged in. Task cannot be added.");
-      return;
+      const newTask = constructNewTask();
+      if (!currentUser) {
+          console.error("No current user logged in. Task cannot be added.");
+          return;
+      }
+
+      // Bestimme den neuen Task-Index basierend auf der Länge des tasks-Arrays
+      const newTaskIndex = currentUser.data.tasks.length;
+
+      // Füge die neue Aufgabe in das lokale currentUser-Objekt ein
+      currentUser.data.tasks[newTaskIndex] = newTask;
+
+      // Verwenden der cleanedEmail und userId aus dem LocalStorage
+      const cleanedEmail = localStorage.getItem('cleanedEmail');
+      const userId = localStorage.getItem('currentUserId');
+      const basePath = `users/${cleanedEmail}/${userId}`;
+      const taskPath = `${basePath}/tasks/${newTaskIndex}`;
+
+      try {
+          // Speichern der neuen Aufgabe in Firebase
+          await updateData(taskPath, newTask);
+          localStorage.setItem('currentUser', JSON.stringify(currentUser)); // Aktualisieren des currentUser im Local Storage
+
+          resetUI();
+      } catch (error) {
+          console.error('Fehler beim Hinzufügen der Aufgabe zu Firebase:', error);
+      }
+      closeAddTaskPopUp();
     }
-    currentUser.data.tasks.push(newTask);
-    distributeTasksToBoard();
-    await saveCurrentUser();  // Speichert den aktuellen Benutzer mit den neuen Aufgaben
-    console.log('Task added to current user tasks:', currentUser.data.tasks);
-    resetUI();
-    initiateConfirmation('Task added to <img class="add-task-icon-board" src="assets/img/icons/board.png" alt="Board">');
-    closeAddTaskPopUp();
   }
-}
+
 
 function showAddTaskPopUpEdit(index) {
   const task = currentUser.data.tasks[index];
@@ -228,9 +255,12 @@ function showAddTaskPopUpEdit(index) {
 
 function generateSubtaskHTMLEdit(subtasks) {
   let subtaskHTML = '';
-  for (let i = 0; i < subtasks.length; i++) {
-    const subtask = subtasks[i];
-    subtaskHTML += generateSubtaskHTML(subtaskIndexCounter++, subtask);
+
+  if (subtasks && Array.isArray(subtasks)) {
+    for (let i = 0; i < subtasks.length; i++) {
+      const subtask = subtasks[i];
+      subtaskHTML += generateSubtaskHTML(subtaskIndexCounter++, subtask);
+    }
   }
   return subtaskHTML;
 }

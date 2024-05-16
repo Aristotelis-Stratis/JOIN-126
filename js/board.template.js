@@ -259,15 +259,17 @@ function generateUserHTML(contacts) {
 
 function generateSubtasksHTML(subtasks) {
   let subtasksHTML = '';
-
-  for (let i = 0; i < subtasks.length; i++) {
-    let subtask = subtasks[i];
-    subtasksHTML += `
+  
+  if (subtasks && Array.isArray(subtasks)) {
+    for (let i = 0; i < subtasks.length; i++) {
+      let subtask = subtasks[i];
+      subtasksHTML += `
           <div class="popup-subtasks">
               <img src="./assets/img/icons/checkbox-empty-black-24.png" id="subtask-check${i}" onclick="toggleSubtaskCheck('subtask-check${i}')" alt="Box-Empty">
               <div>${subtask}</div>
           </div>
       `;
+    }
   }
 
   return subtasksHTML;
