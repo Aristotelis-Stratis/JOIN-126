@@ -1,16 +1,9 @@
-/**
- * Creates HTML markup for a new contact entry.
- * 
- * @param {Object} contact - The contact object containing the contact details.
- * @param {number} index - The index of the contact in the contact list array.
- * @returns {string} HTML string representing the contact item.
- */
 function createNewContactHTML(contact, index) {
-    const initials = contact.initials || ''; // Überprüfung, ob contact.initials definiert ist
+    const initials = contact.initials || '';
     return `
     <div id="contact-item-${index}" class="contact-item">
         <div class="contact-container" onclick="openContactDetails(${index})">
-            <div class="contact-icon" style="background-color:${contact.color};">
+            <div class="contact-icon" style="background-color:${contact.color || randomColor()};">
                 <span>${initials.charAt(0)}</span>
                 ${initials.length > 1 ? `<span>${initials.charAt(1)}</span>` : ''}
             </div>
@@ -31,13 +24,6 @@ function createNewContactHTML(contact, index) {
 }
 
 
-/**
- * Generates the HTML content for displaying the detailed information of a contact.
- * 
- * @param {Object} contact - The contact object containing details to be displayed.
- * @param {number} index - The index of the contact in the contact list array.
- * @returns {string} HTML string for the detailed view of a contact.
- */
 function contactDetailsHTML(contact, index) {
     return `
         <div class="contacts-title-bar">
@@ -107,12 +93,6 @@ function contactDetailsHTML(contact, index) {
 }
 
 
-/**
- * Creates HTML markup for a container that groups contacts by their starting letter.
- * 
- * @param {string} initial - The initial letter to create a group container for.
- * @returns {string} HTML string representing the container for a specific letter.
- */
 function createLetterContainerHTML(initial) {
     return `
         <div class="letter-container">
