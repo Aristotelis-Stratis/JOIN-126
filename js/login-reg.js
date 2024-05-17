@@ -63,12 +63,10 @@ async function initRegistry() {
     let username = document.getElementById('name').value;
     let email = document.getElementById('email').value;
     let password = document.getElementById('password').value;
-    // Entferne Sonderzeichen aus der E-Mail-Adresse
-    let cleanedEmail = email.replace(/[^\w\s]/gi, ''); // Entfernt alle Sonderzeichen
+    let cleanedEmail = email.replace(/[^\w\s]/gi, '');
     let userExists = await loadData(`users/${btoa(email)}`);
 
     if (!userExists) {
-        // Generiere Initialen für den Benutzer
         const initials = getInitials(username);
 
         let newUser = {
@@ -76,41 +74,29 @@ async function initRegistry() {
             email: email,
             password: password,
             contacts: [{
-                id: generateUniqueId(),  // Generiere eine eindeutige ID für den Kontakt
+                id: generateUniqueId(),
                 color: randomColor(),
                 name: username,
                 email: email,
                 number: "",
-                initials: initials // Initialen hinzufügen
+                initials: initials
             }],
-            tasks: [
-                {
-                    title: "TestTask",
-                    description: "TestDescription",
-                    dueDate: "12.12.12",
-                    priority: "urgent",
-                    contacts: [],  // Leeres Array für Kontakte
-                    subtasks: [],  // Leeres Array für Unteraufgaben
-                    status: "toDo",
-                    category: "User Story"
-                }
-            ],
             board: {
                 todo: [
                     {
-                        title: "Standard Task",
-                        description: "Dies ist eine Standardaufgabe.",
+                        title: "Example Task",
+                        description: "This is an example.",
                         dueDate: "12.12.12",
-                        priority: "normal",
+                        priority: "urgent",
                         contacts: [],
                         subtasks: [],
                         status: "toDo",
-                        category: "General"
+                        category: "User Story"
                     }
                 ],
-                inProgress: [{}],
-                awaitFeedback: [{}],
-                done: [{}]
+                inProgress: [],
+                awaitFeedback: [],
+                done: []
             },
             summary: {}
         };
@@ -130,26 +116,21 @@ async function initRegistry() {
 async function login() {
     let email = document.getElementById('email').value;
     let password = document.getElementById('password').value;
-
-    // Entferne Sonderzeichen aus der E-Mail-Adresse
     let cleanedEmail = email.replace(/[^\w\s]/gi, '');
 
     let usersData = await loadData(`users/${cleanedEmail}`);
     console.log("Geladene Benutzerdaten:", usersData);
 
     if (usersData) {
-        // Zugriff auf das erste Element im usersData Objekt
         let userKey = Object.keys(usersData)[0];
         let user = usersData[userKey];
 
         if (user && user.password === password) {
             rememberCheck();
             console.log('Login erfolgreich!');
-            await setCurrentUser(user, userKey, cleanedEmail); // cleanedEmail als Argument übergeben
-
-            // Verzögere die Weiterleitung um 5000 Millisekunden (5 Sekunden)
+            await setCurrentUser(user, userKey, cleanedEmail);
             setTimeout(() => {
-                window.location.href = 'contacts.html';
+                window.location.href = 'summary.html';
             }, 5000);
         } else {
             inputValidation('email', 'emailErrorField', ' ');
@@ -166,25 +147,20 @@ async function login() {
 
 async function loginAsGuest() {
     try {
-        // Konvertiere die E-Mail des Gastbenutzers in eine cleanedEmail
         let guestEmail = "guest@example.com";
-        let cleanedEmail = guestEmail.replace(/[^\w\s]/gi, ''); // Entfernt alle Sonderzeichen
+        let cleanedEmail = guestEmail.replace(/[^\w\s]/gi, '');
         let guestUserId = "guest";
 
-        // Verwende den neuen Pfad, der cleanedEmail und userId einschließt
         let guestUser = await loadData(`users/${cleanedEmail}/${guestUserId}`);
         if (guestUser) {
             console.log('Logged in as guest:', guestUser);
-
-            // Setze die Standardwerte für den Gastbenutzer
             localStorage.setItem('currentUserId', guestUserId);
             localStorage.setItem('cleanedEmail', cleanedEmail);
 
-            // Setze den Gastbenutzer als aktuellen Benutzer
             await setCurrentUser(guestUser, guestUserId, cleanedEmail);
             setTimeout(() => {
                 window.location.href = 'contacts.html';
-            }, 5000); // Kurze Verzögerung für die Demonstration
+            }, 5000);
         } else {
             console.log('Guest user not found. Please check the database setup.');
         }
@@ -195,44 +171,42 @@ async function loginAsGuest() {
 
 async function ensureGuestUserExists() {
     let guestEmail = "guest@example.com";
-    let cleanedEmail = guestEmail.replace(/[^\w\s]/gi, ''); // Entfernt alle Sonderzeichen
-    let guestUserId = "guest"; // Optional: Kann eine spezifische ID sein, wenn notwendig
+    let cleanedEmail = guestEmail.replace(/[^\w\s]/gi, '');
+    let guestUserId = "guest";
 
     let path = `users/${cleanedEmail}/${guestUserId}`;
     let guestUser = await loadData(path);
 
     if (!guestUser || !guestUser.contacts) {
-        // Definieren Sie den Gastbenutzer mit der vollständigen Struktur
         let newUser = {
             name: "Guest",
             email: guestEmail,
-            password: "", // Optional: Passwort, falls benötigt
+            password: "",
             contacts: [{
-                id: generateUniqueId(),  // Generiere eine eindeutige ID für den Kontakt
+                id: generateUniqueId(),
                 color: randomColor(),
                 name: "Max Mustermann",
                 email: "max@mustermann.com",
                 number: "1234567890",
                 initials: "MM"
             }],
-            tasks: [
-                {
-                    title: "TestTask",
-                    description: "TestDescription",
-                    dueDate: "12.12.12",
-                    priority: "urgent",
-                    contacts: [],  // Leeres Array für Kontakte
-                    subtasks: [],  // Leeres Array für Unteraufgaben
-                    status: "toDo",
-                    category: "User Story"
-                }
-            ],
-            board: [{
-                todo: [],
+            board: {
+                todo: [
+                    {
+                        title: "TestTask",
+                        description: "TestDescription",
+                        dueDate: "12.12.12",
+                        priority: "urgent",
+                        contacts: [],
+                        subtasks: [],
+                        status: "toDo",
+                        category: "User Story"
+                    }
+                ],
                 inProgress: [],
                 awaitFeedback: [],
                 done: []
-            }],
+            },
             summary: {}
         };
         let response = await updateData(path, newUser);

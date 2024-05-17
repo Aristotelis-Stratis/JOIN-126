@@ -14,13 +14,10 @@
     <script src="./js/contacts.template.js"></script>
     <script src="./js/storage.js"></script>
     <script src="./js/login-reg.js"></script>
-
-    <!-- needs to be linked to all htmls-->
 </head>
 
 <!-- checkAuthentication(); -->
-<body onload="initContacts();">
-    <!-- <body onload="includeHTML(() => { checkUserLogin(setProfileInitials); })"></body> -->
+<body onload="includeHTML(() => { checkUserLogin(setProfileInitials); }),initContacts();">
     <section class="main-container">
         <!-- left part of website fixed menu -->
         <div w3-include-html="./assets/templates/nav.html"></div>

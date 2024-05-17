@@ -8,11 +8,11 @@ async function initTasks() {
         await loadAllContacts();
         filteredContacts = currentUser.data.contacts;
         renderTaskContactList(filteredContacts);
-        console.warn('All tasks are loaded for the current user:', currentUser.data.tasks);
     } else {
         console.error("Current user could not be loaded.");
     }
 }
+
 
 function filterContacts(input) {
     filteredContacts = currentUser.data.contacts.filter(contact =>
@@ -20,6 +20,7 @@ function filterContacts(input) {
     );
     renderTaskContactList(filteredContacts);
 }
+
 
 function renderTaskContactList(contacts) {
     if (!Array.isArray(contacts)) {
@@ -34,6 +35,7 @@ function renderTaskContactList(contacts) {
         contactListContainer.innerHTML += generateContactHTML(contact, i, isChecked);
     }
 }
+
 
 function toggleContactSelection(index) {
     event.stopPropagation();
@@ -55,6 +57,7 @@ function toggleContactSelection(index) {
     filteredContacts = currentUser.data.contacts;
     renderTaskContactList(filteredContacts);
 }
+
 
 function renderSelectedContacts() {
     const container = document.querySelector('.selected-contacts-container');
@@ -88,23 +91,16 @@ async function createTask() {
             console.error("No current user logged in. Task cannot be added.");
             return;
         }
+        const newTaskIndex = currentUser.data.board.todo.length;
+        currentUser.data.board.todo[newTaskIndex] = newTask;
 
-        // Bestimme den neuen Task-Index basierend auf der Länge des tasks-Arrays
-        const newTaskIndex = currentUser.data.tasks.length;
-
-        // Füge die neue Aufgabe in das lokale currentUser-Objekt ein
-        currentUser.data.tasks[newTaskIndex] = newTask;
-
-        // Verwenden der cleanedEmail und userId aus dem LocalStorage
         const cleanedEmail = localStorage.getItem('cleanedEmail');
         const userId = localStorage.getItem('currentUserId');
-        const basePath = `users/${cleanedEmail}/${userId}`;
-        const taskPath = `${basePath}/tasks/${newTaskIndex}`;
+        const taskPath = `users/${cleanedEmail}/${userId}/board/todo/${newTaskIndex}`;
 
         try {
-            // Speichern der neuen Aufgabe in Firebase
             await updateData(taskPath, newTask);
-            localStorage.setItem('currentUser', JSON.stringify(currentUser)); // Aktualisieren des currentUser im Local Storage
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
 
             resetUI();
             initiateConfirmation('Task added to <img class="add-task-icon-board" src="assets/img/icons/board.png" alt="Board">');
@@ -121,7 +117,6 @@ function directToBoard() {
         window.location.href = 'board.html';
     }, 2500);
 }
-
 
 
 function constructNewTask() {
@@ -144,12 +139,10 @@ function constructNewTask() {
 }
 
 
-
 function deleteStorage() {
     allTasks = [];
     setItem('tasks', JSON.stringify(allTasks));
 }
-
 
 
 function resetUI() {
@@ -172,7 +165,6 @@ function resetUI() {
 }
 
 
-
 async function loadContactsFromFirebase() {
     const cleanedEmail = localStorage.getItem('cleanedEmail');
     const userId = localStorage.getItem('currentUserId');
@@ -181,7 +173,6 @@ async function loadContactsFromFirebase() {
     try {
         const contactsData = await loadData(contactsPath);
         if (contactsData) {
-            // Convert contactsData object to an array
             currentUser.data.contacts = Object.values(contactsData);
         } else {
             currentUser.data.contacts = [];
@@ -195,10 +186,9 @@ async function loadContactsFromFirebase() {
 
 
 async function loadAllContacts() {
-    await loadContactsFromFirebase(); // Firebase-Kontakte laden
+    await loadContactsFromFirebase();
     if (currentUser && currentUser.data && currentUser.data.contacts) {
         allContacts = currentUser.data.contacts;
-        console.log("Kontakte geladen:", allContacts);
     } else {
         console.error("Keine Kontaktdaten verfügbar für den aktuellen Benutzer.");
     }
@@ -208,95 +198,26 @@ async function loadAllContacts() {
 async function loadTasksFromFirebase() {
     const cleanedEmail = localStorage.getItem('cleanedEmail');
     const userId = localStorage.getItem('currentUserId');
-    const tasksPath = `users/${cleanedEmail}/${userId}/tasks`;
+    const tasksPath = `users/${cleanedEmail}/${userId}/board/todo`;
 
     try {
         const tasksData = await loadData(tasksPath);
         if (tasksData) {
-            currentUser.data.tasks = Object.values(tasksData);
+            currentUser.data.board.todo = Object.values(tasksData);
         } else {
-            currentUser.data.tasks = [];
+            currentUser.data.board.todo = [];
         }
-        console.log('Tasks successfully loaded from Firebase:', currentUser.data.tasks);
+        console.log('Tasks successfully loaded from Firebase:', currentUser.data.board.todo);
     } catch (error) {
         console.error('Error loading tasks from Firebase:', error);
-        currentUser.data.tasks = [];
+        currentUser.data.board.todo = [];
     }
 }
-
-
-
-// function renderTaskContactList() {
-//     const contactListContainer = document.getElementById('task-contact-list');
-//     contactListContainer.innerHTML = '';
-
-//     // Stelle sicher, dass currentUser definiert und contacts vorhanden ist
-//     if (currentUser && currentUser.data && Array.isArray(currentUser.data.contacts)) {
-//         for (let i = 0; i < currentUser.data.contacts.length; i++) {
-//             const contact = currentUser.data.contacts[i];
-//             const isChecked = isSelected(contact);
-//             contactListContainer.innerHTML += generateContactHTML(contact, i, isChecked);
-//         }
-//     } else {
-//         console.error('Cannot render contacts. currentUser or currentUser.data.contacts is not defined.');
-//     }
-// }
-
-
-
-// function filterContacts(input) {
-//     const filteredContacts = currentUser.data.contacts.filter(contact =>
-//         contact.name.toLowerCase().includes(input.toLowerCase())
-//     );
-//     renderFilteredContactList(filteredContacts);
-// }
-
-
-
-// function renderFilteredContactList(filteredContacts) {
-//     const contactListContainer = document.getElementById('task-contact-list');
-//     contactListContainer.innerHTML = '';
-//     for (let i = 0; i < filteredContacts.length; i++) {
-//         const contact = filteredContacts[i];
-//         contactListContainer.innerHTML += generateContactHTML(contact, i);
-//     }
-// }
-
-
-// function renderSelectedContacts() {
-//     const container = document.querySelector('.selected-contacts-container');
-//     container.innerHTML = ''; // Clear the container first
-
-//     // Iterate through the selected contacts and add them to the container
-//     selectedContacts.forEach(contact => {
-//         container.insertAdjacentHTML('beforeend', createContactIconHTML(contact));
-//     });
-// }
-
-
-
-// function toggleContactSelection(index) {
-//     event.stopPropagation();
-//     const contactItem = document.getElementById(`contact-item-${index}`);
-//     const contact = currentUser.data.contacts[index];
-//     if (isSelected(contact)) {
-//         removeContact(contact);
-//         setCheckboxImage(contactItem, false);
-//     } else {
-//         addContact(contact);
-//         setCheckboxImage(contactItem, true);
-//     }
-//     renderSelectedContacts();
-
-
-// }
-
 
 
 function isSelected(contact) {
     return selectedContacts.some(selectedContact => selectedContact.id === contact.id);
 }
-
 
 
 function addContact(contact) {
@@ -310,18 +231,15 @@ function removeContact(contact) {
 }
 
 
-
 function setCheckboxImage(element, isChecked) {
     updateCheckboxImage(element, isChecked);
 }
-
 
 
 function updateCheckboxImage(element, isChecked) {
     const checkboxImg = element.querySelector('img');
     checkboxImg.src = isChecked ? "assets/img/icons/checkbox-checked-black-24.png" : "assets/img/icons/checkbox-empty-black-24.png";
 }
-
 
 
 function toggleCategoryDropdownMenu() {
@@ -350,22 +268,6 @@ function setSelectedCategory(index) {
 }
 
 
-
-// function toggleAssignDropdownMenu() {
-//     let dropdownMenu = document.getElementById('assign-dropdown-menu');
-//     let arrow = document.getElementById('arrow-assign-to');
-//     if (dropdownMenu.classList.contains('visible')) {
-//         dropdownMenu.classList.remove('visible');
-//         arrow.style.transform = "rotate(0deg)";
-//     } else {
-//         dropdownMenu.classList.add('visible');
-//         arrow.style.transform = "rotate(180deg)";
-//     }
-//     renderTaskContactList();
-// }
-
-
-
 function addSubtask() {
     let subtaskInput = document.getElementById('subTaskInput');
     let subtaskText = subtaskInput.value;
@@ -377,14 +279,12 @@ function addSubtask() {
 }
 
 
-
 function editSubtask(subtaskIndex) {
     const subtaskItem = document.getElementById(`subtask_${subtaskIndex}`);
     subtaskItem.style.padding = '0';
     subtaskItem.innerHTML = createEditInputField(subtasks[subtaskIndex], subtaskIndex);
     focusAndSetCursorAtEnd(subtaskItem.querySelector('.edit-input-field'));
 }
-
 
 
 function updateSubtask(subtaskIndex) {
@@ -398,12 +298,10 @@ function updateSubtask(subtaskIndex) {
 }
 
 
-
 function focusAndSetCursorAtEnd(inputField) {
     inputField.focus();
     inputField.setSelectionRange(inputField.value.length, inputField.value.length);
 }
-
 
 
 function getSubtaskInputValue(subtaskIndex) {
@@ -412,12 +310,10 @@ function getSubtaskInputValue(subtaskIndex) {
 }
 
 
-
 function deleteSubtask(subtaskIndex) {
     subtasks.splice(subtaskIndex, 1);
     renderSubtasks();
 }
-
 
 
 function renderSubtasks() {
