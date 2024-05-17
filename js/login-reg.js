@@ -82,18 +82,7 @@ async function initRegistry() {
                 initials: initials
             }],
             board: {
-                todo: [
-                    {
-                        title: "Example Task",
-                        description: "This is an example.",
-                        dueDate: "12.12.12",
-                        priority: "urgent",
-                        contacts: [],
-                        subtasks: [],
-                        status: "toDo",
-                        category: "User Story"
-                    }
-                ],
+                todo: [],
                 inProgress: [],
                 awaitFeedback: [],
                 done: []

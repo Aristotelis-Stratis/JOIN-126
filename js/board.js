@@ -45,12 +45,12 @@ async function loadCurrentUserBoard() {
 
 function showToDos() {
   // Stelle sicher, dass currentUser und currentUser.data.board.todo verfügbar sind
-  if (!currentUser || !currentUser.data || !currentUser.data.tasks) {
+  if (!currentUser || !currentUser.data || !currentUser.data.board || !currentUser.data.board.todo) {
     console.error("No todo tasks available to display.");
     return;
   }
 
-  let todoTasks = currentUser.data.tasks;
+  let todoTasks = currentUser.data.board.todo;
   let todoContainer = document.getElementById('ToDos');
   todoContainer.innerHTML = ''; // Vorherige Inhalte löschen
 
@@ -61,7 +61,7 @@ function showToDos() {
   }
 
   //let inProgressTask = currentUser.data.board.inProgress.filter(task => task.status == "In Progress");
-  let inProgressTask = currentUser.data.tasks;
+  let inProgressTask = currentUser.data.board.todo;
   let inProgressContainer = document.getElementById('progress-container');
   inProgressContainer.innerHTML = '';
 
@@ -122,7 +122,7 @@ function showOverlayAndPopUp() {
 
 
 function showPopUp(index) {
-  const task = currentUser.data.tasks[index];
+  const task = currentUser.data.board.todo[index];
   const popUpHTML = generatePopUpHTML(task, index)
   showOverlayAndPopUp();
   let popUp = document.getElementById('pop-up');
@@ -131,13 +131,13 @@ function showPopUp(index) {
 
 async function deleteCard(index) {
   try {
-    if (!currentUser || !currentUser.data || !currentUser.data.tasks) {
+    if (!currentUser || !currentUser.data || !currentUser.data.board || !currentUser.data.board.todo) {
       console.error("No current user or tasks available. Task cannot be deleted.");
       return;
     }
 
-    // Entferne den Task aus dem currentUser.data.tasks Array
-    currentUser.data.tasks.splice(index, 1)[0];
+    // Entferne den Task aus dem currentUser.data.board.todo Array
+    currentUser.data.board.todo.splice(index, 1)[0];
 
     // Bestimme den Pfad zum zu löschenden Task in Firebase
     const cleanedEmail = localStorage.getItem('cleanedEmail');
@@ -212,10 +212,10 @@ async function createTaskOnBoard() {
       }
 
       // Bestimme den neuen Task-Index basierend auf der Länge des tasks-Arrays
-      const newTaskIndex = currentUser.data.tasks.length;
+      const newTaskIndex = currentUser.data.board.todo.length;
 
       // Füge die neue Aufgabe in das lokale currentUser-Objekt ein
-      currentUser.data.tasks[newTaskIndex] = newTask;
+      currentUser.data.board.todo[newTaskIndex] = newTask;
 
       // Verwenden der cleanedEmail und userId aus dem LocalStorage
       const cleanedEmail = localStorage.getItem('cleanedEmail');
@@ -238,7 +238,7 @@ async function createTaskOnBoard() {
 
 
 function showAddTaskPopUpEdit(index) {
-  const task = currentUser.data.tasks[index];
+  const task = currentUser.data.board.todo[index];
   let popUp = document.getElementById('pop-up');
   let date = task.dueDate;
   let category = task.category;
@@ -267,7 +267,7 @@ async function addSubtaskToEditWindow(taskIndex) {
 
   if (newSubtask !== '') {
     // Füge die neue Unteraufgabe zum lokalen Datenmodell hinzu
-    const task = currentUser.data.tasks[taskIndex];
+    const task =currentUser.data.board.todo[taskIndex];
     if (!task.subtasks || !Array.isArray(task.subtasks)) {
       console.error("Subtasks array not found or invalid.");
       return;
@@ -371,7 +371,7 @@ function editSubtaskEdit(taskIndex, subtaskIndex) {
 function saveEditedSubtask(taskIndex, subtaskIndex) {
   let subtaskInput = document.getElementById(`subTask_${subtaskIndex}_input`);
   let newText = subtaskInput.value.trim();
-  let task = currentUser.data.tasks[taskIndex];
+  let task = currentUser.data.board.todo[taskIndex];
   if (!task || !task.subtasks || !Array.isArray(task.subtasks)) {
     console.error("Task or subtasks array not found or invalid.");
     return;
@@ -394,7 +394,7 @@ function saveEditedSubtask(taskIndex, subtaskIndex) {
 }
 
 async function deleteSubtaskEdit(taskIndex, subtaskIndex) {
-  const task = currentUser.data.tasks[taskIndex];
+  const task = currentUser.data.board.todo[taskIndex];
   if (!task.subtasks || !Array.isArray(task.subtasks)) {
     console.error("Subtasks array not found or invalid for the task.");
     return;
