@@ -407,17 +407,17 @@ function generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks,
 
 }
 
-function generateSubtaskHTML(index, subtask) {
+function generateSubtaskHTML(taskIndex, subtaskIndex, subtask) {
   return `
-    <div class="subtask-edit-container" id="subTask_${index}">
-      <div class="subtask-item" id="subTaskItem_${index}">
+    <div class="subtask-edit-container" id="subTask_${subtaskIndex}">
+      <div class="subtask-item" id="subTaskItem_${subtaskIndex}">
         <div>
           •
-          <span id="subTask_${index}_span">${subtask}</span>
+          <span id="subTask_${subtaskIndex}_span">${subtask}</span>
         </div>
         <div class="subtask-item-icons">
-          <img class="subtask-item-icon" style="border-right: 1px solid rgba(209, 209, 209, 1);" src="assets/img/icons/edit_dark.png" alt="" onclick="editSubtaskEdit(${index})">
-          <img class="subtask-item-icon" src="assets/img/icons/trash.png" alt="" onclick="deleteSubtaskEdit(${index})">
+          <img class="subtask-item-icon" style="border-right: 1px solid rgba(209, 209, 209, 1);" src="assets/img/icons/edit_dark.png" alt="" onclick="editSubtaskEdit('${taskIndex}', '${subtaskIndex}')">
+          <img class="subtask-item-icon" src="assets/img/icons/trash.png" alt="" onclick="deleteSubtaskEdit(${taskIndex}, ${subtaskIndex})">
         </div>
       </div>
     </div>

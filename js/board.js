@@ -243,31 +243,64 @@ function showAddTaskPopUpEdit(index) {
   let date = task.dueDate;
   let category = task.category;
   let priority = task.priority;
-  let subtasks = generateSubtaskHTMLEdit(task.subtasks);
+  let subtasks = generateSubtaskHTMLEdit(index, task.subtasks);
   let usersHTML = generateUserHTMLEdit(task.contacts);
 
   popUp.innerHTML = generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks, priority, index);
 }
 
 
-function generateSubtaskHTMLEdit(subtasks) {
+function generateSubtaskHTMLEdit(taskIndex, subtasks) {
   let subtaskHTML = '';
 
   if (subtasks && Array.isArray(subtasks)) {
     for (let i = 0; i < subtasks.length; i++) {
       const subtask = subtasks[i];
-      subtaskHTML += generateSubtaskHTML(subtaskIndexCounter++, subtask);
+      subtaskHTML += generateSubtaskHTML(taskIndex, i, subtask);
     }
   }
   return subtaskHTML;
 }
 
-function addSubtaskToEditWindow() {
-  let newSubtask = document.getElementById('subTaskInputEdit').value;
+async function addSubtaskToEditWindow(taskIndex) {
+  let newSubtask = document.getElementById('subTaskInputEdit').value.trim();
 
-  if (newSubtask.trim() !== '') {
+  if (newSubtask !== '') {
+    // Füge die neue Unteraufgabe zum lokalen Datenmodell hinzu
+    const task = currentUser.data.tasks[taskIndex];
+    if (!task.subtasks || !Array.isArray(task.subtasks)) {
+      console.error("Subtasks array not found or invalid.");
+      return;
+    }
+    task.subtasks.push(newSubtask);
+
+    // Aktualisiere die Daten in Firebase
+    const cleanedEmail = localStorage.getItem('cleanedEmail');
+    const userId = localStorage.getItem('currentUserId');
+    const basePath = `users/${cleanedEmail}/${userId}`;
+    const subtaskPath = `${basePath}/tasks/${taskIndex}/subtasks`;
+
+    try {
+      // Lade die vorhandenen Unteraufgaben
+      let existingSubtasks = await loadData(subtaskPath);
+      if (!existingSubtasks || !Array.isArray(existingSubtasks)) {
+        existingSubtasks = [];
+      }
+      // Füge den neuen Subtask zu den vorhandenen Unteraufgaben hinzu
+      existingSubtasks.push(newSubtask);
+      // Aktualisiere die Unteraufgaben in Firebase
+      await updateData(subtaskPath, existingSubtasks);
+      console.log('New subtask added to tasks.subtasks in Firebase.');
+    } catch (error) {
+      console.error('Error adding subtask to tasks.subtasks in Firebase:', error);
+    }
+
+    // Generiere HTML für die neue Unteraufgabe und füge sie zum Container hinzu
     let subtaskContainer = document.getElementById('subtaskContainerEdit');
-    subtaskContainer.insertAdjacentHTML('beforeend', generateSubtaskHTML(subtaskIndexCounter++, newSubtask));
+    const subtaskIndex = task.subtasks.length - 1; // Index der neuen Unteraufgabe
+    subtaskContainer.insertAdjacentHTML('beforeend', generateSubtaskHTML(taskIndex, subtaskIndex, newSubtask));
+
+    // Lösche den Inhalt des Eingabefelds
     document.getElementById('subTaskInputEdit').value = '';
   }
 }
@@ -306,17 +339,17 @@ function clearInputFieldEdit() {
 }
 
 
-function editSubtaskEdit(subtaskIndex) {
+function editSubtaskEdit(taskIndex, subtaskIndex) {
   let subtaskItem = document.getElementById(`subTaskItem_${subtaskIndex}`);
   let subtaskSpan = document.getElementById(`subTask_${subtaskIndex}_span`);
   let subtaskText = subtaskSpan.innerHTML.trim();
   let subtaskInput = `<div class="edit-subtask-under-container">
                       <input class="edit-input" type="text" id="subTask_${subtaskIndex}_input" value="${subtaskText}">
                       <div class="sub-image-container-edit" id="image-container">
-                      <img id="addBtnEdit" src="assets/img/icons/check_blue.png" alt="" onclick="saveEditedSubtask(${subtaskIndex})" style="display: block;">
+                      <img id="addBtnEdit" src="assets/img/icons/check_blue.png" alt="" onclick="saveEditedSubtask(${taskIndex}, ${subtaskIndex})" style="display: block;">
                       <div id="sub-seperator" class="subtask-seperator-edit" style="display: block;">
                       </div>
-                      <img id="closeBtn" src="./assets/img/icons/trash.png" onclick="deleteSubtaskEdit(${subtaskIndex})" alt="" style="display: block;">
+                      <img id="closeBtn" src="./assets/img/icons/trash.png" onclick="deleteSubtaskEdit(${taskIndex}, ${subtaskIndex})" alt="" style="display: block;">
                       </div>
                       </div>
                     `;
@@ -330,33 +363,64 @@ function editSubtaskEdit(subtaskIndex) {
   subtaskInputElement.addEventListener('keydown', function (event) {
     if (event.key === 'Enter') {
       event.preventDefault();
-      saveEditedSubtask(subtaskIndex); // Änderungen speichern
+      saveEditedSubtask(taskIndex, subtaskIndex); // Änderungen speichern
     }
   });
 }
 
-function saveEditedSubtask(subtaskIndex) {
+function saveEditedSubtask(taskIndex, subtaskIndex) {
   let subtaskInput = document.getElementById(`subTask_${subtaskIndex}_input`);
   let newText = subtaskInput.value.trim();
+  let task = currentUser.data.tasks[taskIndex];
+  if (!task || !task.subtasks || !Array.isArray(task.subtasks)) {
+    console.error("Task or subtasks array not found or invalid.");
+    return;
+  }
+  task.subtasks[subtaskIndex] = newText;
+
   let subtaskItem = document.getElementById(`subTaskItem_${subtaskIndex}`);
   subtaskItem.innerHTML = `
-            <div class="subtask-item-edit" id="subTaskItem_${subtaskIndex}">
-              <div>
-                •
-                <span id="subTask_${subtaskIndex}_span">${newText}</span>
-              </div>
-              <div class="subtask-item-icons">
-                <img class="subtask-item-icon" style="border-right: 1px solid rgba(209, 209, 209, 1);" src="assets/img/icons/edit_dark.png" alt="" onclick="editSubtaskEdit(${subtaskIndex})">
-                <img class="subtask-item-icon" src="assets/img/icons/trash.png" alt="" onclick="deleteSubtaskEdit(${subtaskIndex})">
-              </div>
-            </div>
-      `;
+    <div class="subtask-item-edit" id="subTaskItem_${subtaskIndex}">
+      <div>
+        •
+        <span id="subTask_${subtaskIndex}_span">${newText}</span>
+      </div>
+      <div class="subtask-item-icons">
+        <img class="subtask-item-icon" style="border-right: 1px solid rgba(209, 209, 209, 1);" src="assets/img/icons/edit_dark.png" alt="" onclick="editSubtaskEdit(${taskIndex}, ${subtaskIndex})">
+        <img class="subtask-item-icon" src="assets/img/icons/trash.png" alt="" onclick="deleteSubtaskEdit(${taskIndex}, ${subtaskIndex})">
+      </div>
+    </div>
+  `;
 }
 
-function deleteSubtaskEdit(index) {
-  let subtaskContainer = document.getElementById(`subTask_${index}`);
-  subtaskContainer.remove();
+async function deleteSubtaskEdit(taskIndex, subtaskIndex) {
+  const task = currentUser.data.tasks[taskIndex];
+  if (!task.subtasks || !Array.isArray(task.subtasks)) {
+    console.error("Subtasks array not found or invalid for the task.");
+    return;
+  }
+
+  // Bestimme den Pfad zum zu löschenden Subtask in Firebase
+  const cleanedEmail = localStorage.getItem('cleanedEmail');
+  const userId = localStorage.getItem('currentUserId');
+  const basePath = `users/${cleanedEmail}/${userId}`;
+  const subtaskPath = `${basePath}/tasks/${taskIndex}/subtasks/${subtaskIndex}`;
+
+  // Lösche den Subtask aus Firebase
+  await deleteData(subtaskPath);
+
+  // Entferne den Subtask aus dem lokalen Datenmodell
+  task.subtasks.splice(subtaskIndex, 1);
+
+  // Entferne den Subtask aus dem Container
+  const subtaskContainer = document.getElementById(`subTask_${subtaskIndex}`);
+  if (subtaskContainer) {
+    subtaskContainer.remove();
+  }
+  showToDos();
 }
+
+
 
 function updateSubtaskEdit(index) {
   showPopUp(index);
