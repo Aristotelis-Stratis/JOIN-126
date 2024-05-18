@@ -7,8 +7,11 @@ body {
 /* HEADLINE DIV PROPERTIES*/
 
 .headline-div {
-    height: 73px;
+
     width: 624px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .headline-div h1 {
@@ -42,6 +45,14 @@ body {
     border-radius: 3px;
 }
 
+.seperator-horizontal {
+    background-color: #29ABE2;
+    height: 3px;
+    width: 128px;
+    border-radius: 3px;
+    margin-top: 24px;
+}
+
 /* MAIN CONTENT PROPERTIES*/
 
 .sum-container {
@@ -53,6 +64,7 @@ body {
 
 .greet-container {
     margin-left: 8px;
+    margin: auto;
 }
 
 .greet-container span {
@@ -184,6 +196,13 @@ h2 {
 
 @media(max-width: 1300px) {
 
+    .headline-div {
+
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
     .sum-container {
         justify-content: center;
 
@@ -192,4 +211,12 @@ h2 {
     .d-none1300 {
         display: none;
     }
+
+    .d-flex1300 {
+        display: flex;
+    }
+}
+
+@media(max-width: 600px) {
+    
 }
