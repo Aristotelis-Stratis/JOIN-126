@@ -7,7 +7,6 @@ body {
 /* HEADLINE DIV PROPERTIES*/
 
 .headline-div {
-
     width: 624px;
     display: flex;
     justify-content: space-between;
@@ -28,7 +27,6 @@ body {
     line-height: 32px;
     letter-spacing: 0em;
     text-align: left;
-
 }
 
 .seperator-vertical {
@@ -74,18 +72,19 @@ body {
 }
 
 .greet-container h2 {
-    font-size: 50px;
+    font-size: 53px;
     margin: 0px;
     color: #29ABE2;
 }
 
 .container {
-    height: 188px;
+    height: 148px;
     border-radius: 28px;
     box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.2);
     background-color: white;
     cursor: pointer;
     margin: 8px;
+    padding: 16px;
 }
 
 .container:hover {
@@ -101,11 +100,11 @@ body {
 }
 
 .sec-2-container {
-    width: 540px;
+    width: 512px;
 }
 
 .sec-3-container {
-    width: 188px;
+    width: 148px;
 }
 
 .sum-img {
@@ -144,6 +143,10 @@ h2 {
 
 .font-size20px {
     font-size: 20px;
+}
+
+.font-size16px {
+    font-size: 16px;
 }
 
 
@@ -193,11 +196,14 @@ h2 {
     text-align: center;
 }
 
+.width-560px {
+    width: 560px;
+}
+
 
 @media(max-width: 1300px) {
 
     .headline-div {
-
         flex-direction: column;
         justify-content: center;
         align-items: flex-start;
@@ -205,6 +211,11 @@ h2 {
 
     .sum-container {
         justify-content: center;
+        margin-top: 24px;
+    }
+
+    .container {
+        height: 140px;
 
     }
 
@@ -218,5 +229,82 @@ h2 {
 }
 
 @media(max-width: 600px) {
+
+    .container {
+        height: 128px;
+        padding: 8px;
+    }
+
+    .width-560px {
+        width: 424px;
+    }
+
+    .sec-1-container {
+        width: 200px;
+    }
     
+    .sec-2-container {
+        width: 388px;
+    }
+    
+    .sec-3-container {
+        width: 148px;
+    }
+
+    .sum-img {
+        height: 48px;
+        width: 48px;
+    }
+
+    h2 {
+        font-size: 40px;
+    }
+    
+    .font-size20px {
+        font-size: 18px;
+    }
+
+    .font-size16px {
+        font-size: 14px;
+    }
+}
+
+@media(max-width: 456px) {
+    
+    .sum-container { /*  <------*/
+        margin-top: 16px;
+    }
+
+    .container { /*  <------*/
+        height: 88px;
+    }
+
+    .width-560px { /*  <------*/
+        width: 320px;
+    }
+    
+    .sec-2-container { /*  <------*/
+        width: 288px;
+    }
+    
+    .sec-3-container {
+        width: 80px;
+    }
+
+    .sum-img { /*  <------*/
+        height: 32px;
+        width: 32px;
+    }
+
+    h2 {
+        font-size: 32px;
+    }
+    
+    .font-size20px {
+        font-size: 14px;
+    }
+
+    .font-size16px {
+        font-size: 12px;
+    }
 }
