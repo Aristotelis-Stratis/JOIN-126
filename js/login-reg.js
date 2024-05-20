@@ -82,10 +82,10 @@ async function initRegistry() {
                 initials: initials
             }],
             board: {
-                todo: [],
-                inProgress: [],
-                awaitFeedback: [],
-                done: []
+                todo: "",
+                inProgress: "",
+                awaitFeedback: "",
+                done: ""
             },
             summary: {}
         };

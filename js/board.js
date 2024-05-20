@@ -12,6 +12,7 @@ async function init() {
   includeHTML();
   await loadCurrentUserBoard();
   showToDos();
+  updateNoTaskPlaceholders();
 }
 
 async function loadCurrentUserBoard() {
@@ -137,27 +138,25 @@ async function deleteCard(index) {
     }
 
     // Entferne den Task aus dem currentUser.data.board.todo Array
-    currentUser.data.board.todo.splice(index, 1)[0];
+    const deletedTask = currentUser.data.board.todo.splice(index, 1)[0];
 
     // Bestimme den Pfad zum zu löschenden Task in Firebase
     const cleanedEmail = localStorage.getItem('cleanedEmail');
     const userId = localStorage.getItem('currentUserId');
-    const basePath = `users/${cleanedEmail}/${userId}`;
-    const taskPath = `${basePath}/tasks/${index}`;
+    const taskPath = `users/${cleanedEmail}/${userId}/board/todo/${index}`;
 
     // Lösche den Task aus Firebase
     await deleteData(taskPath);
 
     // Aktualisiere das UI
-    
     closePopUp();
     showToDos();
 
-    console.log('Task successfully deleted and user saved');
+    console.log('Task successfully deleted:', deletedTask);
   } catch (error) {
     console.error('Error deleting task:', error);
   }
-  
+  updateNoTaskPlaceholders();
 }
 
 function closePopUp() {
@@ -205,36 +204,29 @@ function doNotCloseAddTaskPopUp(event) {
 
 async function createTaskOnBoard() {
   if (validateTaskInputs()) {
-      const newTask = constructNewTask();
-      if (!currentUser) {
-          console.error("No current user logged in. Task cannot be added.");
-          return;
-      }
-
-      // Bestimme den neuen Task-Index basierend auf der Länge des tasks-Arrays
-      const newTaskIndex = currentUser.data.board.todo.length;
-
-      // Füge die neue Aufgabe in das lokale currentUser-Objekt ein
-      currentUser.data.board.todo[newTaskIndex] = newTask;
-
-      // Verwenden der cleanedEmail und userId aus dem LocalStorage
-      const cleanedEmail = localStorage.getItem('cleanedEmail');
-      const userId = localStorage.getItem('currentUserId');
-      const basePath = `users/${cleanedEmail}/${userId}`;
-      const taskPath = `${basePath}/tasks/${newTaskIndex}`;
-
-      try {
-          // Speichern der neuen Aufgabe in Firebase
-          await updateData(taskPath, newTask);
-          localStorage.setItem('currentUser', JSON.stringify(currentUser)); // Aktualisieren des currentUser im Local Storage
-
-          resetUI();
-      } catch (error) {
-          console.error('Fehler beim Hinzufügen der Aufgabe zu Firebase:', error);
-      }
-      closeAddTaskPopUp();
+    const newTask = constructNewTask();
+    if (!currentUser) {
+      console.error("No current user logged in. Task cannot be added.");
+      return;
     }
+
+    const newTaskIndex = currentUser.data.board.todo.length;
+    currentUser.data.board.todo.push(newTask);
+
+    const cleanedEmail = localStorage.getItem('cleanedEmail');
+    const userId = localStorage.getItem('currentUserId');
+    const taskPath = `users/${cleanedEmail}/${userId}/board/todo/${newTaskIndex}`;
+
+    try {
+      await updateData(taskPath, newTask);
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      resetUI();
+    } catch (error) {
+      console.error('Fehler beim Hinzufügen der Aufgabe zu Firebase:', error);
+    }
+    closeAddTaskPopUp();
   }
+}
 
 
 function showAddTaskPopUpEdit(index) {
@@ -267,7 +259,7 @@ async function addSubtaskToEditWindow(taskIndex) {
 
   if (newSubtask !== '') {
     // Füge die neue Unteraufgabe zum lokalen Datenmodell hinzu
-    const task =currentUser.data.board.todo[taskIndex];
+    const task = currentUser.data.board.todo[taskIndex];
     if (!task.subtasks || !Array.isArray(task.subtasks)) {
       console.error("Subtasks array not found or invalid.");
       return;
@@ -277,8 +269,8 @@ async function addSubtaskToEditWindow(taskIndex) {
     // Aktualisiere die Daten in Firebase
     const cleanedEmail = localStorage.getItem('cleanedEmail');
     const userId = localStorage.getItem('currentUserId');
-    const basePath = `users/${cleanedEmail}/${userId}`;
-    const subtaskPath = `${basePath}/tasks/${taskIndex}/subtasks`;
+    const basePath = `users/${cleanedEmail}/${userId}/board/todo/${taskIndex}`;
+    const subtaskPath = `${basePath}/subtasks`;
 
     try {
       // Lade die vorhandenen Unteraufgaben
@@ -303,6 +295,7 @@ async function addSubtaskToEditWindow(taskIndex) {
     // Lösche den Inhalt des Eingabefelds
     document.getElementById('subTaskInputEdit').value = '';
   }
+  showToDos();
 }
 
 function toggleAddButtonImageEdit() {
@@ -404,7 +397,7 @@ async function deleteSubtaskEdit(taskIndex, subtaskIndex) {
   const cleanedEmail = localStorage.getItem('cleanedEmail');
   const userId = localStorage.getItem('currentUserId');
   const basePath = `users/${cleanedEmail}/${userId}`;
-  const subtaskPath = `${basePath}/tasks/${taskIndex}/subtasks/${subtaskIndex}`;
+  const subtaskPath =  `users/${cleanedEmail}/${userId}/board/todo/${taskIndex}/subtasks/${subtaskIndex}`;
 
   // Lösche den Subtask aus Firebase
   await deleteData(subtaskPath);
@@ -419,7 +412,6 @@ async function deleteSubtaskEdit(taskIndex, subtaskIndex) {
   }
   showToDos();
 }
-
 
 
 function updateSubtaskEdit(index) {
@@ -448,6 +440,27 @@ function moveTo(status) {
   currentUser.data.board.inProgress.push(movedTask);
 
   showToDos();
+}
+
+function updateNoTaskPlaceholders() {
+  const columns = [
+    { id: 'ToDos', placeholder: 'No tasks To do' },
+    { id: 'progress-container', placeholder: 'No Task is in Progress' },
+    { id: 'feedback-container', placeholder: 'No Task requires Feedback' },
+    { id: 'done-container', placeholder: 'No Task is Done' }
+  ];
+
+  columns.forEach(column => {
+    const container = document.getElementById(column.id);
+    if (container.children.length === 0) {
+      container.innerHTML = `<div class="no-task-box">${column.placeholder}</div>`;
+    } else {
+      const noTaskBox = container.querySelector('.no-task-box');
+      if (noTaskBox) {
+        noTaskBox.remove();
+      }
+    }
+  });
 }
 
 
