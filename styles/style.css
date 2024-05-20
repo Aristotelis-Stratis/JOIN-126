@@ -1800,6 +1800,21 @@ input[type=submit]:hover {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    min-height: 300px;
+}
+
+#feedback-container{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 300px;
+}
+
+#done-container{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 300px;
 }
 
 .task-category-board {
@@ -2286,9 +2301,6 @@ input[type=submit]:hover {
     display: flex;
 }
 
-#progress-container {
-    height: 300px;
-}
 
 
 /*BOARD END*/
