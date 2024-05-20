@@ -47,32 +47,53 @@ async function loadCurrentUserBoard() {
 function showToDos() {
   // Stelle sicher, dass currentUser und currentUser.data.board.todo verfügbar sind
   if (!currentUser || !currentUser.data || !currentUser.data.board || !currentUser.data.board.todo) {
-    console.error("No todo tasks available to display.");
-    return;
+      console.error("No todo tasks available to display.");
+      return;
   }
 
-  let todoTasks = currentUser.data.board.todo;
+  // Filtere die Aufgaben nach ihrem Status
+  let todoTasks = currentUser.data.board.todo.filter(task => task.status === "toDo");
+  let inProgressTasks = currentUser.data.board.todo.filter(task => task.status === "In Progress");
+  let feedbackTasks = currentUser.data.board.todo.filter(task => task.status === "Await Feedback");
+  let doneTasks = currentUser.data.board.todo.filter(task => task.status === "Done");
+
+  // Clear the containers
   let todoContainer = document.getElementById('ToDos');
-  todoContainer.innerHTML = ''; // Vorherige Inhalte löschen
+  let inProgressContainer = document.getElementById('progress-container');
+  let feedbackContainer = document.getElementById('feedback-container');
+  let doneContainer = document.getElementById('done-container');
 
+  todoContainer.innerHTML = '';
+  inProgressContainer.innerHTML = '';
+  feedbackContainer.innerHTML = '';
+  doneContainer.innerHTML = '';
+
+  // Füge Aufgaben zu den entsprechenden Containern hinzu
   for (let i = 0; i < todoTasks.length; i++) {
-    const task = todoTasks[i];
-    const todoHTML = generateTodoHTML(task, i);
-    todoContainer.innerHTML += todoHTML;
+      const task = todoTasks[i];
+      const todoHTML = generateTodoHTML(task, i);
+      todoContainer.innerHTML += todoHTML;
   }
 
-  //let inProgressTask = currentUser.data.board.inProgress.filter(task => task.status == "In Progress");
-  let inProgressTask = currentUser.data.board.todo;
-  let inProgressContainer = document.getElementById('progress-container');
-  inProgressContainer.innerHTML = '';
+  for (let i = 0; i < inProgressTasks.length; i++) {
+      const task = inProgressTasks[i];
+      const inProgressHTML = generateTodoHTML(task, i);
+      inProgressContainer.innerHTML += inProgressHTML;
+  }
 
-  for (let i = 0; i < inProgressTask.length; i++) {
-    const task = inProgressTask[i];
-    const inProgressHTML = generateTodoHTML(task, i);
-    inProgressContainer.innerHTML += inProgressHTML;
+  for (let i = 0; i < feedbackTasks.length; i++) {
+      const task = feedbackTasks[i];
+      const awaitFeedbackHTML = generateTodoHTML(task, i);
+      feedbackContainer.innerHTML += awaitFeedbackHTML;
+  }
 
+  for (let i = 0; i < doneTasks.length; i++) {
+      const task = doneTasks[i];
+      const doneHTML = generateTodoHTML(task, i);
+      doneContainer.innerHTML += doneHTML;
   }
 }
+
 
 function getCategoryBackgroundColor(category) {
   if (category === 'Technical Task') {
@@ -435,9 +456,29 @@ function allowDrop(ev) {
 
 function moveTo(status) {
   console.log('Moving task to:', status);
-  currentUser.data.board.todo[currentDraggedElement]['status'] = status;
-  const movedTask = currentUser.data.board.todo.splice(currentDraggedElement, 1)[0];
-  currentUser.data.board.inProgress.push(movedTask);
+  let task = currentUser.data.board.todo[currentDraggedElement];
+  task.status = status;
+
+  // Entferne die Aufgabe aus ihrem aktuellen Container
+  currentUser.data.board.todo.splice(currentDraggedElement, 1);
+
+  // Aktualisiere den Status und füge die Aufgabe in den richtigen Container ein
+  switch (status) {
+    case "toDo":
+      currentUser.data.board.todo.push(task);
+      break;
+    case "In Progress":
+      currentUser.data.board.inProgress.push(task);
+      break;
+    case "Await Feedback":
+      currentUser.data.board.awaitFeedback.push(task);
+      break;
+    case "Done":
+      currentUser.data.board.done.push(task);
+      break;
+    default:
+      console.error("Invalid status:", status);
+  }
 
   showToDos();
 }
