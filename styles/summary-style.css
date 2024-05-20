@@ -80,19 +80,17 @@ body {
 .container {
     height: 148px;
     border-radius: 28px;
-    box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.2);
+    border: 8px solid rgb(246, 247, 248);
     background-color: white;
     cursor: pointer;
-    margin: 8px;
     padding: 16px;
+    transition: 125ms ease-in-out;
 }
 
 .container:hover {
+    color: white;
     background-color: rgb(43, 54, 71);
     border: 8px solid rgb(43, 54, 71);
-    margin: 0px;
-    color: white;
-    transition: 125ms ease-in-out;
 }
 
 .sec-1-container {
@@ -216,7 +214,6 @@ h2 {
 
     .container {
         height: 140px;
-
     }
 
     .d-none1300 {
@@ -270,13 +267,33 @@ h2 {
 }
 
 @media(max-width: 456px) {
+
+    .headline-div {
+        width: unset;
+    }
+    
+    .headline-div h1 {
+        font-size: 44px;
+        line-height: unset;
+    }
+    
+    .headline-div span {
+        font-size: 16px;
+        line-height: 8px;
+    }
     
     .sum-container { /*  <------*/
-        margin-top: 16px;
+        margin-top: 8px;
     }
 
     .container { /*  <------*/
-        height: 88px;
+        height: 80px;
+    }
+
+    .seperator-horizontal {
+        height: 2px;
+        width: 88px;
+        margin-top: 16px;
     }
 
     .width-560px { /*  <------*/
@@ -306,5 +323,9 @@ h2 {
 
     .font-size16px {
         font-size: 12px;
+    }
+
+    .padding-b8px {
+        padding-bottom: 8px;
     }
 }
