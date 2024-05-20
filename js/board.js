@@ -145,7 +145,8 @@ function showOverlayAndPopUp() {
 
 function showPopUp(index) {
   const task = currentUser.data.board.todo[index];
-  const popUpHTML = generatePopUpHTML(task, index)
+  const priority = task.priority ? task.priority : 'low';
+  const popUpHTML = generatePopUpHTML(task, index, priority)
   showOverlayAndPopUp();
   let popUp = document.getElementById('pop-up');
   popUp.innerHTML = popUpHTML;
@@ -282,27 +283,17 @@ async function addSubtaskToEditWindow(taskIndex) {
     // Füge die neue Unteraufgabe zum lokalen Datenmodell hinzu
     const task = currentUser.data.board.todo[taskIndex];
     if (!task.subtasks || !Array.isArray(task.subtasks)) {
-      console.error("Subtasks array not found or invalid.");
-      return;
+      task.subtasks = [];
     }
     task.subtasks.push(newSubtask);
 
     // Aktualisiere die Daten in Firebase
     const cleanedEmail = localStorage.getItem('cleanedEmail');
     const userId = localStorage.getItem('currentUserId');
-    const basePath = `users/${cleanedEmail}/${userId}/board/todo/${taskIndex}`;
-    const subtaskPath = `${basePath}/subtasks`;
-
+    const subtaskPath = `users/${cleanedEmail}/${userId}/board/todo/${taskIndex}/subtasks`;
     try {
-      // Lade die vorhandenen Unteraufgaben
-      let existingSubtasks = await loadData(subtaskPath);
-      if (!existingSubtasks || !Array.isArray(existingSubtasks)) {
-        existingSubtasks = [];
-      }
-      // Füge den neuen Subtask zu den vorhandenen Unteraufgaben hinzu
-      existingSubtasks.push(newSubtask);
       // Aktualisiere die Unteraufgaben in Firebase
-      await updateData(subtaskPath, existingSubtasks);
+      await updateData(subtaskPath, task.subtasks);
       console.log('New subtask added to tasks.subtasks in Firebase.');
     } catch (error) {
       console.error('Error adding subtask to tasks.subtasks in Firebase:', error);
@@ -414,17 +405,21 @@ async function deleteSubtaskEdit(taskIndex, subtaskIndex) {
     return;
   }
 
-  // Bestimme den Pfad zum zu löschenden Subtask in Firebase
-  const cleanedEmail = localStorage.getItem('cleanedEmail');
-  const userId = localStorage.getItem('currentUserId');
-  const basePath = `users/${cleanedEmail}/${userId}`;
-  const subtaskPath =  `users/${cleanedEmail}/${userId}/board/todo/${taskIndex}/subtasks/${subtaskIndex}`;
-
-  // Lösche den Subtask aus Firebase
-  await deleteData(subtaskPath);
-
   // Entferne den Subtask aus dem lokalen Datenmodell
   task.subtasks.splice(subtaskIndex, 1);
+
+  // Aktualisiere die Daten in Firebase
+  const cleanedEmail = localStorage.getItem('cleanedEmail');
+  const userId = localStorage.getItem('currentUserId');
+  const subtaskPath = `users/${cleanedEmail}/${userId}/board/todo/${taskIndex}/subtasks`;
+
+  try {
+    // Aktualisiere die Unteraufgaben in Firebase
+    await updateData(subtaskPath, task.subtasks);
+    console.log('Subtask removed from tasks.subtasks in Firebase.');
+  } catch (error) {
+    console.error('Error removing subtask from tasks.subtasks in Firebase:', error);
+  }
 
   // Entferne den Subtask aus dem Container
   const subtaskContainer = document.getElementById(`subTask_${subtaskIndex}`);

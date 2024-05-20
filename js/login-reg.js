@@ -86,7 +86,7 @@ async function initRegistry() {
                     {
                         title: "TestTask",
                         description: "TestDescription",
-                        dueDate: "12.12.12",
+                        dueDate: "2012-12-12",
                         priority: "urgent",
                         contacts: [],
                         subtasks: [],

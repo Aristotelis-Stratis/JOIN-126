@@ -38,12 +38,11 @@ function generateTodoHTML(task, i) {
 }
 
 
-function generatePopUpHTML(task, index) {
+function generatePopUpHTML(task, index, priority) {
   let taskName = task.title;
   let taskDescription = task.description;
   let date = task.dueDate;
-  let priority = task.priority;
-  let priorityImage = setPriority(task.priority);
+  let priorityImage = setPriority(priority);
   let usersHTML = generateUserHTMLplusName(task.contacts);
   let category = task.category;
   let backgroundColor = getCategoryBackgroundColor(category);
@@ -427,14 +426,16 @@ function generateSubtaskHTML(taskIndex, subtaskIndex, subtask) {
 function generateUserHTMLEdit(contacts) {
   let usersHTML = '';
 
-  for (let j = 0; j < contacts.length; j++) {
-    const user = contacts[j];
-    let userInitials = user.initials;
-    let userColor = user.color;
+  if (contacts && Array.isArray(contacts)) {
+    for (let j = 0; j < contacts.length; j++) {
+      const user = contacts[j];
+      let userInitials = user.initials;
+      let userColor = user.color;
 
-    usersHTML += `
-        <span class="contact-icon" style="background-color:${userColor};">${userInitials}</span>
-        `;
+      usersHTML += `
+          <span class="contact-icon" style="background-color:${userColor};">${userInitials}</span>
+          `;
+    }
   }
 
   return usersHTML;
