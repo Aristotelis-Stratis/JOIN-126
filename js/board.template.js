@@ -2,15 +2,15 @@ function generateTodoHTML(task, i) {
   let taskName = task.title;
   let taskDescription = task.description;
   let totalTasks = task.subtasks ? task.subtasks.length : 0;
-  let completedTasks = 1;
-  let completionPercentage = (completedTasks / totalTasks) * 100
+  let completedTasks = task.subtasks ? task.subtasks.filter(subtask => subtask.completed).length : 0;
+  let completionPercentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
   let priorityImage = setPriority(task.priority);
   let category = task.category;
   let usersHTML = generateUserHTML(task.contacts);
   let backgroundColor = getCategoryBackgroundColor(category);
 
   return `
-        <div draggable="true" ondragstart="startdragging(${i})">
+        <div draggable="true" ondragstart="startdragging(${i})" data-task-index="${i}">
             <div class="cardA" onclick="showPopUp(${i})">
                   <span class="task-category-board" style="background-color: ${backgroundColor};">${category}</span>
                   <div class="card-middle-part">
@@ -20,7 +20,7 @@ function generateTodoHTML(task, i) {
                   <div class="subtasks">
                     <div class="subtask-bar">
                       <div class="filled-subtask-bar" style="width: ${completionPercentage}%;"></div>
-                    </div><span>1/${totalTasks} Subtasks</span>
+                    </div><span>${completedTasks}/${totalTasks} Subtasks</span>
                   </div>
                  <div class="asigned-to-flex"> 
                   <div class="asigned-to">
@@ -46,8 +46,7 @@ function generatePopUpHTML(task, index, priority) {
   let usersHTML = generateUserHTMLplusName(task.contacts);
   let category = task.category;
   let backgroundColor = getCategoryBackgroundColor(category);
-  let subtasksHTML = generateSubtasksHTML(task.subtasks);
-
+  let subtasksHTML = generateSubtasksHTML(index, task.subtasks);
 
   return `
     <div class="pop-up-headline-flex">
@@ -258,16 +257,17 @@ function generateUserHTML(contacts) {
   return usersHTML;
 }
 
-function generateSubtasksHTML(subtasks) {
+function generateSubtasksHTML(taskIndex, subtasks) {
   let subtasksHTML = '';
 
   if (subtasks && Array.isArray(subtasks)) {
     for (let i = 0; i < subtasks.length; i++) {
       let subtask = subtasks[i];
+      let checkIcon = subtask.completed ? './assets/img/icons/checkbox-checked-black-24.png' : './assets/img/icons/checkbox-empty-black-24.png';
       subtasksHTML += `
           <div class="popup-subtasks">
-              <img src="./assets/img/icons/checkbox-empty-black-24.png" id="subtask-check${i}" onclick="toggleSubtaskCheck('subtask-check${i}')" alt="Box-Empty">
-              <div>${subtask}</div>
+              <img src="${checkIcon}" id="subtask-check${i}" onclick="toggleSubtaskCheck(${taskIndex}, ${i})" alt="Box-Empty">
+              <div>${subtask.text}</div>
           </div>
       `;
     }
@@ -284,126 +284,89 @@ function handleSubtaskKeyDown(event) {
 }
 
 function generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks, priority, index) {
-
-  return `
-    <div class="form-container">
-          <div class="task-title-popup-edit">
-            <h1></h1>
-            <img onclick="closePopUp()" src="./assets/img/icons/close.png" alt="Close-PNG">
-          </div>
-          <form class="task-form-edit" id="taskForm">
-            <div class="form-left-edit">
-              <div class="form-group-edit">
-                <label for="title">Title<span class="form-required-color">*</span></label>
-                <input type="text" id="title" required value="${task.title}"
-                  oninput="hideValidationError('title', 'title-error-message')">
-                <span id="title-error-message" class="error-message">This field is required.</span>
-              </div>
-              <div class="form-group-edit">
-                <label for="description">Description</label>
-                <textarea class="no-validate" id="description" placeholder="Enter a Description">${task.description}</textarea>
-              </div>
-              <!-- assign to list -->
-              <div class="form-group-edit">
-                <label for="assignedTo">Assigned to</label>
-                <div class="drop-down-menu-container" onclick="toggleAssignDropdownMenu()">
-                  <div class="drop-down-image-container">
-                    <img id="arrow-assign-to" src="assets/img/icons/arrow_drop_down.png" alt="">
-                  </div>
-                  <input class="no-validate task-assign" type="text" id="assignedTo"
-                    placeholder="Select contacts to assign" oninput="filterContacts(this.value)">
-  
-                  <div id="assign-dropdown-menu" class="dropdown-menu">
-                    <!-- render contact list here -->
-                    <div class="task-contact-list" id="task-contact-list"></div>
-                  </div>
-                  <div class="users-edit-flex"></div>
-                </div>
-                <div class="selected-contacts-container" id="selected-contacts-list-edit">
-                  ${usersHTML}
-                </div>
-              </div>
+    return `
+        <div class="form-container">
+            <div class="task-title-popup-edit">
+                <h1>Edit Task</h1>
+                <img onclick="closePopUp()" src="./assets/img/icons/close.png" alt="Close-PNG">
             </div>
-  
-  
-            <div class="form-right-edit">
-              <!-- Date -->
-              <div class="form-group-edit">
-                <label for="dueDate">Due date<span class="form-required-color"></span></label>
-                <input type="date" id="dueDate" required value="${date}" onchange="validateDueDate()">
-                <span id="date-error-message" class="error-message" style="display: none;">This
-                  field is required</span>
-              </div>
-  
-              <!-- priority buttons -->
-              <div class="form-group priority">
-                <label>Prio</label>
-                <div class="priority-button-container">
-                <button id="priority-urgent" class="priority-button on-edit ${priority === 'urgent' ? 'active' : ''}" data-priority="urgent"
-                  onclick="togglePriority('priority-urgent')"><span>Urgent</span> <img src="assets/img/icons/urgent.png"
-                  alt="Urgent Priority">
-                </button>
-                <button id="priority-medium" class="priority-button on-edit ${priority === 'medium' ? 'active' : ''}" data-priority="medium"
-                  onclick="togglePriority('priority-medium')"><span>Medium</span> <img src="assets/img/icons/medium.png"
-                  alt="Medium Priority">
-                </button>
-                <button id="priority-low" class="priority-button on-edit ${priority === 'low' ? 'active' : ''}" data-priority="low"
-                  onclick="togglePriority('priority-low')"><span>Low</span> <img src="assets/img/icons/low.png"
-                  alt="Low Priority">
-                </button>
-            </div>
-          </div>
-  
-              <div class="form-group-edit select-container">
-                <label for="category">Category</label>
-                <div class="select-dropdown" style="pointer-events: none; color: lightgrey;" id="select-dropdown" onclick="toggleCategoryDropdownMenu()">
-                  <div class="selected-option" id="selected-option">${category}</div>
-                  <div class="drop-down-image-container">
-                    <img id="arrow-category" src="assets/img/icons/arrow_drop_down.png" alt="">
-                  </div>
-                  <div class="dropdown-menu" id="category-dropdown-menu">
-                    <div class="dropdown-category" onclick="setSelectedCategory(1)">Technical
-                      Task</div>
-                    <div class="dropdown-category" onclick="setSelectedCategory(2)">User Story
+            <form class="task-form-edit" id="taskForm">
+                <div class="form-left-edit">
+                    <div class="form-group-edit">
+                        <label for="title">Title<span class="form-required-color">*</span></label>
+                        <input type="text" id="title" required value="${task.title}" oninput="hideValidationError('title', 'title-error-message')">
+                        <span id="title-error-message" class="error-message">This field is required.</span>
                     </div>
-                  </div>
-                </div>
-                <select id="category-todo" required class="d-none task-category">
-                  <option value="Technical Task">Technical Task</option>
-                  <option value="User Story">User Story</option>
-                </select>
-                <div id="category-error-message" class="error-message">This field is required.</div>
-              </div>
-              <div class="form-group">
-                <label>Subtasks</label>
-                <div class="drop-down-menu-container">
-  
-                  <div class="sub-image-container" id="image-container">
-                    <img id="addBtnEdit" src="assets/img/icons/add.png" alt="" onclick="addSubtaskToEditWindow(${index})">
-                    <div id="sub-seperator" class="subtask-seperator" style="display:none;">
+                    <div class="form-group-edit">
+                        <label for="description">Description</label>
+                        <textarea class="no-validate" id="description" placeholder="Enter a Description">${task.description}</textarea>
                     </div>
-                    <img id="closeBtn" src="assets/img/icons/close.png"
-                      onclick="clearInputFieldEdit(), toggleAddButtonImageEdit()" alt="" style="display:none;">
-                  </div>
-  
-                  <input class="no-validate subtask" type="text" id="subTaskInputEdit" maxlength="15"
-                    placeholder="Add new subtask" onkeypress="handleKeyPress(event, ${index})" oninput="toggleAddButtonImageEdit()">
+                    <div class="form-group-edit">
+                        <label for="assignedTo">Assigned to</label>
+                        <div class="drop-down-menu-container" onclick="toggleAssignDropdownMenu()">
+                            <div class="drop-down-image-container">
+                                <img id="arrow-assign-to" src="assets/img/icons/arrow_drop_down.png" alt="">
+                            </div>
+                            <input class="no-validate task-assign" type="text" id="assignedTo" placeholder="Select contacts to assign" oninput="filterContacts(this.value)">
+                            <div id="assign-dropdown-menu" class="dropdown-menu">
+                                <div class="task-contact-list" id="task-contact-list"></div>
+                            </div>
+                            <div class="users-edit-flex"></div>
+                        </div>
+                        <div class="selected-contacts-container" id="selected-contacts-list-edit">
+                            ${usersHTML}
+                        </div>
+                    </div>
                 </div>
-                <div class="subtask-container-edit" id="subtaskContainerEdit">
-                  ${subtasks}
+                <div class="form-right-edit">
+                    <div class="form-group-edit">
+                        <label for="dueDate">Due date<span class="form-required-color"></span></label>
+                        <input type="date" id="dueDate" required value="${date}" onchange="validateDueDate()">
+                        <span id="date-error-message" class="error-message" style="display: none;">This field is required</span>
+                    </div>
+                    <div class="form-group priority">
+                        <label>Prio</label>
+                        <div class="priority-button-container">
+                            <button id="priority-urgent" class="priority-button on-edit ${priority === 'urgent' ? 'active' : ''}" data-priority="urgent" onclick="togglePriority('priority-urgent')"><span>Urgent</span> <img src="assets/img/icons/urgent.png" alt="Urgent Priority"></button>
+                            <button id="priority-medium" class="priority-button on-edit ${priority === 'medium' ? 'active' : ''}" data-priority="medium" onclick="togglePriority('priority-medium')"><span>Medium</span> <img src="assets/img/icons/medium.png" alt="Medium Priority"></button>
+                            <button id="priority-low" class="priority-button on-edit ${priority === 'low' ? 'active' : ''}" data-priority="low" onclick="togglePriority('priority-low')"><span>Low</span> <img src="assets/img/icons/low.png" alt="Low Priority"></button>
+                        </div>
+                    </div>
+                    <div class="form-group-edit select-container">
+                        <label for="category">Category</label>
+                        <div class="select-dropdown" style="pointer-events: none; color: lightgrey;" id="select-dropdown">
+                            <div class="selected-option" id="selected-option">${category}</div>
+                            <div class="drop-down-image-container">
+                                <img id="arrow-category" src="assets/img/icons/arrow_drop_down.png" alt="">
+                            </div>
+                        </div>
+                        <select id="category-todo" required class="d-none task-category">
+                            <option value="Technical Task">Technical Task</option>
+                            <option value="User Story">User Story</option>
+                        </select>
+                        <div id="category-error-message" class="error-message">This field is required.</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Subtasks</label>
+                        <div class="drop-down-menu-container">
+                            <div class="sub-image-container" id="image-container">
+                                <img id="addBtnEdit" src="assets/img/icons/add.png" alt="" onclick="addSubtaskToEditWindow(${index})">
+                                <div id="sub-seperator" class="subtask-seperator" style="display:none;"></div>
+                                <img id="closeBtn" src="assets/img/icons/close.png" onclick="clearInputFieldEdit(), toggleAddButtonImageEdit()" alt="" style="display:none;">
+                            </div>
+                            <input class="no-validate subtask" type="text" id="subTaskInputEdit" maxlength="15" placeholder="Add new subtask" onkeypress="handleKeyPress(event, ${index})" oninput="toggleAddButtonImageEdit()">
+                        </div>
+                        <div class="subtask-container-edit" id="subtaskContainerEdit">
+                            ${subtasks}
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-          </form>
+            </form>
             <div class="edit-btn-position">
-                <button class="fb rb" onclick="updateSubtaskEdit(${index})">OK<img src="assets/img/icons/check.png"
-                  alt="Update Task"></button>
-                </div>
+                <button class="fb rb" onclick="updateSubtaskEdit(${index})">OK<img src="assets/img/icons/check.png" alt="Update Task"></button>
             </div>
         </div>
-
     `;
-
 }
 
 function generateSubtaskHTML(taskIndex, subtaskIndex, subtask) {
@@ -412,7 +375,7 @@ function generateSubtaskHTML(taskIndex, subtaskIndex, subtask) {
       <div class="subtask-item" id="subTaskItem_${subtaskIndex}">
         <div>
           •
-          <span id="subTask_${subtaskIndex}_span">${subtask}</span>
+          <span id="subTask_${subtaskIndex}_span">${subtask.text}</span>
         </div>
         <div class="subtask-item-icons">
           <img class="subtask-item-icon" style="border-right: 1px solid rgba(209, 209, 209, 1);" src="assets/img/icons/edit_dark.png" alt="" onclick="editSubtaskEdit('${taskIndex}', '${subtaskIndex}')">
@@ -426,15 +389,17 @@ function generateSubtaskHTML(taskIndex, subtaskIndex, subtask) {
 function generateUserHTMLEdit(contacts) {
   let usersHTML = '';
 
-  if (contacts && Array.isArray(contacts)) {
+  contacts = Array.isArray(contacts) ? contacts : []; // Standardisiere die Kontakte auf ein leeres Array, falls undefiniert
+
+  if (contacts.length > 0) {
     for (let j = 0; j < contacts.length; j++) {
       const user = contacts[j];
       let userInitials = user.initials;
       let userColor = user.color;
 
       usersHTML += `
-          <span class="contact-icon" style="background-color:${userColor};">${userInitials}</span>
-          `;
+        <span class="contact-icon" style="background-color:${userColor};">${userInitials}</span>
+      `;
     }
   }
 

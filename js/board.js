@@ -119,14 +119,54 @@ function setPriority(priority) {
   return priorityImage;
 }
 
-function toggleSubtaskCheck(subtaskcheck) {
-  let check = document.getElementById(subtaskcheck);
-  if (check.src.includes('checkbox-checked-black-24.png')) {
-    check.src = "./assets/img/icons/checkbox-empty-black-24.png";
-  } else {
-    check.src = "./assets/img/icons/checkbox-checked-black-24.png";
+
+async function toggleSubtaskCheck(taskIndex, subtaskIndex) {
+  let task = currentUser.data.board.todo[taskIndex];
+  if (!task || !task.subtasks || !Array.isArray(task.subtasks)) {
+    console.error("Task or subtasks array not found or invalid.");
+    return;
+  }
+
+  task.subtasks[subtaskIndex].completed = !task.subtasks[subtaskIndex].completed;
+
+  const cleanedEmail = localStorage.getItem('cleanedEmail');
+  const userId = localStorage.getItem('currentUserId');
+  const subtaskPath = `users/${cleanedEmail}/${userId}/board/todo/${taskIndex}/subtasks`;
+
+  try {
+    await updateData(subtaskPath, task.subtasks);
+    console.log('Subtask status updated in Firebase.');
+  } catch (error) {
+    console.error('Error updating subtask status in Firebase:', error);
+  }
+
+  showPopUp(taskIndex);
+  updateProgressBar(taskIndex);
+}
+
+function updateProgressBar(taskIndex) {
+  const task = currentUser.data.board.todo[taskIndex];
+  if (!task || !task.subtasks || !Array.isArray(task.subtasks)) {
+    return;
+  }
+
+  const totalTasks = task.subtasks.length;
+  const completedTasks = task.subtasks.filter(subtask => subtask.completed).length;
+  const completionPercentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+
+  const taskElement = document.querySelector(`[data-task-index="${taskIndex}"]`);
+  if (taskElement) {
+    const progressBar = taskElement.querySelector('.filled-subtask-bar');
+    const progressText = taskElement.querySelector('.subtasks span');
+    if (progressBar) {
+      progressBar.style.width = `${completionPercentage}%`;
+    }
+    if (progressText) {
+      progressText.textContent = `${completedTasks}/${totalTasks} Subtasks`;
+    }
   }
 }
+
 
 function showOverlayAndPopUp() {
   let overlay = document.getElementById('overlay');
@@ -140,10 +180,11 @@ function showOverlayAndPopUp() {
 function showPopUp(index) {
   const task = currentUser.data.board.todo[index];
   const priority = task.priority ? task.priority : 'low';
-  const popUpHTML = generatePopUpHTML(task, index, priority)
+  const popUpHTML = generatePopUpHTML(task, index, priority);
   showOverlayAndPopUp();
   let popUp = document.getElementById('pop-up');
   popUp.innerHTML = popUpHTML;
+  updateProgressBar(index);
 }
 
 async function deleteCard(index) {
@@ -251,8 +292,10 @@ async function createTaskOnBoard() {
 }
 
 
-function showAddTaskPopUpEdit(index) {
+async function showAddTaskPopUpEdit(index) {
   const task = currentUser.data.board.todo[index];
+  task.contacts = Array.isArray(task.contacts) ? task.contacts : []; // Standardisiere die Kontakte auf ein leeres Array, falls undefiniert
+  selectedContacts = [...task.contacts]; // Speichere die aktuellen Kontakte in selectedContacts
   let popUp = document.getElementById('pop-up');
   let date = task.dueDate;
   let category = task.category;
@@ -261,6 +304,8 @@ function showAddTaskPopUpEdit(index) {
   let usersHTML = generateUserHTMLEdit(task.contacts);
 
   popUp.innerHTML = generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks, priority, index);
+  renderTaskContactList(filteredContacts); // Aktualisiere die Kontaktliste im Popup
+  renderSelectedContacts(); // Zeige die aktuellen ausgewählten Kontakte im Popup
 }
 
 
@@ -276,39 +321,38 @@ function generateSubtaskHTMLEdit(taskIndex, subtasks) {
   return subtaskHTML;
 }
 
-async function addSubtaskToEditWindow(taskIndex) {
-  let newSubtask = document.getElementById('subTaskInputEdit').value.trim();
 
-  if (newSubtask !== '') {
-    // Füge die neue Unteraufgabe zum lokalen Datenmodell hinzu
+
+async function addSubtaskToEditWindow(taskIndex) {
+  let newSubtaskText = document.getElementById('subTaskInputEdit').value.trim();
+
+  if (newSubtaskText !== '') {
     const task = currentUser.data.board.todo[taskIndex];
     if (!task.subtasks || !Array.isArray(task.subtasks)) {
       task.subtasks = [];
     }
-    task.subtasks.push(newSubtask);
+    task.subtasks.push({ text: newSubtaskText, completed: false });
 
-    // Aktualisiere die Daten in Firebase
     const cleanedEmail = localStorage.getItem('cleanedEmail');
     const userId = localStorage.getItem('currentUserId');
     const boardPath = `users/${cleanedEmail}/${userId}/board`;
 
     try {
-      // Aktualisiere das gesamte Board in Firebase
-      await updateData(boardPath, currentUser.data.board);
+      // Aktualisiere die Unteraufgaben in Firebase
+      await updateData(subtaskPath, task.subtasks);
       console.log('New subtask added to tasks.subtasks in Firebase.');
     } catch (error) {
       console.error('Error adding subtask to tasks.subtasks in Firebase:', error);
     }
 
-    // Generiere HTML für die neue Unteraufgabe und füge sie zum Container hinzu
     let subtaskContainer = document.getElementById('subtaskContainerEdit');
-    const subtaskIndex = task.subtasks.length - 1; // Index der neuen Unteraufgabe
-    subtaskContainer.insertAdjacentHTML('beforeend', generateSubtaskHTML(taskIndex, subtaskIndex, newSubtask));
+    const subtaskIndex = task.subtasks.length - 1;
+    subtaskContainer.insertAdjacentHTML('beforeend', generateSubtaskHTML(taskIndex, subtaskIndex, { text: newSubtaskText, completed: false }));
 
-    // Lösche den Inhalt des Eingabefelds
     document.getElementById('subTaskInputEdit').value = '';
   }
-  showToDos();
+  // Refresh the task popup to show the updated subtasks and progress bar
+  showPopUp(taskIndex);
 }
 
 function toggleAddButtonImageEdit() {
@@ -374,7 +418,7 @@ function editSubtaskEdit(taskIndex, subtaskIndex) {
   });
 }
 
-function saveEditedSubtask(taskIndex, subtaskIndex) {
+async function saveEditedSubtask(taskIndex, subtaskIndex) {
   let subtaskInput = document.getElementById(`subTask_${subtaskIndex}_input`);
   let newText = subtaskInput.value.trim();
   let task = currentUser.data.board.todo[taskIndex];
@@ -382,8 +426,21 @@ function saveEditedSubtask(taskIndex, subtaskIndex) {
     console.error("Task or subtasks array not found or invalid.");
     return;
   }
-  task.subtasks[subtaskIndex] = newText;
+  task.subtasks[subtaskIndex].text = newText;  // Aktualisieren des Textfelds der Subtask
 
+  // Speichern der aktualisierten Subtask-Liste in Firebase
+  const cleanedEmail = localStorage.getItem('cleanedEmail');
+  const userId = localStorage.getItem('currentUserId');
+  const subtaskPath = `users/${cleanedEmail}/${userId}/board/todo/${taskIndex}/subtasks`;
+
+  try {
+    await updateData(subtaskPath, task.subtasks);
+    console.log('Subtask updated in Firebase.');
+  } catch (error) {
+    console.error('Error updating subtask in Firebase:', error);
+  }
+
+  // Aktualisieren des UI
   let subtaskItem = document.getElementById(`subTaskItem_${subtaskIndex}`);
   subtaskItem.innerHTML = `
     <div class="subtask-item-edit" id="subTaskItem_${subtaskIndex}">
@@ -397,6 +454,7 @@ function saveEditedSubtask(taskIndex, subtaskIndex) {
       </div>
     </div>
   `;
+  showToDos(); // Aktualisieren des gesamten To-Do-Boards
 }
 
 async function deleteSubtaskEdit(taskIndex, subtaskIndex) {
@@ -431,8 +489,32 @@ async function deleteSubtaskEdit(taskIndex, subtaskIndex) {
 }
 
 
-function updateSubtaskEdit(index) {
-  showPopUp(index);
+// function updateSubtaskEdit(index) {
+//   showPopUp(index);
+// }
+
+async function updateSubtaskEdit(index) {
+  const task = currentUser.data.board.todo[index];
+  task.title = document.getElementById('title').value;
+  task.description = document.getElementById('description').value;
+  task.dueDate = document.getElementById('dueDate').value;
+  task.priority = document.querySelector('.priority-button.active').getAttribute('data-priority');
+  task.contacts = selectedContacts; // Aktualisiere die Kontakte mit den ausgewählten Kontakten
+
+  // Aktualisiere die Aufgabe in Firebase
+  const cleanedEmail = localStorage.getItem('cleanedEmail');
+  const userId = localStorage.getItem('currentUserId');
+  const taskPath = `users/${cleanedEmail}/${userId}/board/todo/${index}`;
+
+  try {
+    await updateData(taskPath, task);
+    console.log('Task updated in Firebase.');
+  } catch (error) {
+    console.error('Error updating task in Firebase:', error);
+  }
+
+  showPopUp(index); // Zeige das aktualisierte Popup an
+  showToDos(); // Aktualisiere das Board
 }
 
 function handleKeyPress(event, index) {
@@ -507,3 +589,53 @@ function updateNoTaskPlaceholders() {
 
 
 
+
+//OLD
+
+// async function addSubtaskToEditWindow(taskIndex) {
+//   let newSubtask = document.getElementById('subTaskInputEdit').value.trim();
+
+//   if (newSubtask !== '') {
+//     // Füge die neue Unteraufgabe zum lokalen Datenmodell hinzu
+//     const task = currentUser.data.board.todo[taskIndex];
+//     if (!task.subtasks || !Array.isArray(task.subtasks)) {
+//       task.subtasks = [];
+//     }
+//     task.subtasks.push(newSubtask);
+
+//     // Aktualisiere die Daten in Firebase
+//     const cleanedEmail = localStorage.getItem('cleanedEmail');
+//     const userId = localStorage.getItem('currentUserId');
+//     const subtaskPath = `users/${cleanedEmail}/${userId}/board/todo/${taskIndex}/subtasks`;
+//     try {
+//       // Aktualisiere die Unteraufgaben in Firebase
+//       await updateData(subtaskPath, task.subtasks);
+//       console.log('New subtask added to tasks.subtasks in Firebase.');
+//     } catch (error) {
+//       console.error('Error adding subtask to tasks.subtasks in Firebase:', error);
+//     }
+
+//     // Generiere HTML für die neue Unteraufgabe und füge sie zum Container hinzu
+//     let subtaskContainer = document.getElementById('subtaskContainerEdit');
+//     const subtaskIndex = task.subtasks.length - 1; // Index der neuen Unteraufgabe
+//     subtaskContainer.insertAdjacentHTML('beforeend', generateSubtaskHTML(taskIndex, subtaskIndex, newSubtask));
+
+//     // Lösche den Inhalt des Eingabefelds
+//     document.getElementById('subTaskInputEdit').value = '';
+//   }
+//   showToDos();
+// }
+
+// function toggleSubtaskCheck(subtaskcheck) {
+//   let check = document.getElementById(subtaskcheck);
+//   if (check.src.includes('checkbox-checked-black-24.png')) {
+//     check.src = "./assets/img/icons/checkbox-empty-black-24.png";
+//   } else {
+//     check.src = "./assets/img/icons/checkbox-checked-black-24.png";
+//   }
+// }
+
+// function toggleSubtaskCompletion(subtaskIndex) {
+//   subtasks[subtaskIndex].completed = !subtasks[subtaskIndex].completed;
+//   renderSubtasks();
+// }
