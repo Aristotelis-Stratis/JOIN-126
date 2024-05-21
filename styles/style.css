@@ -2721,6 +2721,10 @@ input[type=submit]:hover {
     .no-task-box {
         width: 100%;
     }
+
+    .add-task-wrapper {
+        position: relative;
+    }
 }
 
 @media (max-width: 740px) {
@@ -2769,6 +2773,11 @@ input[type=submit]:hover {
 @media (max-width: 600px) {
     .add-task-btn {
         margin-right: 50%;
+    }
+
+    .board-pop-up {
+        width: 100%;
+        height: 100vh;
     }
 }
 
@@ -2958,6 +2967,11 @@ input[type=submit]:hover {
 
     .form-info span {
         font-size: 14px;
+    }
+
+    .add-task-popup {
+        width: 100%;
+        height: 100vh;
     }
 }
 

@@ -290,10 +290,11 @@ async function addSubtaskToEditWindow(taskIndex) {
     // Aktualisiere die Daten in Firebase
     const cleanedEmail = localStorage.getItem('cleanedEmail');
     const userId = localStorage.getItem('currentUserId');
-    const subtaskPath = `users/${cleanedEmail}/${userId}/board/todo/${taskIndex}/subtasks`;
+    const boardPath = `users/${cleanedEmail}/${userId}/board`;
+
     try {
-      // Aktualisiere die Unteraufgaben in Firebase
-      await updateData(subtaskPath, task.subtasks);
+      // Aktualisiere das gesamte Board in Firebase
+      await updateData(boardPath, currentUser.data.board);
       console.log('New subtask added to tasks.subtasks in Firebase.');
     } catch (error) {
       console.error('Error adding subtask to tasks.subtasks in Firebase:', error);
@@ -411,18 +412,18 @@ async function deleteSubtaskEdit(taskIndex, subtaskIndex) {
   // Aktualisiere die Daten in Firebase
   const cleanedEmail = localStorage.getItem('cleanedEmail');
   const userId = localStorage.getItem('currentUserId');
-  const subtaskPath = `users/${cleanedEmail}/${userId}/board/todo/${taskIndex}/subtasks`;
+  const boardPath = `users/${cleanedEmail}/${userId}/board`;
 
   try {
-    // Aktualisiere die Unteraufgaben in Firebase
-    await updateData(subtaskPath, task.subtasks);
+    // Aktualisiere das gesamte Board in Firebase
+    await updateData(boardPath, currentUser.data.board);
     console.log('Subtask removed from tasks.subtasks in Firebase.');
   } catch (error) {
     console.error('Error removing subtask from tasks.subtasks in Firebase:', error);
   }
 
   // Entferne den Subtask aus dem Container
-  const subtaskContainer = document.getElementById(`subTask_${subtaskIndex}`);
+  const subtaskContainer = document.getElementById(`subTaskItem_${subtaskIndex}`);
   if (subtaskContainer) {
     subtaskContainer.remove();
   }
