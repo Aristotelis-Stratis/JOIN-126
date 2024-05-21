@@ -272,7 +272,7 @@ function addSubtask() {
     let subtaskInput = document.getElementById('subTaskInput');
     let subtaskText = subtaskInput.value;
     if (subtaskText !== '') {
-        subtasks.push(subtaskText);
+        subtasks.push({ text: subtaskText, completed: false });
         renderSubtasks();
         clearInputField();
     }
@@ -281,8 +281,9 @@ function addSubtask() {
 
 function editSubtask(subtaskIndex) {
     const subtaskItem = document.getElementById(`subtask_${subtaskIndex}`);
+    const subtask = subtasks[subtaskIndex];
     subtaskItem.style.padding = '0';
-    subtaskItem.innerHTML = createEditInputField(subtasks[subtaskIndex], subtaskIndex);
+    subtaskItem.innerHTML = createEditInputField(subtask.text, subtaskIndex);
     focusAndSetCursorAtEnd(subtaskItem.querySelector('.edit-input-field'));
 }
 
@@ -290,7 +291,7 @@ function editSubtask(subtaskIndex) {
 function updateSubtask(subtaskIndex) {
     const newText = getSubtaskInputValue(subtaskIndex);
     if (newText) {
-        subtasks[subtaskIndex] = newText;
+        subtasks[subtaskIndex].text = newText;
     } else {
         subtasks.splice(subtaskIndex, 1);
     }
@@ -320,8 +321,26 @@ function renderSubtasks() {
     let subtaskContainer = document.getElementById('subtaskContainer');
     subtaskContainer.innerHTML = '';
     for (let index = 0; index < subtasks.length; index++) {
-        const subtaskText = subtasks[index];
-        const subtaskItemHTML = createSubtaskTemplate(subtaskText, index);
+        const subtask = subtasks[index];
+        const subtaskItemHTML = createSubtaskTemplate(subtask.text, index, subtask.completed);
         subtaskContainer.insertAdjacentHTML('beforeend', subtaskItemHTML);
     }
 }
+
+
+// function editSubtask(subtaskIndex) {
+//     const subtaskItem = document.getElementById(`subtask_${subtaskIndex}`);
+//     subtaskItem.style.padding = '0';
+//     subtaskItem.innerHTML = createEditInputField(subtasks[subtaskIndex], subtaskIndex);
+//     focusAndSetCursorAtEnd(subtaskItem.querySelector('.edit-input-field'));
+// }
+
+// function updateSubtask(subtaskIndex) {
+//     const newText = getSubtaskInputValue(subtaskIndex);
+//     if (newText) {
+//         subtasks[subtaskIndex] = newText;
+//     } else {
+//         subtasks.splice(subtaskIndex, 1);
+//     }
+//     renderSubtasks();
+// }

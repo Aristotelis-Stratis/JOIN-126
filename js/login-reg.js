@@ -59,6 +59,57 @@ function getById(id) {
 
 
 
+// async function initRegistry() {
+//     let username = document.getElementById('name').value;
+//     let email = document.getElementById('email').value;
+//     let password = document.getElementById('password').value;
+//     let cleanedEmail = email.replace(/[^\w\s]/gi, '');
+//     let userExists = await loadData(`users/${btoa(email)}`);
+
+//     if (!userExists) {
+//         const initials = getInitials(username);
+
+//         let newUser = {
+//             name: username,
+//             email: email,
+//             password: password,
+//             contacts: [{
+//                 id: generateUniqueId(),
+//                 color: randomColor(),
+//                 name: username,
+//                 email: email,
+//                 number: "",
+//                 initials: initials
+//             }],
+//             board: {
+//                 todo: [
+//                     {
+//                         title: "TestTask",
+//                         description: "TestDescription",
+//                         dueDate: "2012-12-12",
+//                         priority: "urgent",
+//                         contacts: [],
+//                         subtasks: [],
+//                         status: "toDo",
+//                         category: "User Story"
+//                     }
+//                 ],
+//                 inProgress: [],
+//                 awaitFeedback: [],
+//                 done: []
+//             },
+//             summary: {}
+//         };
+
+//         await postData(`users/${cleanedEmail}`, newUser);
+//         console.log('Du hast dich erfolgreich registriert!');
+//         startSlideInUpAnim();
+//         window.setTimeout(() => { window.location.href = "login.html"; }, 2500);
+//     } else {
+//         console.log('Die Emailadresse existiert bereits!');
+//     }
+// }
+
 async function initRegistry() {
     let username = document.getElementById('name').value;
     let email = document.getElementById('email').value;
@@ -89,7 +140,9 @@ async function initRegistry() {
                         dueDate: "2012-12-12",
                         priority: "urgent",
                         contacts: [],
-                        subtasks: [],
+                        subtasks: [
+                            { text: "TestSubtask", completed: false }
+                        ],
                         status: "toDo",
                         category: "User Story"
                     }
@@ -109,8 +162,6 @@ async function initRegistry() {
         console.log('Die Emailadresse existiert bereits!');
     }
 }
-
-
 
 
 async function login() {
