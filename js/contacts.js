@@ -347,7 +347,7 @@ async function deleteContact(contactId) {
 async function removeContactFromTasks(contactId) {
     const cleanedEmail = localStorage.getItem('cleanedEmail');
     const userId = localStorage.getItem('currentUserId');
-    const tasksPath = `users/${cleanedEmail}/${userId}/tasks`;
+    const tasksPath = `users/${cleanedEmail}/${userId}/board/todo`;
 
     try {
         const tasksData = await loadData(tasksPath);
@@ -355,17 +355,14 @@ async function removeContactFromTasks(contactId) {
             const tasks = Object.entries(tasksData);
 
             for (const [taskId, task] of tasks) {
-                if (Array.isArray(task.contacts)) {
+                if (task && Array.isArray(task.contacts)) {
                     const filteredContacts = task.contacts.filter(contact => contact.id !== contactId);
                     task.contacts = filteredContacts;
-                    currentUser.data.tasks[taskId].contacts = filteredContacts;
-                } else {
-                    console.error(`Task ${taskId} does not have an array of contacts.`);
+                    currentUser.data.board.todo[taskId].contacts = filteredContacts;
+                    await updateData(`${tasksPath}/${taskId}`, task);  // Speichern der aktualisierten Aufgabe in Firebase
                 }
-                await updateData(`${tasksPath}/${taskId}`, task);
             }
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
-
             console.log(`Contact with ID ${contactId} successfully removed from all tasks.`);
         } else {
             console.error('No tasks found for the current user.');
