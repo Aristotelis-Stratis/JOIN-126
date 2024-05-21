@@ -1,9 +1,3 @@
-// currentUser.data.board = {
-//   todo: [],
-//   inProgress: [],
-//   awaitFeedback: [],
-//   done: []
-//    };
 
 let subtaskIndexCounter = 0;
 let currentDraggedElement;
@@ -12,7 +6,6 @@ async function init() {
   includeHTML();
   await loadCurrentUserBoard();
   showToDos();
-  updateNoTaskPlaceholders();
 }
 
 async function loadCurrentUserBoard() {
@@ -20,44 +13,44 @@ async function loadCurrentUserBoard() {
     const cleanedEmail = localStorage.getItem('cleanedEmail');
     const userId = localStorage.getItem('currentUserId');
 
-    // Konstruieren Sie den Pfad für die Firebase-Anfrage.
-    let path;
     if (cleanedEmail && userId) {
-      path = `users/${cleanedEmail}/${userId}`;
+      const path = `users/${cleanedEmail}/${userId}`;
+      const userData = await loadData(path);
+
+      if (userData) {
+        currentUser = { id: userId, data: userData };
+        // Initialisiere das Board- und Todo-Array, falls sie nicht existieren
+        if (!currentUser.data.board) {
+          currentUser.data.board = {};
+        }
+        if (!currentUser.data.board.todo) {
+          currentUser.data.board.todo = [];
+        }
+        setProfileInitials();
+        console.log('Loaded currentUser:', currentUser);
+      } else {
+        console.error("Keine vollständigen Benutzerdaten gefunden.");
+      }
     } else {
       console.error("Keine gereinigte E-Mail-Adresse oder Benutzer-ID im Local Storage gefunden.");
-      return; // Frühes Beenden der Funktion, falls keine gültigen Daten vorhanden sind
-    }
-
-    // Lade die Benutzerdaten basierend auf dem konstruierten Pfad.
-    const userData = await loadData(path);
-
-    if (userData && userData.name) { // Überprüfen Sie auch, ob ein Name vorhanden ist
-      currentUser = { id: userId, data: userData }; // Speichern Sie die vollständigen Benutzerdaten in currentUser
-      setProfileInitials();  // Aufruf hier, nachdem currentUser aktualisiert wurde
-      console.log('Loaded currentUser:', currentUser); // Ausgabe des geladenen Benutzers in der Konsole
-    } else {
-      console.error("Keine vollständigen Benutzerdaten gefunden.");
     }
   } catch (error) {
     console.error("Fehler beim Laden des aktuellen Benutzers:", error);
   }
 }
 
+
 function showToDos() {
-  // Stelle sicher, dass currentUser und currentUser.data.board.todo verfügbar sind
   if (!currentUser || !currentUser.data || !currentUser.data.board || !currentUser.data.board.todo) {
-      console.error("No todo tasks available to display.");
-      return;
+    console.error("Keine Aufgaben verfügbar zum Anzeigen.");
+    return;
   }
 
-  // Filtere die Aufgaben nach ihrem Status
   let todoTasks = currentUser.data.board.todo.filter(task => task.status === "toDo");
   let inProgressTasks = currentUser.data.board.todo.filter(task => task.status === "In Progress");
   let feedbackTasks = currentUser.data.board.todo.filter(task => task.status === "Await Feedback");
   let doneTasks = currentUser.data.board.todo.filter(task => task.status === "Done");
 
-  // Clear the containers
   let todoContainer = document.getElementById('ToDos');
   let inProgressContainer = document.getElementById('progress-container');
   let feedbackContainer = document.getElementById('feedback-container');
@@ -92,6 +85,7 @@ function showToDos() {
       const doneHTML = generateTodoHTML(task, i);
       doneContainer.innerHTML += doneHTML;
   }
+  updateNoTaskPlaceholders();
 }
 
 
@@ -160,21 +154,21 @@ async function deleteCard(index) {
     }
 
     // Entferne den Task aus dem currentUser.data.board.todo Array
-    const deletedTask = currentUser.data.board.todo.splice(index, 1)[0];
+    currentUser.data.board.todo.splice(index, 1);
 
-    // Bestimme den Pfad zum zu löschenden Task in Firebase
+    // Bestimme den Pfad zum gesamten Board in Firebase
     const cleanedEmail = localStorage.getItem('cleanedEmail');
     const userId = localStorage.getItem('currentUserId');
-    const taskPath = `users/${cleanedEmail}/${userId}/board/todo/${index}`;
+    const boardPath = `users/${cleanedEmail}/${userId}/board`;
 
-    // Lösche den Task aus Firebase
-    await deleteData(taskPath);
+    // Aktualisiere das gesamte Board in Firebase
+    await updateData(boardPath, currentUser.data.board);
 
     // Aktualisiere das UI
     closePopUp();
     showToDos();
 
-    console.log('Task successfully deleted:', deletedTask);
+    console.log('Task successfully deleted and board updated.');
   } catch (error) {
     console.error('Error deleting task:', error);
   }
@@ -227,13 +221,18 @@ function doNotCloseAddTaskPopUp(event) {
 async function createTaskOnBoard() {
   if (validateTaskInputs()) {
     const newTask = constructNewTask();
-    if (!currentUser) {
-      console.error("No current user logged in. Task cannot be added.");
+    if (!currentUser || !currentUser.data || !currentUser.data.board) {
+      console.error("Kein angemeldeter Benutzer oder unvollständige Benutzerdaten. Aufgabe kann nicht hinzugefügt werden.");
       return;
     }
 
+    // Initialisiere das Todo-Array, falls es nicht existiert
+    if (!currentUser.data.board.todo) {
+      currentUser.data.board.todo = [];
+    }
+
     const newTaskIndex = currentUser.data.board.todo.length;
-    currentUser.data.board.todo.push(newTask);
+    currentUser.data.board.todo[newTaskIndex] = newTask;
 
     const cleanedEmail = localStorage.getItem('cleanedEmail');
     const userId = localStorage.getItem('currentUserId');
@@ -243,6 +242,7 @@ async function createTaskOnBoard() {
       await updateData(taskPath, newTask);
       localStorage.setItem('currentUser', JSON.stringify(currentUser));
       resetUI();
+      showToDos();
     } catch (error) {
       console.error('Fehler beim Hinzufügen der Aufgabe zu Firebase:', error);
     }
@@ -488,10 +488,15 @@ function updateNoTaskPlaceholders() {
 
   columns.forEach(column => {
     const container = document.getElementById(column.id);
+    const noTaskBox = container.querySelector('.no-task-box');
+
     if (container.children.length === 0) {
-      container.innerHTML = `<div class="no-task-box">${column.placeholder}</div>`;
+      // Wenn der Container leer ist und kein Placeholder vorhanden ist, füge einen hinzu
+      if (!noTaskBox) {
+        container.innerHTML = `<div class="no-task-box">${column.placeholder}</div>`;
+      }
     } else {
-      const noTaskBox = container.querySelector('.no-task-box');
+      // Wenn der Container nicht leer ist und ein Placeholder vorhanden ist, entferne ihn
       if (noTaskBox) {
         noTaskBox.remove();
       }
