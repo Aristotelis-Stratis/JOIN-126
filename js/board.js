@@ -756,7 +756,7 @@ function allowDrop(ev) {
   ev.preventDefault();
 }
 
-function moveTo(status) {
+async function moveTo(status) {
   console.log('Moving task to:', status);
   let { id, status: currentStatus } = currentDraggedElement;
   let task;

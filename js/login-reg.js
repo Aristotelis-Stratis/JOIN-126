@@ -93,6 +93,18 @@ async function initRegistry() {
                         ],
                         status: "todo",
                         category: "User Story"
+                    },
+                    {
+                        title: "Progress Task",
+                        description: "TestDescription",
+                        dueDate: "2012-12-12",
+                        priority: "urgent",
+                        contacts: [],
+                        subtasks: [
+                            { text: "TestSubtask", completed: false }
+                        ],
+                        status: "In Progress",
+                        category: "User Story"
                     }
                 ],
                 inProgress: [],
