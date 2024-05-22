@@ -194,13 +194,13 @@ async function ensureGuestUserExists() {
                     {
                         title: "TestTask",
                         description: "TestDescription",
-                        dueDate: "12.12.12",
+                        dueDate: "2012-12-12",
                         priority: "urgent",
                         contacts: [],
                         subtasks: [
                             { text: "TestSubtask", completed: false }
                         ],
-                        status: "toDo",
+                        status: "todo",
                         category: "User Story"
                     }
                 ],
