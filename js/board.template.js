@@ -189,7 +189,7 @@ function generateAddTaskPopUpHTML(status) {
                   <input class="no-validate subtask" type="text" id="subTaskInput" maxlength="15"
                     placeholder="Add new subtask" oninput="toggleAddButtonImage()" onkeydown="handleSubtaskKeyDown(event)">
                 </div>
-                <div class="subtask-container board-dropdown" id="subtaskContainer">
+                <div class="subtask-container" id="subtaskContainer">
                   <!-- Hier werden die Subtasks gerendert -->
                 </div>
               </div>
@@ -406,7 +406,7 @@ function generateSubtasksHTML(taskIndex, subtasks, status) {
 function generateUserHTMLEdit(contacts) {
   let usersHTML = '';
 
-  contacts = Array.isArray(contacts) ? contacts : []; // Standardisiere die Kontakte auf ein leeres Array, falls undefiniert
+  contacts = Array.isArray(contacts) ? contacts : [];
 
   if (contacts.length > 0) {
     for (let j = 0; j < contacts.length; j++) {

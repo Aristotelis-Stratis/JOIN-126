@@ -1,4 +1,3 @@
-
 let subtaskIndexCounter = 0;
 let currentDraggedElement;
 
@@ -756,7 +755,7 @@ function allowDrop(ev) {
   ev.preventDefault();
 }
 
-async function moveTo(status) {
+function moveTo(status) {
   console.log('Moving task to:', status);
   let { id, status: currentStatus } = currentDraggedElement;
   let task;
