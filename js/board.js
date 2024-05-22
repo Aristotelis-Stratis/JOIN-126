@@ -585,7 +585,46 @@ function updateNoTaskPlaceholders() {
   });
 }
 
+function filterTasks() {
+  const searchTerm = document.getElementById('search-input').value.toLowerCase();
 
+  const filteredTasks = currentUser.data.board.todo.filter(task => {
+    return task.title.toLowerCase().includes(searchTerm) || task.description.toLowerCase().includes(searchTerm);
+  });
+
+  displayFilteredTasks(filteredTasks);
+}
+
+function displayFilteredTasks(filteredTasks) {
+  let todoContainer = document.getElementById('ToDos');
+  let inProgressContainer = document.getElementById('progress-container');
+  let feedbackContainer = document.getElementById('feedback-container');
+  let doneContainer = document.getElementById('done-container');
+
+  todoContainer.innerHTML = '';
+  inProgressContainer.innerHTML = '';
+  feedbackContainer.innerHTML = '';
+  doneContainer.innerHTML = '';
+
+  for (let i = 0; i < filteredTasks.length; i++) {
+    const task = filteredTasks[i];
+    const taskHTML = generateTodoHTML(task, i);
+    
+    if (task.status === "toDo") {
+      todoContainer.innerHTML += taskHTML;
+    } else if (task.status === "In Progress") {
+      inProgressContainer.innerHTML += taskHTML;
+    } else if (task.status === "Await Feedback") {
+      feedbackContainer.innerHTML += taskHTML;
+    } else if (task.status === "Done") {
+      doneContainer.innerHTML += taskHTML;
+    }
+  }
+
+  updateNoTaskPlaceholders();
+}
+
+document.getElementById('search-input').addEventListener('input', filterTasks);
 
 
 //OLD

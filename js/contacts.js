@@ -373,17 +373,6 @@ async function removeContactFromTasks(contactId) {
 }
 
 
-// async function saveTasksToStorage() {
-//     await setItem('tasks', JSON.stringify(allTasks));
-// }
-
-
-// function deleteStorage() {
-//     allContacts = [];
-//     setItem('contacts', JSON.stringify(allContacts));
-// }
-
-
 function editContactContent() {
     let headline = document.getElementById('headline');
     let subheadline = document.getElementById('sub-headline');
