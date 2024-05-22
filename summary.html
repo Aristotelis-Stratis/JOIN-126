@@ -10,12 +10,13 @@
     <link rel="stylesheet" href="./styles/summary-style.css">
     <link rel="stylesheet" href="./styles/fonts.css"> <!-- needs to be linked to all htmls-->
     <script src="./script.js"></script>
+    <script src="./js/board.js"></script>
     <script src="./js/storage.js"></script>
     <script src="./js/summary.js"></script>
     <script src="./js/templates.js"></script>
 </head>
 
-<body onload="includeHTML(() => { checkUserLogin(setProfileInitials); })">
+<body onload="includeHTML(() => { checkUserLogin(setProfileInitials); }), initSummary();">
     <section class="main-container">
         <!-- left part of website fixed menu -->
         <div w3-include-html="./assets/templates/nav.html"></div>
@@ -39,14 +40,14 @@
                                 <div class="container sec-1-container d-flex-c-c">
                                     <span class="sum-img todo-img"></span>
                                     <div class="margin-l16px d-flex-c-c d-column">
-                                        <h2>1</h2>
+                                        <h2 id="todos">0</h2>
                                         <span class="font-size20px">To-do</span>
                                     </div>
                                 </div>
                                 <div class="container sec-1-container d-flex-c-c">
                                     <span class="sum-img done-img"></span>
                                     <div class="margin-l16px d-flex-c-c d-column">
-                                        <h2>1</h2>
+                                        <h2 id="done">2</h2>
                                         <span class="font-size20px">Done</span>
                                     </div>
                                 </div>
@@ -55,7 +56,7 @@
                                 <div class="d-flex-c-c">
                                     <span class="sum-img urgent-img"></span>
                                     <div class="margin-l16px d-flex-c-c d-column">
-                                        <h2>1</h2>
+                                        <h2 id="urgent">3</h2>
                                         <span>Urgent</span>
                                     </div>
                                 </div>
@@ -70,19 +71,19 @@
                             <div class="d-flex-sb-c">
                                 <div class="container sec-3-container d-flex-c-c">
                                     <div class="d-flex-c-c d-column">
-                                        <h2>1</h2>
+                                        <h2 id="allTasks">4</h2>
                                         <span class="font-size20px text-align-c">Tasks in <br> Board</span>
                                     </div>
                                 </div>
                                 <div class="container sec-3-container d-flex-c-c">
                                     <div class="d-flex-c-c d-column">
-                                        <h2>1</h2>
+                                        <h2 id="inProgress">5</h2>
                                         <span class="font-size20px text-align-c">Tasks in <br> Progress</span>
                                     </div>
                                 </div>
                                 <div class="container sec-3-container d-flex-c-c">
                                     <div class="d-flex-c-c d-column">
-                                        <h2>1</h2>
+                                        <h2 id="feedback">6</h2>
                                         <span class="font-size20px text-align-c">Awaiting <br> Feedback</span>
                                     </div>
                                 </div>
