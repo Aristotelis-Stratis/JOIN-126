@@ -58,58 +58,6 @@ function getById(id) {
 }
 
 
-
-// async function initRegistry() {
-//     let username = document.getElementById('name').value;
-//     let email = document.getElementById('email').value;
-//     let password = document.getElementById('password').value;
-//     let cleanedEmail = email.replace(/[^\w\s]/gi, '');
-//     let userExists = await loadData(`users/${btoa(email)}`);
-
-//     if (!userExists) {
-//         const initials = getInitials(username);
-
-//         let newUser = {
-//             name: username,
-//             email: email,
-//             password: password,
-//             contacts: [{
-//                 id: generateUniqueId(),
-//                 color: randomColor(),
-//                 name: username,
-//                 email: email,
-//                 number: "",
-//                 initials: initials
-//             }],
-//             board: {
-//                 todo: [
-//                     {
-//                         title: "TestTask",
-//                         description: "TestDescription",
-//                         dueDate: "2012-12-12",
-//                         priority: "urgent",
-//                         contacts: [],
-//                         subtasks: [],
-//                         status: "toDo",
-//                         category: "User Story"
-//                     }
-//                 ],
-//                 inProgress: [],
-//                 awaitFeedback: [],
-//                 done: []
-//             },
-//             summary: {}
-//         };
-
-//         await postData(`users/${cleanedEmail}`, newUser);
-//         console.log('Du hast dich erfolgreich registriert!');
-//         startSlideInUpAnim();
-//         window.setTimeout(() => { window.location.href = "login.html"; }, 2500);
-//     } else {
-//         console.log('Die Emailadresse existiert bereits!');
-//     }
-// }
-
 async function initRegistry() {
     let username = document.getElementById('name').value;
     let email = document.getElementById('email').value;
@@ -585,27 +533,14 @@ function startSlideInUpAnim() {
 // }
 
 
-
-
-
-
-
-
-
-
-// BACKUP VON DER REGISTRIERUNGSFUNKTION BEVOR ALLES KAPUTT GEHT, LETZTE CHANCE BEVOR WIR DURCHDREHEN
-
-
 // async function initRegistry() {
 //     let username = document.getElementById('name').value;
 //     let email = document.getElementById('email').value;
 //     let password = document.getElementById('password').value;
-//     // Entferne Sonderzeichen aus der E-Mail-Adresse
-//     let cleanedEmail = email.replace(/[^\w\s]/gi, ''); // Entfernt alle Sonderzeichen
+//     let cleanedEmail = email.replace(/[^\w\s]/gi, '');
 //     let userExists = await loadData(`users/${btoa(email)}`);
 
 //     if (!userExists) {
-//         // Generiere Initialen für den Benutzer
 //         const initials = getInitials(username);
 
 //         let newUser = {
@@ -613,18 +548,30 @@ function startSlideInUpAnim() {
 //             email: email,
 //             password: password,
 //             contacts: [{
+//                 id: generateUniqueId(),
+//                 color: randomColor(),
 //                 name: username,
 //                 email: email,
 //                 number: "",
-//                 initials: initials // Initialen hinzufügen
+//                 initials: initials
 //             }],
-//             tasks: [],
-//             board: [{
-//                 todo: "",
-//                 inProgress: "",
-//                 awaitFeedback: "",
-//                 done:""
-//             }],
+//             board: {
+//                 todo: [
+//                     {
+//                         title: "TestTask",
+//                         description: "TestDescription",
+//                         dueDate: "2012-12-12",
+//                         priority: "urgent",
+//                         contacts: [],
+//                         subtasks: [],
+//                         status: "toDo",
+//                         category: "User Story"
+//                     }
+//                 ],
+//                 inProgress: [],
+//                 awaitFeedback: [],
+//                 done: []
+//             },
 //             summary: {}
 //         };
 
