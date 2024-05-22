@@ -539,30 +539,21 @@ function allowDrop(ev) {
   ev.preventDefault();
 }
 
-function moveTo(status) {
+async function moveTo(status) {
   console.log('Moving task to:', status);
+
   let task = currentUser.data.board.todo[currentDraggedElement];
   task.status = status;
 
-  // Entferne die Aufgabe aus ihrem aktuellen Container
-  currentUser.data.board.todo.splice(currentDraggedElement, 1);
+  const cleanedEmail = localStorage.getItem('cleanedEmail');
+  const userId = localStorage.getItem('currentUserId');
+  const taskPath = `users/${cleanedEmail}/${userId}/board/todo/${currentDraggedElement}`;
 
-  // Aktualisiere den Status und füge die Aufgabe in den richtigen Container ein
-  switch (status) {
-    case "toDo":
-      currentUser.data.board.todo.push(task);
-      break;
-    case "In Progress":
-      currentUser.data.board.inProgress.push(task);
-      break;
-    case "Await Feedback":
-      currentUser.data.board.awaitFeedback.push(task);
-      break;
-    case "Done":
-      currentUser.data.board.done.push(task);
-      break;
-    default:
-      console.error("Invalid status:", status);
+  try {
+    await updateData(taskPath, task);
+    console.log('Task status updated in Firebase.');
+  } catch (error) {
+    console.error('Error updating task status in Firebase:', error);
   }
 
   showToDos();

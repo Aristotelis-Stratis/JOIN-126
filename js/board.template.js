@@ -190,7 +190,7 @@ function generateAddTaskPopUpHTML() {
                   <input class="no-validate subtask" type="text" id="subTaskInput" maxlength="15"
                     placeholder="Add new subtask" oninput="toggleAddButtonImage()" onkeydown="handleSubtaskKeyDown(event)">
                 </div>
-                <div class="subtask-container" id="subtaskContainer">
+                <div class="subtask-container board-dropdown" id="subtaskContainer">
                   <!-- Hier werden die Subtasks gerendert -->
                 </div>
               </div>

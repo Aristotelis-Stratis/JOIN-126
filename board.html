@@ -53,7 +53,7 @@
                   <img onclick="showAddTaskPopUp()" src="./assets/img/icons/plus_button_dark.png"
                     alt="dark-blue-plus-sign">
                 </div>
-                <div id="ToDos" ondrop="moveTo('ToDos')" ondragover="allowDrop(event)">
+                <div id="ToDos" ondrop="moveTo('todo')" ondragover="allowDrop(event)">
                   <div class="no-task-box">No tasks To do</div>
                 </div>
               </div>
@@ -63,7 +63,7 @@
                   <img onclick="showAddTaskPopUp()" src="./assets/img/icons/plus_button_dark.png"
                     alt="dark-blue-plus-sign">
                 </div>
-                <div id="progress-container" ondrop="moveTo('progress-container')" ondragover="allowDrop(event)">
+                <div id="progress-container" id="progress-container" ondrop="moveTo('In Progress')" ondragover="allowDrop(event)">
                   <div class="no-task-box">No Task is in Progress</div>
                 </div>
               </div>
@@ -73,7 +73,7 @@
                   <img onclick="showAddTaskPopUp()" src="./assets/img/icons/plus_button_dark.png"
                     alt="dark-blue-plus-sign">
                 </div>
-                <div id="feedback-container" ondrop="moveTo('feedback-container')" ondragover="allowDrop(event)">
+                <div id="feedback-container" ondrop="moveTo('Await Feedback')" ondragover="allowDrop(event)">
                   <div class="no-task-box">No Task requires Feedback</div>
                 </div>
               </div>
@@ -81,7 +81,7 @@
                 <div class="taskflow-board">
                   <div class="column-titles fourth-property">Done</div>
                 </div>
-                <div id="done-container" ondrop="moveTo('done-container')" ondragover="allowDrop(event)">
+                <div id="done-container" ondrop="moveTo('Done')" ondragover="allowDrop(event)">
                   <div class="no-task-box fourth-property">No Task is Done</div>
                 </div>
               </div>
