@@ -334,21 +334,21 @@ async function addSubtaskToEditWindow(taskIndex) {
     const cleanedEmail = localStorage.getItem('cleanedEmail');
     const userId = localStorage.getItem('currentUserId');
     const subtaskPath = `users/${cleanedEmail}/${userId}/board/todo/${taskIndex}/subtasks`;
+    const boardPath = `users/${cleanedEmail}/${userId}/board`;
 
     try {
       await updateData(subtaskPath, task.subtasks);
-      console.log('New subtask added to tasks.subtasks in Firebase.');
+      await updateData(boardPath, currentUser.data.board);  // Aktualisiere das gesamte Board
+      console.log('New subtask added and board updated in Firebase.');
     } catch (error) {
-      console.error('Error adding subtask to tasks.subtasks in Firebase:', error);
+      console.error('Error adding subtask and updating board in Firebase:', error);
     }
 
-    let subtaskContainer = document.getElementById('subtaskContainerEdit');
-    const subtaskIndex = task.subtasks.length - 1;
-    subtaskContainer.insertAdjacentHTML('beforeend', generateSubtaskHTML(taskIndex, subtaskIndex, { text: newSubtaskText, completed: false }));
+    updateSubtaskUI(taskIndex, task.subtasks);
 
     document.getElementById('subTaskInputEdit').value = '';
+    showToDos();
   }
-  showToDos();
 }
 
 
@@ -461,27 +461,37 @@ async function deleteSubtaskEdit(taskIndex, subtaskIndex) {
     return;
   }
 
-  // Entferne den Subtask aus dem lokalen Datenmodell
   task.subtasks.splice(subtaskIndex, 1);
 
-  // Aktualisiere die Daten in Firebase
   const cleanedEmail = localStorage.getItem('cleanedEmail');
   const userId = localStorage.getItem('currentUserId');
   const subtaskPath = `users/${cleanedEmail}/${userId}/board/todo/${taskIndex}/subtasks`;
+  const boardPath = `users/${cleanedEmail}/${userId}/board`;
 
   try {
     await updateData(subtaskPath, task.subtasks);
-    console.log('Subtask removed from tasks.subtasks in Firebase.');
+    await updateData(boardPath, currentUser.data.board);  // Aktualisiere das gesamte Board
+    console.log('Subtask removed and board updated in Firebase.');
   } catch (error) {
-    console.error('Error removing subtask from tasks.subtasks in Firebase:', error);
+    console.error('Error removing subtask and updating board in Firebase:', error);
   }
 
-  // Entferne den Subtask aus dem Container
   const subtaskContainer = document.getElementById(`subTaskItem_${subtaskIndex}`);
   if (subtaskContainer) {
     subtaskContainer.remove();
   }
+  updateSubtaskUI(taskIndex, task.subtasks);
   showToDos();
+}
+
+function updateSubtaskUI(taskIndex, subtasks) {
+  const subtaskContainer = document.getElementById('subtaskContainerEdit');
+  subtaskContainer.innerHTML = ''; // Leere den Container
+
+  for (let i = 0; i < subtasks.length; i++) {
+    const subtaskHTML = generateSubtaskHTML(taskIndex, i, subtasks[i]);
+    subtaskContainer.insertAdjacentHTML('beforeend', subtaskHTML);
+  }
 }
 
 
