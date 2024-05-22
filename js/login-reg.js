@@ -91,7 +91,7 @@ async function initRegistry() {
                         subtasks: [
                             { text: "TestSubtask", completed: false }
                         ],
-                        status: "toDo",
+                        status: "todo",
                         category: "User Story"
                     }
                 ],

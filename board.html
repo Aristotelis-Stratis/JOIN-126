@@ -39,7 +39,7 @@
             <div class="board-headline-container">
               <div class="board-headline">Board</div>
               <div class="input-button-board-container">
-                <input class="board-input" type="text" placeholder="Find Task" id="search-input">
+                <input class="board-input" type="text" placeholder="Find Task" oninput="filterTasks()">
                 <img class="search-png" src="./assets/img/icons/search.png" alt="search-Icon">
                 <button onclick="showAddTaskPopUp()" class="add-task-btn">Add task <img class="plus-sign-white"
                     src="./assets/img/icons/add-white.png" alt="White Plus Icon"></button>
@@ -50,30 +50,27 @@
               <div class="column-properties">
                 <div class="taskflow-board">
                   <div class="column-titles">To do</div>
-                  <img onclick="showAddTaskPopUp()" src="./assets/img/icons/plus_button_dark.png"
-                    alt="dark-blue-plus-sign">
+                  <img onclick="showAddTaskPopUp('todo')" src="./assets/img/icons/plus_button_dark.png" alt="dark-blue-plus-sign">
                 </div>
-                <div id="ToDos" ondrop="moveTo('ToDos')" ondragover="allowDrop(event)">
+                <div id="ToDos" ondrop="moveTo('todo')" ondragover="allowDrop(event)">
                   <div class="no-task-box">No tasks To do</div>
                 </div>
               </div>
               <div class="column-properties">
                 <div class="taskflow-board">
                   <div class="column-titles">In Progress</div>
-                  <img onclick="showAddTaskPopUp()" src="./assets/img/icons/plus_button_dark.png"
-                    alt="dark-blue-plus-sign">
+                  <img onclick="showAddTaskPopUp('inProgress')" src="./assets/img/icons/plus_button_dark.png" alt="dark-blue-plus-sign">
                 </div>
-                <div id="progress-container" ondrop="moveTo('progress-container')" ondragover="allowDrop(event)">
+                <div id="progress-container" ondrop="moveTo('inprogress')" ondragover="allowDrop(event)">
                   <div class="no-task-box">No Task is in Progress</div>
                 </div>
               </div>
               <div class="column-properties">
                 <div class="taskflow-board">
                   <div class="column-titles">Await feedback</div>
-                  <img onclick="showAddTaskPopUp()" src="./assets/img/icons/plus_button_dark.png"
-                    alt="dark-blue-plus-sign">
+                  <img onclick="showAddTaskPopUp('awaitFeedback')" src="./assets/img/icons/plus_button_dark.png" alt="dark-blue-plus-sign">
                 </div>
-                <div id="feedback-container" ondrop="moveTo('feedback-container')" ondragover="allowDrop(event)">
+                <div id="feedback-container" ondrop="moveTo('awaitfeedback')" ondragover="allowDrop(event)">
                   <div class="no-task-box">No Task requires Feedback</div>
                 </div>
               </div>
@@ -81,7 +78,7 @@
                 <div class="taskflow-board">
                   <div class="column-titles fourth-property">Done</div>
                 </div>
-                <div id="done-container" ondrop="moveTo('done-container')" ondragover="allowDrop(event)">
+                <div id="done-container" ondrop="moveTo('done')" ondragover="allowDrop(event)">
                   <div class="no-task-box fourth-property">No Task is Done</div>
                 </div>
               </div>
