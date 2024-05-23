@@ -423,40 +423,49 @@ async function createTaskOnBoard(status) {
 }
 
 
-async function showAddTaskPopUpEdit(index, status) {
+async function showAddTaskPopUpEdit(id, status) {
   let task;
-  
+
   switch (status.toLowerCase()) {
     case "todo":
-      task = currentUser.data.board.todo[index];
+      task = currentUser.data.board.todo.find(task => task.id === id);
       break;
     case "inprogress":
-      task = currentUser.data.board.inProgress[index];
+      task = currentUser.data.board.inProgress.find(task => task.id === id);
       break;
     case "awaitfeedback":
-      task = currentUser.data.board.awaitFeedback[index];
+      task = currentUser.data.board.awaitFeedback.find(task => task.id === id);
       break;
     case "done":
-      task = currentUser.data.board.done[index];
+      task = currentUser.data.board.done.find(task => task.id === id);
       break;
     default:
       console.error("Invalid status:", status);
       return;
   }
 
-  task.contacts = Array.isArray(task.contacts) ? task.contacts : []; // Standardisiere die Kontakte auf ein leeres Array, falls undefiniert
-  selectedContacts = [...task.contacts]; // Speichere die aktuellen Kontakte in selectedContacts
+  if (!task) {
+    console.error(`Task with id "${id}" not found.`);
+    return;
+  }
+
+  task.contacts = Array.isArray(task.contacts) ? task.contacts : [];
+  selectedContacts = [...task.contacts];
   let popUp = document.getElementById('pop-up');
   let date = task.dueDate;
   let category = task.category;
   let priority = task.priority;
-  let subtasks = generateSubtaskHTMLEdit(index, task.subtasks, status); // Hier den Status übergeben
+  let subtasks = generateSubtaskHTMLEdit(id, task.subtasks, status);
   let usersHTML = generateUserHTMLEdit(task.contacts);
 
-  popUp.innerHTML = generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks, priority, index, status);
-  renderTaskContactList(filteredContacts); // Aktualisiere die Kontaktliste im Popup
-  renderSelectedContacts(); // Zeige die aktuellen ausgewählten Kontakte im Popup
+  popUp.innerHTML = generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks, priority, id, status);
+  renderTaskContactList(filteredContacts);
+  renderSelectedContacts();
+  showOverlayAndPopUp();
 }
+
+
+
 
 function generateSubtaskHTMLEdit(taskIndex, subtasks, status) {
   let subtaskHTML = '';
@@ -686,25 +695,44 @@ function updateSubtaskUI(taskIndex, subtasks, status) {
 //   showPopUp(index);
 // }
 
-async function updateSubtaskEdit(index, status) {
-  let task;
-  switch (status) {
+async function updateSubtaskEdit(id, status) {
+  let taskList;
+  let taskIndex = -1;
+
+  console.log('Update Task:', id, status);
+  
+  switch (status.toLowerCase()) {
     case "todo":
-      task = currentUser.data.board.todo[index];
+      taskList = currentUser.data.board.todo;
       break;
-    case "inProgress":
-      task = currentUser.data.board.inProgress[index];
+    case "inprogress":
+      taskList = currentUser.data.board.inProgress;
       break;
-    case "awaitFeedback":
-      task = currentUser.data.board.awaitFeedback[index];
+    case "awaitfeedback":
+      taskList = currentUser.data.board.awaitFeedback;
       break;
     case "done":
-      task = currentUser.data.board.done[index];
+      taskList = currentUser.data.board.done;
       break;
     default:
       console.error("Invalid status:", status);
       return;
   }
+
+  if (!taskList || !Array.isArray(taskList)) {
+    console.error(`Task list for status "${status}" not found or invalid.`);
+    return;
+  }
+
+  const task = taskList.find(t => t.id === id);
+  taskIndex = taskList.findIndex(t => t.id === id);
+
+  if (taskIndex === -1 || !task) {
+    console.error(`Task with id "${id}" not found.`);
+    return;
+  }
+
+  console.log('Task found:', task);
 
   const titleElement = document.getElementById('title');
   const descriptionElement = document.getElementById('description');
@@ -722,10 +750,12 @@ async function updateSubtaskEdit(index, status) {
   task.priority = priorityElement.getAttribute('data-priority');
   task.contacts = selectedContacts; // Aktualisiere die Kontakte mit den ausgewählten Kontakten
 
+  console.log('Updated task data:', task);
+
   // Aktualisiere die Aufgabe in Firebase
   const cleanedEmail = localStorage.getItem('cleanedEmail');
   const userId = localStorage.getItem('currentUserId');
-  const taskPath = `users/${cleanedEmail}/${userId}/board/${status}/${index}`;
+  const taskPath = `users/${cleanedEmail}/${userId}/board/${status}/${taskIndex}`;
 
   try {
     await updateData(taskPath, task);
@@ -734,7 +764,7 @@ async function updateSubtaskEdit(index, status) {
     console.error('Error updating task in Firebase:', error);
   }
 
-  showPopUp(index, status); // Zeige das aktualisierte Popup an
+  showPopUp(id, status); // Zeige das aktualisierte Popup an
   showToDos(); // Aktualisiere das Board
 }
 

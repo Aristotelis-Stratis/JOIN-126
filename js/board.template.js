@@ -84,7 +84,7 @@ function generatePopUpHTML(task, index, priority, status) {
           <span class="weight-700">Delete</span>
         </div>
         <span>|</span>
-        <div class="popup-edit" onclick="showAddTaskPopUpEdit(${index}, '${status}')">
+        <div class="popup-edit" onclick="showAddTaskPopUpEdit('${index}', '${status}')">
           <img src="./assets/img/icons/edit_dark.png" alt="edit-Image">
           <span class="weight-700">Edit</span>
         </div>
@@ -382,7 +382,7 @@ function generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks,
               </div>
           </form>
           <div class="edit-btn-position">
-              <button class="fb rb" onclick="updateSubtaskEdit(${index}, '${status}')">OK<img src="assets/img/icons/check.png" alt="Update Task"></button>
+              <button class="fb rb" onclick="updateSubtaskEdit('${index}', '${status}')">OK<img src="assets/img/icons/check.png" alt="Update Task"></button>
           </div>
       </div>
   `;
