@@ -201,7 +201,7 @@ function generateAddTaskPopUpHTML(status) {
           </form>
         </div>
         <!-- wrapper -->
-        <div class="add-task-wrapper">
+        <div class="add-task-wrapper-board">
           <div class="form-below">
             <div class="aco-button-container">
               <button class="fb lb mb" onclick="resetUI()">Clear <img src="assets/img/icons/x.png" alt="Clear"></button>
