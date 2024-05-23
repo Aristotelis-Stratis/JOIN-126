@@ -18,14 +18,8 @@ async function loadCurrentUserBoard() {
 
       if (userData) {
         currentUser = { id: userId, data: userData };
-        if (!currentUser.data.board) {
-          currentUser.data.board = {};
-        }
-        currentUser.data.board.todo = currentUser.data.board.todo || [];
-        currentUser.data.board.inProgress = currentUser.data.board.inProgress || [];
-        currentUser.data.board.awaitFeedback = currentUser.data.board.awaitFeedback || [];
-        currentUser.data.board.done = currentUser.data.board.done || [];
-        
+        ensureBoardInitialization();  // Initialisiere das Board
+
         setProfileInitials();
         console.log('Loaded currentUser:', currentUser);
       } else {
@@ -480,6 +474,8 @@ function generateSubtaskHTMLEdit(taskIndex, subtasks, status) {
 }
 
 async function addSubtaskToEditWindow(taskId) {
+  ensureBoardInitialization();  // Aufruf der Initialisierungsfunktion
+
   let newSubtaskText = document.getElementById('subTaskInputEdit').value.trim();
 
   if (newSubtaskText !== '') {
@@ -818,6 +814,8 @@ function allowDrop(ev) {
 }
 
 async function moveTo(newStatus) {
+  ensureBoardInitialization();  // Aufruf der Initialisierungsfunktion
+
   let { id, status: currentStatus } = currentDraggedElement;
 
   currentStatus = currentStatus.toLowerCase();
@@ -867,6 +865,8 @@ async function moveTo(newStatus) {
 
   task.status = newStatus;
 
+  console.log("newStatus Array before push:", currentUser.data.board[newStatus]); // Debugging-Ausgabe
+
   if (!currentUser.data.board[newStatus]) {
     currentUser.data.board[newStatus] = [];
   }
@@ -889,9 +889,25 @@ async function moveTo(newStatus) {
       return;
   }
 
+  console.log("newStatus Array after push:", currentUser.data.board[newStatus]); // Debugging-Ausgabe
+
   await saveBoard();
   showToDos();
-  updateNoTaskPlaceholders();
+}
+
+function ensureBoardInitialization() {
+  if (!currentUser.data.board) {
+    currentUser.data.board = {
+      todo: [],
+      inProgress: [],
+      awaitFeedback: [],
+      done: []
+    };
+  }
+  currentUser.data.board.todo = currentUser.data.board.todo || [];
+  currentUser.data.board.inProgress = currentUser.data.board.inProgress || [];
+  currentUser.data.board.awaitFeedback = currentUser.data.board.awaitFeedback || [];
+  currentUser.data.board.done = currentUser.data.board.done || [];
 }
 
 async function saveBoard() {
