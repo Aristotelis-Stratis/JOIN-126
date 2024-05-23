@@ -83,6 +83,7 @@ async function initRegistry() {
             board: {
                 todo: [
                     {
+                        id: generateUniqueId(),
                         title: "TestTask",
                         description: "TestDescription",
                         dueDate: "2012-12-12",
@@ -192,6 +193,7 @@ async function ensureGuestUserExists() {
             board: {
                 todo: [
                     {
+                        id: generateUniqueId(),
                         title: "TestTask",
                         description: "TestDescription",
                         dueDate: "2012-12-12",

@@ -1826,6 +1826,14 @@ input[type=submit]:hover {
     font-size: 16px;
 }
 
+.task-description {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+  
+}
+
 .task-category-board-alternative {
     border-radius: 8px;
     padding: 4px 16px 4px 16px;
@@ -1990,8 +1998,13 @@ input[type=submit]:hover {
 }
 
 .board-pop-up-description {
+    width: 100%;
     font-weight: 400;
     font-size: 20px;
+}
+
+.board-pop-up-description span {
+    line-break: anywhere;
 }
 
 .popup-date-container {
@@ -2029,26 +2042,30 @@ input[type=submit]:hover {
 .popup-assignedto-container {
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
 .popup-names-container {
-    margin: 16px;
     overflow-y: auto;
-    height: 200px;
+    max-height: 215px;
+    min-height: 50px;
+    margin-top: 8px;
 }
 
 .popup-names {
+    flex-wrap: wrap;
     display: flex;
-    flex-direction: column;
     gap: 18px;
     padding-left: 16px;
     padding-top: 8px;
+    padding-bottom: 8px;
 }
 
 .username-HTML {
     display: flex;
     align-items: center;
     gap: 16px;
+    width: 225px;
 
 }
 

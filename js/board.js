@@ -21,18 +21,11 @@ async function loadCurrentUserBoard() {
         if (!currentUser.data.board) {
           currentUser.data.board = {};
         }
-        if (!currentUser.data.board.todo) {
-          currentUser.data.board.todo = [];
-        }
-        if (!currentUser.data.board.inProgress) {
-          currentUser.data.board.inProgress = [];
-        }
-        if (!currentUser.data.board.awaitFeedback) {
-          currentUser.data.board.awaitFeedback = [];
-        }
-        if (!currentUser.data.board.done) {
-          currentUser.data.board.done = [];
-        }
+        currentUser.data.board.todo = currentUser.data.board.todo || [];
+        currentUser.data.board.inProgress = currentUser.data.board.inProgress || [];
+        currentUser.data.board.awaitFeedback = currentUser.data.board.awaitFeedback || [];
+        currentUser.data.board.done = currentUser.data.board.done || [];
+        
         setProfileInitials();
         console.log('Loaded currentUser:', currentUser);
       } else {
@@ -221,33 +214,38 @@ function showOverlayAndPopUp() {
 }
 
 
-function showPopUp(index, status) {
+function showPopUp(id, status) {
   let task;
 
   switch (status.toLowerCase()) {
     case "todo":
-      task = currentUser.data.board.todo[index];
+      task = currentUser.data.board.todo.find(task => task.id === id);
       break;
     case "inprogress":
-      task = currentUser.data.board.inProgress[index];
+      task = currentUser.data.board.inProgress.find(task => task.id === id);
       break;
     case "awaitfeedback":
-      task = currentUser.data.board.awaitFeedback[index];
+      task = currentUser.data.board.awaitFeedback.find(task => task.id === id);
       break;
     case "done":
-      task = currentUser.data.board.done[index];
+      task = currentUser.data.board.done.find(task => task.id === id);
       break;
     default:
       console.error("Invalid status:", status);
       return;
   }
 
+  if (!task) {
+    console.error(`Task with id "${id}" not found.`);
+    return;
+  }
+
   const priority = task.priority ? task.priority : 'low';
-  const popUpHTML = generatePopUpHTML(task, index, priority, status);
+  const popUpHTML = generatePopUpHTML(task, id, priority, status);
   showOverlayAndPopUp();
   let popUp = document.getElementById('pop-up');
   popUp.innerHTML = popUpHTML;
-  updateProgressBar(index, status);
+  updateProgressBar(id, status);
 }
 
 async function deleteCard(index, status) {
@@ -359,6 +357,7 @@ async function createTaskOnBoard(status) {
   if (validateTaskInputs()) {
     const newTask = constructNewTask();
     newTask.status = status.toLowerCase(); // Setze den Status des neuen Tasks
+    newTask.id = generateUniqueId(); // Eindeutige ID generieren
 
     if (!currentUser || !currentUser.data) {
       console.error("Kein angemeldeter Benutzer oder unvollständige Benutzerdaten. Aufgabe kann nicht hinzugefügt werden.");
@@ -755,57 +754,61 @@ function allowDrop(ev) {
   ev.preventDefault();
 }
 
-function moveTo(status) {
-  console.log('Moving task to:', status);
+async function moveTo(newStatus) {
   let { id, status: currentStatus } = currentDraggedElement;
-  let task;
-  let tasks;
 
-  // Normalisieren Sie den status und currentStatus, um Groß-/Kleinschreibungsprobleme zu vermeiden
   currentStatus = currentStatus.toLowerCase();
-  status = status.toLowerCase();
+  newStatus = newStatus.toLowerCase();
 
-  // Stellen Sie sicher, dass der id-Wert eine Zahl ist
-  id = parseInt(id);
-
-  console.log(`Current Status: ${currentStatus}, Target Status: ${status}, Task ID: ${id}`);
+  let taskIndex;
+  let task;
 
   switch (currentStatus) {
     case "todo":
-      tasks = currentUser.data.board.todo;
+      taskIndex = currentUser.data.board.todo.findIndex(task => task.id === id);
+      task = currentUser.data.board.todo[taskIndex];
+      if (taskIndex > -1) {
+        currentUser.data.board.todo.splice(taskIndex, 1);
+      }
       break;
     case "inprogress":
-      tasks = currentUser.data.board.inProgress;
+      taskIndex = currentUser.data.board.inProgress.findIndex(task => task.id === id);
+      task = currentUser.data.board.inProgress[taskIndex];
+      if (taskIndex > -1) {
+        currentUser.data.board.inProgress.splice(taskIndex, 1);
+      }
       break;
     case "awaitfeedback":
-      tasks = currentUser.data.board.awaitFeedback;
+      taskIndex = currentUser.data.board.awaitFeedback.findIndex(task => task.id === id);
+      task = currentUser.data.board.awaitFeedback[taskIndex];
+      if (taskIndex > -1) {
+        currentUser.data.board.awaitFeedback.splice(taskIndex, 1);
+      }
       break;
     case "done":
-      tasks = currentUser.data.board.done;
+      taskIndex = currentUser.data.board.done.findIndex(task => task.id === id);
+      task = currentUser.data.board.done[taskIndex];
+      if (taskIndex > -1) {
+        currentUser.data.board.done.splice(taskIndex, 1);
+      }
       break;
     default:
       console.error("Invalid current status:", currentStatus);
       return;
   }
 
-  if (!tasks || !tasks[id]) {
+  if (!task) {
     console.error(`Task with id "${id}" not found in current status "${currentStatus}" array.`);
     return;
   }
 
-  task = tasks[id];
-  console.log(`Task found:`, task);
+  task.status = newStatus;
 
-  tasks.splice(id, 1);  // Entfernen Sie die Aufgabe aus dem aktuellen Status-Array
-  task.status = status; // Setzen Sie den neuen Status
+  if (!currentUser.data.board[newStatus]) {
+    currentUser.data.board[newStatus] = [];
+  }
 
-  // Stellen Sie sicher, dass das Ziel-Status-Array initialisiert ist
-  if (!currentUser.data.board.todo) currentUser.data.board.todo = [];
-  if (!currentUser.data.board.inProgress) currentUser.data.board.inProgress = [];
-  if (!currentUser.data.board.awaitFeedback) currentUser.data.board.awaitFeedback = [];
-  if (!currentUser.data.board.done) currentUser.data.board.done = [];
-
-  switch (task.status) {
+  switch (newStatus) {
     case "todo":
       currentUser.data.board.todo.push(task);
       break;
@@ -819,13 +822,13 @@ function moveTo(status) {
       currentUser.data.board.done.push(task);
       break;
     default:
-      console.error("Invalid target status:", task.status);
+      console.error("Invalid target status:", newStatus);
+      return;
   }
 
-  console.log('Task moved to new status:', task.status);
-
+  await saveBoard();
   showToDos();
-  saveBoard();
+  updateNoTaskPlaceholders();
 }
 
 async function saveBoard() {
@@ -844,9 +847,9 @@ async function saveBoard() {
 function updateNoTaskPlaceholders() {
   const columns = [
     { id: 'ToDos', placeholder: 'No tasks To do' },
-    { id: 'progress-container', placeholder: 'No Task is in Progress' },
-    { id: 'feedback-container', placeholder: 'No Task requires Feedback' },
-    { id: 'done-container', placeholder: 'No Task is Done' }
+    { id: 'progress-container', placeholder: 'No tasks in progress' },
+    { id: 'feedback-container', placeholder: 'No tasks require feedback' },
+    { id: 'done-container', placeholder: 'No tasks are done' }
   ];
 
   columns.forEach(column => {
@@ -854,12 +857,10 @@ function updateNoTaskPlaceholders() {
     const noTaskBox = container.querySelector('.no-task-box');
 
     if (container.children.length === 0) {
-      // Wenn der Container leer ist und kein Placeholder vorhanden ist, füge einen hinzu
       if (!noTaskBox) {
         container.innerHTML = `<div class="no-task-box">${column.placeholder}</div>`;
       }
     } else {
-      // Wenn der Container nicht leer ist und ein Placeholder vorhanden ist, entferne ihn
       if (noTaskBox) {
         noTaskBox.remove();
       }
@@ -867,52 +868,68 @@ function updateNoTaskPlaceholders() {
   });
 }
 
+
+// Function to filter tasks
 function filterTasks() {
-  const searchTerm = document.querySelector('.board-input').value.toLowerCase();
-  const tasks = currentUser.data.board.todo;
+  const searchTerm = document.getElementById('searchInput').value.toLowerCase();
 
-  // Filtere die Aufgaben basierend auf dem Suchbegriff
-  const filteredTasks = tasks.filter(task => {
-    const titleMatch = task.title.toLowerCase().includes(searchTerm);
-    const descriptionMatch = task.description.toLowerCase().includes(searchTerm);
-    return titleMatch || descriptionMatch;
-  });
+  const todoTasks = (currentUser.data.board.todo || []).filter(task => 
+    task.title.toLowerCase().includes(searchTerm) || task.description.toLowerCase().includes(searchTerm)
+  );
+  const inProgressTasks = (currentUser.data.board.inProgress || []).filter(task => 
+    task.title.toLowerCase().includes(searchTerm) || task.description.toLowerCase().includes(searchTerm)
+  );
+  const feedbackTasks = (currentUser.data.board.awaitFeedback || []).filter(task => 
+    task.title.toLowerCase().includes(searchTerm) || task.description.toLowerCase().includes(searchTerm)
+  );
+  const doneTasks = (currentUser.data.board.done || []).filter(task => 
+    task.title.toLowerCase().includes(searchTerm) || task.description.toLowerCase().includes(searchTerm)
+  );
 
-  // Zeige die gefilterten Aufgaben an
-  showFilteredTasks(filteredTasks);
+  displayFilteredTasks(todoTasks, inProgressTasks, feedbackTasks, doneTasks);
 }
 
-function showFilteredTasks(filteredTasks) {
-  const todoContainer = document.getElementById('ToDos');
-  const inProgressContainer = document.getElementById('progress-container');
-  const feedbackContainer = document.getElementById('feedback-container');
-  const doneContainer = document.getElementById('done-container');
+
+function displayFilteredTasks(todoTasks, inProgressTasks, feedbackTasks, doneTasks) {
+  let todoContainer = document.getElementById('ToDos');
+  let inProgressContainer = document.getElementById('progress-container');
+  let feedbackContainer = document.getElementById('feedback-container');
+  let doneContainer = document.getElementById('done-container');
 
   todoContainer.innerHTML = '';
   inProgressContainer.innerHTML = '';
   feedbackContainer.innerHTML = '';
   doneContainer.innerHTML = '';
 
-  if (filteredTasks.length === 0) {
-    const noResultsHTML = '<div class="no-task-box">No Task found</div>';
-    todoContainer.innerHTML = noResultsHTML;
-    inProgressContainer.innerHTML = noResultsHTML;
-    feedbackContainer.innerHTML = noResultsHTML;
-    doneContainer.innerHTML = noResultsHTML;
-    return;
+  if (todoTasks.length === 0) {
+    todoContainer.innerHTML = '<div class="no-task-box">Keine Ergebnisse gefunden</div>';
+  } else {
+    todoTasks.forEach((task) => {
+      todoContainer.innerHTML += generateTodoHTML(task, task.id, 'todo');
+    });
   }
 
-  filteredTasks.forEach((task, i) => {
-    if (task.status === "toDo") {
-      todoContainer.innerHTML += generateTodoHTML(task, i);
-    } else if (task.status === "In Progress") {
-      inProgressContainer.innerHTML += generateTodoHTML(task, i);
-    } else if (task.status === "Await Feedback") {
-      feedbackContainer.innerHTML += generateTodoHTML(task, i);
-    } else if (task.status === "Done") {
-      doneContainer.innerHTML += generateTodoHTML(task, i);
-    }
-  });
+  if (inProgressTasks.length === 0) {
+    inProgressContainer.innerHTML = '<div class="no-task-box">Keine Ergebnisse gefunden</div>';
+  } else {
+    inProgressTasks.forEach((task) => {
+      inProgressContainer.innerHTML += generateTodoHTML(task, task.id, 'inProgress');
+    });
+  }
 
-  updateNoTaskPlaceholders();
+  if (feedbackTasks.length === 0) {
+    feedbackContainer.innerHTML = '<div class="no-task-box">Keine Ergebnisse gefunden</div>';
+  } else {
+    feedbackTasks.forEach((task) => {
+      feedbackContainer.innerHTML += generateTodoHTML(task, task.id, 'awaitFeedback');
+    });
+  }
+
+  if (doneTasks.length === 0) {
+    doneContainer.innerHTML = '<div class="no-task-box">Keine Ergebnisse gefunden</div>';
+  } else {
+    doneTasks.forEach((task) => {
+      doneContainer.innerHTML += generateTodoHTML(task, task.id, 'done');
+    });
+  }
 }

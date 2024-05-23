@@ -39,7 +39,7 @@
             <div class="board-headline-container">
               <div class="board-headline">Board</div>
               <div class="input-button-board-container">
-                <input class="board-input" type="text" placeholder="Find Task" oninput="filterTasks()">
+                <input class="board-input" type="text" id="searchInput" placeholder="Find Task" oninput="filterTasks()">
                 <img class="search-png" src="./assets/img/icons/search.png" alt="search-Icon">
                 <button onclick="showAddTaskPopUp()" class="add-task-btn">Add task <img class="plus-sign-white"
                     src="./assets/img/icons/add-white.png" alt="White Plus Icon"></button>
@@ -62,7 +62,7 @@
                   <img onclick="showAddTaskPopUp('inProgress')" src="./assets/img/icons/plus_button_dark.png" alt="dark-blue-plus-sign">
                 </div>
                 <div id="progress-container" ondrop="moveTo('inprogress')" ondragover="allowDrop(event)">
-                  <div class="no-task-box">No Task is in Progress</div>
+                  <div class="no-task-box">No tasks in progress</div>
                 </div>
               </div>
               <div class="column-properties">
@@ -71,7 +71,7 @@
                   <img onclick="showAddTaskPopUp('awaitFeedback')" src="./assets/img/icons/plus_button_dark.png" alt="dark-blue-plus-sign">
                 </div>
                 <div id="feedback-container" ondrop="moveTo('awaitfeedback')" ondragover="allowDrop(event)">
-                  <div class="no-task-box">No Task requires Feedback</div>
+                  <div class="no-task-box">No tasks require feedback</div>
                 </div>
               </div>
               <div class="column-properties">
@@ -79,7 +79,7 @@
                   <div class="column-titles fourth-property">Done</div>
                 </div>
                 <div id="done-container" ondrop="moveTo('done')" ondragover="allowDrop(event)">
-                  <div class="no-task-box fourth-property">No Task is Done</div>
+                  <div class="no-task-box fourth-property">No tasks are done</div>
                 </div>
               </div>
             </div>

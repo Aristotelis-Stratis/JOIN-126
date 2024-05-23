@@ -1,6 +1,10 @@
-function generateTodoHTML(task, i, status) {
+function generateTodoHTML(task, id, status) {
   let taskName = task.title;
   let taskDescription = task.description;
+  let maxLength = 25;
+  if (taskDescription.length > maxLength) {
+    taskDescription = taskDescription.slice(0, maxLength) + '...';
+  }
   let totalTasks = task.subtasks ? task.subtasks.length : 0;
   let completedTasks = task.subtasks ? task.subtasks.filter(subtask => subtask.completed).length : 0;
   let completionPercentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
@@ -10,8 +14,8 @@ function generateTodoHTML(task, i, status) {
   let backgroundColor = getCategoryBackgroundColor(category);
 
   return `
-    <div draggable="true" ondragstart="startdragging(${i}, '${status}')" data-task-index="${i}" data-task-status="${status}">
-        <div class="cardA" onclick="showPopUp(${i}, '${status}')">
+    <div draggable="true" ondragstart="startdragging('${task.id}', '${status}')" data-task-id="${task.id}" data-task-status="${status}">
+        <div class="cardA" onclick="showPopUp('${task.id}', '${status}')">
               <span class="task-category-board" style="background-color: ${backgroundColor};">${category}</span>
               <div class="card-middle-part">
                 <h4 class="task-name">${taskName}</h4>
@@ -54,7 +58,7 @@ function generatePopUpHTML(task, index, priority, status) {
         <img onclick="closePopUp()" src="./assets/img/icons/close.png" alt="Close-PNG">
       </div>
       <div class="board-task-pop-up-headline">${taskName}</div>
-      <div class="board-pop-up-description">${taskDescription}</div>
+      <div class="board-pop-up-description"><span>${taskDescription}</span></div>
       <div class="popup-date-container">
         <span class="popup-blue-span">Due date:</span> <span>${date}</span>
       </div>
