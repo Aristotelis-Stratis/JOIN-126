@@ -79,7 +79,7 @@ function generatePopUpHTML(task, index, priority, status) {
         <div id="subtasks">${subtasksHTML}</div>
       </div>
       <div class="popup-del-edit-container">
-        <div onclick="deleteCard(${index}, '${status}')" class="popup-delete-and-edit">
+        <div onclick="deleteCard('${index}', '${status}')" class="popup-delete-and-edit">
           <img src="./assets/img/icons/trash.png" alt="Trash-Image">
           <span class="weight-700">Delete</span>
         </div>
@@ -278,7 +278,7 @@ function generateSubtasksHTML(taskIndex, subtasks, status) {
   return subtasksHTML;
 }
 
-function generateSubtaskHTML(taskIndex, subtaskIndex, subtask, status) {
+function generateSubtaskHTML(taskId, subtaskIndex, subtask, status) {
   return `
     <div class="subtask-edit-container" id="subTask_${subtaskIndex}">
       <div class="subtask-item" id="subTaskItem_${subtaskIndex}">
@@ -287,8 +287,8 @@ function generateSubtaskHTML(taskIndex, subtaskIndex, subtask, status) {
           <span id="subTask_${subtaskIndex}_span">${subtask.text}</span>
         </div>
         <div class="subtask-item-icons">
-          <img class="subtask-item-icon" style="border-right: 1px solid rgba(209, 209, 209, 1);" src="assets/img/icons/edit_dark.png" alt="" onclick="editSubtaskEdit(${taskIndex}, ${subtaskIndex}, '${status}')">
-          <img class="subtask-item-icon" src="assets/img/icons/trash.png" alt="" onclick="deleteSubtaskEdit(${taskIndex}, ${subtaskIndex}, '${status}')">
+          <img class="subtask-item-icon" style="border-right: 1px solid rgba(209, 209, 209, 1);" src="assets/img/icons/edit_dark.png" alt="" onclick="editSubtaskEdit('${taskId}', ${subtaskIndex}, '${status}')">
+          <img class="subtask-item-icon" src="assets/img/icons/trash.png" alt="" onclick="deleteSubtaskEdit('${taskId}', ${subtaskIndex}, '${status}')">
         </div>
       </div>
     </div>
@@ -369,11 +369,11 @@ function generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks,
                       <label>Subtasks</label>
                       <div class="drop-down-menu-container">
                           <div class="sub-image-container" id="image-container">
-                              <img id="addBtnEdit" src="assets/img/icons/add.png" alt="" onclick="addSubtaskToEditWindow(${index})">
+                              <img id="addBtnEdit" src="assets/img/icons/add.png" alt="" onclick="addSubtaskToEditWindow('${index}')">
                               <div id="sub-seperator" class="subtask-seperator" style="display:none;"></div>
                               <img id="closeBtn" src="assets/img/icons/close.png" onclick="clearInputFieldEdit(), toggleAddButtonImageEdit()" alt="" style="display:none;">
                           </div>
-                          <input class="no-validate subtask" type="text" id="subTaskInputEdit" maxlength="15" placeholder="Add new subtask" onkeypress="handleKeyPress(event, ${index})" oninput="toggleAddButtonImageEdit()">
+                          <input class="no-validate subtask" type="text" id="subTaskInputEdit" maxlength="15" placeholder="Add new subtask" onkeypress="handleKeyPress(event, '${index}')" oninput="toggleAddButtonImageEdit()">
                       </div>
                       <div class="subtask-container-edit" id="subtaskContainerEdit">
                           ${subtasks}
@@ -397,7 +397,7 @@ function generateSubtasksHTML(taskIndex, subtasks, status) {
       let checkIcon = subtask.completed ? './assets/img/icons/checkbox-checked-black-24.png' : './assets/img/icons/checkbox-empty-black-24.png';
       subtasksHTML += `
           <div class="popup-subtasks">
-              <img src="${checkIcon}" id="subtask-check${i}" onclick="toggleSubtaskCheck(${taskIndex}, ${i}, '${status}')" alt="Box-Empty">
+              <img src="${checkIcon}" id="subtask-check${i}" onclick="toggleSubtaskCheck('${taskIndex}', ${i}, '${status}')" alt="Box-Empty">
               <div>${subtask.text}</div>
           </div>
       `;

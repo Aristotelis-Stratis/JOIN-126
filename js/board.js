@@ -120,26 +120,30 @@ function setPriority(priority) {
 }
 
 
-async function toggleSubtaskCheck(taskIndex, subtaskIndex, status) {
+async function toggleSubtaskCheck(taskId, subtaskIndex, status) {
   let task;
+  let boardStatusArray;
 
-  switch (status) {
+  switch (status.toLowerCase()) {
     case "todo":
-      task = currentUser.data.board.todo[taskIndex];
+      boardStatusArray = currentUser.data.board.todo;
       break;
-    case "inProgress":
-      task = currentUser.data.board.inProgress[taskIndex];
+    case "inprogress":
+      boardStatusArray = currentUser.data.board.inProgress;
       break;
-    case "awaitFeedback":
-      task = currentUser.data.board.awaitFeedback[taskIndex];
+    case "awaitfeedback":
+      boardStatusArray = currentUser.data.board.awaitFeedback;
       break;
     case "done":
-      task = currentUser.data.board.done[taskIndex];
+      boardStatusArray = currentUser.data.board.done;
       break;
     default:
       console.error("Invalid status:", status);
       return;
   }
+
+  const taskIndex = boardStatusArray.findIndex(t => t.id === taskId);
+  task = boardStatusArray[taskIndex];
 
   if (!task || !task.subtasks || !Array.isArray(task.subtasks)) {
     console.error("Task or subtasks array not found or invalid.");
@@ -150,39 +154,43 @@ async function toggleSubtaskCheck(taskIndex, subtaskIndex, status) {
 
   const cleanedEmail = localStorage.getItem('cleanedEmail');
   const userId = localStorage.getItem('currentUserId');
-  const subtaskPath = `users/${cleanedEmail}/${userId}/board/${status}/${taskIndex}/subtasks`;
+  const taskPath = `users/${cleanedEmail}/${userId}/board/${status}/${taskIndex}`;
 
   try {
-    await updateData(subtaskPath, task.subtasks);
+    await updateData(taskPath, task);
     console.log('Subtask status updated in Firebase.');
   } catch (error) {
     console.error('Error updating subtask status in Firebase:', error);
   }
 
-  showPopUp(taskIndex, status);
-  updateProgressBar(taskIndex, status);
+  showPopUp(taskId, status);
+  updateProgressBar(taskId, status);
 }
 
-function updateProgressBar(taskIndex, status) {
+function updateProgressBar(taskId, status) {
   let task;
+  let boardStatusArray;
 
-  switch (status) {
+  switch (status.toLowerCase()) {
     case "todo":
-      task = currentUser.data.board.todo[taskIndex];
+      boardStatusArray = currentUser.data.board.todo;
       break;
-    case "inProgress":
-      task = currentUser.data.board.inProgress[taskIndex];
+    case "inprogress":
+      boardStatusArray = currentUser.data.board.inProgress;
       break;
-    case "awaitFeedback":
-      task = currentUser.data.board.awaitFeedback[taskIndex];
+    case "awaitfeedback":
+      boardStatusArray = currentUser.data.board.awaitFeedback;
       break;
     case "done":
-      task = currentUser.data.board.done[taskIndex];
+      boardStatusArray = currentUser.data.board.done;
       break;
     default:
       console.error("Invalid status:", status);
       return;
   }
+
+  const taskIndex = boardStatusArray.findIndex(t => t.id === taskId);
+  task = boardStatusArray[taskIndex];
 
   if (!task || !task.subtasks || !Array.isArray(task.subtasks)) {
     return;
@@ -192,7 +200,7 @@ function updateProgressBar(taskIndex, status) {
   const completedTasks = task.subtasks.filter(subtask => subtask.completed).length;
   const completionPercentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
-  const taskElement = document.querySelector(`[data-task-index="${taskIndex}"][data-task-status="${status}"]`);
+  const taskElement = document.querySelector(`[data-task-id="${taskId}"][data-task-status="${status}"]`);
   if (taskElement) {
     const progressBar = taskElement.querySelector('.filled-subtask-bar');
     const progressText = taskElement.querySelector('.subtasks span');
@@ -248,7 +256,7 @@ function showPopUp(id, status) {
   updateProgressBar(id, status);
 }
 
-async function deleteCard(index, status) {
+async function deleteCard(taskId, status) {
   try {
     if (!currentUser || !currentUser.data || !currentUser.data.board) {
       console.error("No current user or tasks available. Task cannot be deleted.");
@@ -256,14 +264,14 @@ async function deleteCard(index, status) {
     }
 
     let taskList;
-    switch (status) {
+    switch (status.toLowerCase()) {
       case "todo":
         taskList = currentUser.data.board.todo;
         break;
-      case "inProgress":
+      case "inprogress":
         taskList = currentUser.data.board.inProgress;
         break;
-      case "awaitFeedback":
+      case "awaitfeedback":
         taskList = currentUser.data.board.awaitFeedback;
         break;
       case "done":
@@ -274,22 +282,14 @@ async function deleteCard(index, status) {
         return;
     }
 
-    // Entferne den Task aus dem entsprechenden Array
-    taskList.splice(index, 1);
+    const taskIndex = taskList.findIndex(task => task.id === taskId);
+    if (taskIndex === -1) {
+      console.error("Task not found in the list.");
+      return;
+    }
 
-    // Initialisiere die Board-Struktur, falls sie nicht existiert
-    if (!currentUser.data.board.todo) {
-      currentUser.data.board.todo = [];
-    }
-    if (!currentUser.data.board.inProgress) {
-      currentUser.data.board.inProgress = [];
-    }
-    if (!currentUser.data.board.awaitFeedback) {
-      currentUser.data.board.awaitFeedback = [];
-    }
-    if (!currentUser.data.board.done) {
-      currentUser.data.board.done = [];
-    }
+    // Entferne den Task aus dem entsprechenden Array
+    taskList.splice(taskIndex, 1);
 
     // Bestimme den Pfad zum gesamten Board in Firebase
     const cleanedEmail = localStorage.getItem('cleanedEmail');
@@ -479,19 +479,41 @@ function generateSubtaskHTMLEdit(taskIndex, subtasks, status) {
   return subtaskHTML;
 }
 
-async function addSubtaskToEditWindow(taskIndex) {
+async function addSubtaskToEditWindow(taskId) {
   let newSubtaskText = document.getElementById('subTaskInputEdit').value.trim();
 
   if (newSubtaskText !== '') {
-    const task = currentUser.data.board.todo[taskIndex];
+    let task;
+    let taskIndex = -1;
+
+    // Suchen Sie die Aufgabe basierend auf der ID
+    if (currentUser && currentUser.data && currentUser.data.board) {
+      const allTasks = [
+        ...currentUser.data.board.todo,
+        ...currentUser.data.board.inProgress,
+        ...currentUser.data.board.awaitFeedback,
+        ...currentUser.data.board.done
+      ];
+
+      taskIndex = allTasks.findIndex(t => t.id === taskId);
+      task = allTasks[taskIndex];
+    }
+
+    if (!task) {
+      console.error('Task not found.');
+      return;
+    }
+
+    // Initialisieren Sie das Subtasks-Array, falls es nicht vorhanden ist
     if (!task.subtasks || !Array.isArray(task.subtasks)) {
       task.subtasks = [];
     }
+
     task.subtasks.push({ text: newSubtaskText, completed: false });
 
     const cleanedEmail = localStorage.getItem('cleanedEmail');
     const userId = localStorage.getItem('currentUserId');
-    const subtaskPath = `users/${cleanedEmail}/${userId}/board/todo/${taskIndex}/subtasks`;
+    const subtaskPath = `users/${cleanedEmail}/${userId}/board/${task.status}/${taskIndex}/subtasks`;
     const boardPath = `users/${cleanedEmail}/${userId}/board`;
 
     try {
@@ -544,7 +566,7 @@ function clearInputFieldEdit() {
 }
 
 
-function editSubtaskEdit(taskIndex, subtaskIndex, status) {
+function editSubtaskEdit(taskId, subtaskIndex, status) {
   let subtaskItem = document.getElementById(`subTaskItem_${subtaskIndex}`);
   let subtaskSpan = document.getElementById(`subTask_${subtaskIndex}_span`);
   let subtaskText = subtaskSpan.innerHTML.trim();
@@ -552,9 +574,9 @@ function editSubtaskEdit(taskIndex, subtaskIndex, status) {
     <div class="edit-subtask-under-container">
       <input class="edit-input" type="text" id="subTask_${subtaskIndex}_input" value="${subtaskText}">
       <div class="sub-image-container-edit" id="image-container">
-        <img id="addBtnEdit" src="assets/img/icons/check_blue.png" alt="" onclick="saveEditedSubtask(${taskIndex}, ${subtaskIndex}, '${status}')" style="display: block;">
+        <img id="addBtnEdit" src="assets/img/icons/check_blue.png" alt="" onclick="saveEditedSubtask('${taskId}', ${subtaskIndex}, '${status}')" style="display: block;">
         <div id="sub-seperator" class="subtask-seperator-edit" style="display: block;"></div>
-        <img id="closeBtn" src="./assets/img/icons/trash.png" onclick="deleteSubtaskEdit(${taskIndex}, ${subtaskIndex}, '${status}')" alt="" style="display: block;">
+        <img id="closeBtn" src="./assets/img/icons/trash.png" onclick="deleteSubtaskEdit('${taskId}', ${subtaskIndex}, '${status}')" alt="" style="display: block;">
       </div>
     </div>
   `;
@@ -566,33 +588,39 @@ function editSubtaskEdit(taskIndex, subtaskIndex, status) {
   subtaskInputElement.addEventListener('keydown', function (event) {
     if (event.key === 'Enter') {
       event.preventDefault();
-      saveEditedSubtask(taskIndex, subtaskIndex, status); // Änderungen speichern
+      saveEditedSubtask(taskId, subtaskIndex, status); // Änderungen speichern
     }
   });
 }
 
-async function saveEditedSubtask(taskIndex, subtaskIndex, status) {
+async function saveEditedSubtask(taskId, subtaskIndex, status) {
   let subtaskInput = document.getElementById(`subTask_${subtaskIndex}_input`);
   let newText = subtaskInput.value.trim();
   let task;
-  
+  let taskIndex = -1;
+  let boardStatusArray;
+
+  // Suchen Sie die Aufgabe basierend auf der ID und dem Status
   switch (status.toLowerCase()) {
     case "todo":
-      task = currentUser.data.board.todo[taskIndex];
+      boardStatusArray = currentUser.data.board.todo;
       break;
     case "inprogress":
-      task = currentUser.data.board.inProgress[taskIndex];
+      boardStatusArray = currentUser.data.board.inProgress;
       break;
     case "awaitfeedback":
-      task = currentUser.data.board.awaitFeedback[taskIndex];
+      boardStatusArray = currentUser.data.board.awaitFeedback;
       break;
     case "done":
-      task = currentUser.data.board.done[taskIndex];
+      boardStatusArray = currentUser.data.board.done;
       break;
     default:
       console.error("Invalid status:", status);
       return;
   }
+
+  taskIndex = boardStatusArray.findIndex(t => t.id === taskId);
+  task = boardStatusArray[taskIndex];
 
   if (!task || !task.subtasks || !Array.isArray(task.subtasks)) {
     console.error("Task or subtasks array not found or invalid.");
@@ -604,10 +632,10 @@ async function saveEditedSubtask(taskIndex, subtaskIndex, status) {
   // Speichern der aktualisierten Subtask-Liste in Firebase
   const cleanedEmail = localStorage.getItem('cleanedEmail');
   const userId = localStorage.getItem('currentUserId');
-  const subtaskPath = `users/${cleanedEmail}/${userId}/board/${status}/${taskIndex}/subtasks`;
+  const taskPath = `users/${cleanedEmail}/${userId}/board/${status}/${taskIndex}`;
 
   try {
-    await updateData(subtaskPath, task.subtasks);
+    await updateData(taskPath, task);
     console.log('Subtask updated in Firebase.');
   } catch (error) {
     console.error('Error updating subtask in Firebase:', error);
@@ -622,34 +650,41 @@ async function saveEditedSubtask(taskIndex, subtaskIndex, status) {
         <span id="subTask_${subtaskIndex}_span">${newText}</span>
       </div>
       <div class="subtask-item-icons">
-        <img class="subtask-item-icon" style="border-right: 1px solid rgba(209, 209, 209, 1);" src="assets/img/icons/edit_dark.png" alt="" onclick="editSubtaskEdit(${taskIndex}, ${subtaskIndex}, '${status}')">
-        <img class="subtask-item-icon" src="assets/img/icons/trash.png" alt="" onclick="deleteSubtaskEdit(${taskIndex}, ${subtaskIndex}, '${status}')">
+        <img class="subtask-item-icon" style="border-right: 1px solid rgba(209, 209, 209, 1);" src="assets/img/icons/edit_dark.png" alt="" onclick="editSubtaskEdit('${taskId}', ${subtaskIndex}, '${status}')">
+        <img class="subtask-item-icon" src="assets/img/icons/trash.png" alt="" onclick="deleteSubtaskEdit('${taskId}', ${subtaskIndex}, '${status}')">
       </div>
     </div>
   `;
   showToDos(); // Aktualisieren des gesamten To-Do-Boards
 }
 
-async function deleteSubtaskEdit(taskIndex, subtaskIndex, status) {
+
+async function deleteSubtaskEdit(taskId, subtaskIndex, status) {
   let task;
-  
+  let taskIndex = -1;
+  let boardStatusArray;
+
+  // Suchen Sie die Aufgabe basierend auf der ID und dem Status
   switch (status.toLowerCase()) {
     case "todo":
-      task = currentUser.data.board.todo[taskIndex];
+      boardStatusArray = currentUser.data.board.todo;
       break;
     case "inprogress":
-      task = currentUser.data.board.inProgress[taskIndex];
+      boardStatusArray = currentUser.data.board.inProgress;
       break;
     case "awaitfeedback":
-      task = currentUser.data.board.awaitFeedback[taskIndex];
+      boardStatusArray = currentUser.data.board.awaitFeedback;
       break;
     case "done":
-      task = currentUser.data.board.done[taskIndex];
+      boardStatusArray = currentUser.data.board.done;
       break;
     default:
       console.error("Invalid status:", status);
       return;
   }
+
+  taskIndex = boardStatusArray.findIndex(t => t.id === taskId);
+  task = boardStatusArray[taskIndex];
 
   if (!task || !task.subtasks || !Array.isArray(task.subtasks)) {
     console.error("Subtasks array not found or invalid for the task.");
@@ -660,12 +695,10 @@ async function deleteSubtaskEdit(taskIndex, subtaskIndex, status) {
 
   const cleanedEmail = localStorage.getItem('cleanedEmail');
   const userId = localStorage.getItem('currentUserId');
-  const subtaskPath = `users/${cleanedEmail}/${userId}/board/${status}/${taskIndex}/subtasks`;
-  const boardPath = `users/${cleanedEmail}/${userId}/board`;
+  const taskPath = `users/${cleanedEmail}/${userId}/board/${status}/${taskIndex}`;
 
   try {
-    await updateData(subtaskPath, task.subtasks);
-    await updateData(boardPath, currentUser.data.board);  // Aktualisiere das gesamte Board
+    await updateData(taskPath, task);
     console.log('Subtask removed and board updated in Firebase.');
   } catch (error) {
     console.error('Error removing subtask and updating board in Firebase:', error);
@@ -675,7 +708,7 @@ async function deleteSubtaskEdit(taskIndex, subtaskIndex, status) {
   if (subtaskContainer) {
     subtaskContainer.remove();
   }
-  updateSubtaskUI(taskIndex, task.subtasks, status);
+  updateSubtaskUI(taskId, task.subtasks, status);
   showToDos();
 }
 
@@ -768,10 +801,10 @@ async function updateSubtaskEdit(id, status) {
   showToDos(); // Aktualisiere das Board
 }
 
-function handleKeyPress(event, index) {
+function handleKeyPress(event, taskId) {
   if (event.key === 'Enter') {
     event.preventDefault();
-    addSubtaskToEditWindow(index);
+    addSubtaskToEditWindow(taskId);
   }
 }
 
