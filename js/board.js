@@ -729,7 +729,7 @@ async function updateSubtaskEdit(id, status) {
   let taskIndex = -1;
 
   console.log('Update Task:', id, status);
-  
+
   switch (status.toLowerCase()) {
     case "todo":
       taskList = currentUser.data.board.todo;
@@ -767,7 +767,7 @@ async function updateSubtaskEdit(id, status) {
   const descriptionElement = document.getElementById('description');
   const dueDateElement = document.getElementById('dueDate');
   const priorityElement = document.querySelector('.priority-button.active');
-  
+
   if (!titleElement || !descriptionElement || !dueDateElement || !priorityElement) {
     console.error('Required elements for updating task not found.');
     return;
@@ -807,7 +807,32 @@ function handleKeyPress(event, taskId) {
 function startdragging(id, status) {
   currentDraggedElement = { id, status };
   console.log('Started dragging:', currentDraggedElement);
+
+  // Füge Highlight-Klasse zum aktuellen Container hinzu
+  const currentContainer = document.getElementById(status.toLowerCase() + '-container');
+  if (currentContainer) {
+    currentContainer.classList.add('highlight');
+  }
 }
+
+function onDragLeave(ev) {
+  ev.preventDefault();
+  const target = ev.target;
+  if (target && target.classList) {
+    target.classList.remove('highlight');
+  }
+}
+
+function onDragEnter(ev) {
+  ev.preventDefault();
+  const target = ev.target;
+  if (target && target.classList) {
+    target.classList.add('highlight');
+  }
+}
+
+
+
 
 function allowDrop(ev) {
   ev.preventDefault();
@@ -815,6 +840,17 @@ function allowDrop(ev) {
 
 async function moveTo(newStatus) {
   ensureBoardInitialization();  // Aufruf der Initialisierungsfunktion
+
+  const currentContainer = document.getElementById(currentDraggedElement.status.toLowerCase() + '-container');
+  const targetContainer = document.getElementById(newStatus.toLowerCase() + '-container');
+
+  if (currentContainer) {
+    currentContainer.classList.remove('highlight');
+  }
+
+  if (targetContainer) {
+    targetContainer.classList.add('highlight');
+  }
 
   let { id, status: currentStatus } = currentDraggedElement;
 
@@ -893,6 +929,11 @@ async function moveTo(newStatus) {
 
   await saveBoard();
   showToDos();
+
+  // Highlighting entfernen
+  if (targetContainer) {
+    targetContainer.classList.remove('highlight');
+  }
 }
 
 function ensureBoardInitialization() {
@@ -952,16 +993,16 @@ function updateNoTaskPlaceholders() {
 function filterTasks() {
   const searchTerm = document.getElementById('searchInput').value.toLowerCase();
 
-  const todoTasks = (currentUser.data.board.todo || []).filter(task => 
+  const todoTasks = (currentUser.data.board.todo || []).filter(task =>
     task.title.toLowerCase().includes(searchTerm) || task.description.toLowerCase().includes(searchTerm)
   );
-  const inProgressTasks = (currentUser.data.board.inProgress || []).filter(task => 
+  const inProgressTasks = (currentUser.data.board.inProgress || []).filter(task =>
     task.title.toLowerCase().includes(searchTerm) || task.description.toLowerCase().includes(searchTerm)
   );
-  const feedbackTasks = (currentUser.data.board.awaitFeedback || []).filter(task => 
+  const feedbackTasks = (currentUser.data.board.awaitFeedback || []).filter(task =>
     task.title.toLowerCase().includes(searchTerm) || task.description.toLowerCase().includes(searchTerm)
   );
-  const doneTasks = (currentUser.data.board.done || []).filter(task => 
+  const doneTasks = (currentUser.data.board.done || []).filter(task =>
     task.title.toLowerCase().includes(searchTerm) || task.description.toLowerCase().includes(searchTerm)
   );
 
@@ -1012,3 +1053,33 @@ function displayFilteredTasks(todoTasks, inProgressTasks, feedbackTasks, doneTas
     });
   }
 }
+
+document.addEventListener('DOMContentLoaded', (event) => {
+  document.getElementById('ToDos').addEventListener('dragenter', onDragEnter);
+  document.getElementById('ToDos').addEventListener('dragleave', onDragLeave);
+  document.getElementById('ToDos').addEventListener('drop', (event) => {
+      moveTo('todo');
+      event.currentTarget.classList.remove('highlight');
+  });
+
+  document.getElementById('progress-container').addEventListener('dragenter', onDragEnter);
+  document.getElementById('progress-container').addEventListener('dragleave', onDragLeave);
+  document.getElementById('progress-container').addEventListener('drop', (event) => {
+      moveTo('inprogress');
+      event.currentTarget.classList.remove('highlight');
+  });
+
+  document.getElementById('feedback-container').addEventListener('dragenter', onDragEnter);
+  document.getElementById('feedback-container').addEventListener('dragleave', onDragLeave);
+  document.getElementById('feedback-container').addEventListener('drop', (event) => {
+      moveTo('awaitfeedback');
+      event.currentTarget.classList.remove('highlight');
+  });
+
+  document.getElementById('done-container').addEventListener('dragenter', onDragEnter);
+  document.getElementById('done-container').addEventListener('dragleave', onDragLeave);
+  document.getElementById('done-container').addEventListener('drop', (event) => {
+      moveTo('done');
+      event.currentTarget.classList.remove('highlight');
+  });
+});

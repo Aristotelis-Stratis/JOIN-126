@@ -1766,17 +1766,17 @@ input[type=submit]:hover {
 }
 
 .no-task-box {
-    width: 246px;
+    width: 100%;
     height: 48px;
-    border-radius: 10px;
+    border-radius: 24px;
     border: 1px dashed #A8A8A8;
     display: flex;
     justify-content: center;
     align-items: center;
     font-family: 'open sans';
     font-weight: 400;
-    color: #A8A8A8;
-    background-color: rgba(168, 168, 168, 0.4)
+    color: #818181;
+    background-color: rgba(168, 168, 168, 0.25);
 }
 
 .cardA {
@@ -1788,34 +1788,36 @@ input[type=submit]:hover {
     cursor: pointer;
 }
 
-
-
-#ToDos {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    min-height: 300px;
+.task-name,
+.card-middle-part,
+.subtasks,
+.asigned-to-flex,
+.asigned-to,
+.asigned-to-image-container,
+.asigned-to-image-container img,
+.task-description,
+.cardA,
+.subtasks span {
+    background-color: #f7f6f8 !important;
 }
 
-#progress-container {
+
+
+#ToDos,
+#progress-container,
+#feedback-container,
+#done-container {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    min-height: 300px;
+    height: 95%;
+    min-height: 600px;
+    border-radius: 24px;
 }
 
-#feedback-container{
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    min-height: 300px;
-}
 
-#done-container{
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    min-height: 300px;
+.highlight {
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 .task-category-board {
@@ -1832,7 +1834,7 @@ input[type=submit]:hover {
     text-overflow: ellipsis;
     white-space: nowrap;
     max-width: 100%;
-  
+
 }
 
 .task-category-board-alternative {
@@ -2319,7 +2321,7 @@ input[type=submit]:hover {
     display: flex;
 }
 
-.board-dropdown{
+.board-dropdown {
     overflow-y: scroll;
     height: 170px;
 }
