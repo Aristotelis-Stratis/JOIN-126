@@ -95,7 +95,6 @@ function generatePopUpHTML(task, index, priority, status) {
 }
 
 
-
 function generateAddTaskPopUpHTML(status) {
   return `
     <div class="form-container">
@@ -245,7 +244,6 @@ function generateUserHTMLplusName(contacts) {
 function generateUserHTML(contacts) {
   let usersHTML = '';
 
-  // Überprüfen, ob contacts definiert ist
   if (contacts && Array.isArray(contacts)) {
     for (let j = 0; j < contacts.length; j++) {
       const user = contacts[j];
@@ -260,6 +258,7 @@ function generateUserHTML(contacts) {
 
   return usersHTML;
 }
+
 
 function generateSubtasksHTML(taskIndex, subtasks, status) {
   let subtasksHTML = '';
@@ -280,6 +279,7 @@ function generateSubtasksHTML(taskIndex, subtasks, status) {
   return subtasksHTML;
 }
 
+
 function generateSubtaskHTML(taskId, subtaskIndex, subtask, status) {
   return `
     <div class="subtask-edit-container" id="subTask_${subtaskIndex}">
@@ -297,12 +297,14 @@ function generateSubtaskHTML(taskId, subtaskIndex, subtask, status) {
   `;
 }
 
+
 function handleSubtaskKeyDown(event) {
   if (event.key === "Enter") {
     event.preventDefault();
     addSubtask();
   }
 }
+
 
 function generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks, priority, index, status) {
   return `
@@ -392,6 +394,7 @@ function generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks,
   `;
 }
 
+
 function generateSubtasksHTML(taskIndex, subtasks, status) {
   let subtasksHTML = '';
 
@@ -411,6 +414,7 @@ function generateSubtasksHTML(taskIndex, subtasks, status) {
   return subtasksHTML;
 }
 
+
 function generateUserHTMLEdit(contacts) {
   let usersHTML = '';
 
@@ -429,4 +433,34 @@ function generateUserHTMLEdit(contacts) {
   }
 
   return usersHTML;
+}
+
+
+function generateEditedSubtaskHTML(taskId, subtaskIndex, newText, status) {
+  return `
+    <div class="subtask-item-edit" id="subTaskItem_${subtaskIndex}">
+      <div>
+        •
+        <span id="subTask_${subtaskIndex}_span">${newText}</span>
+      </div>
+      <div class="subtask-item-icons">
+        <img class="subtask-item-icon" style="border-right: 1px solid rgba(209, 209, 209, 1);" src="assets/img/icons/edit_dark.png" alt="" onclick="editSubtaskEdit('${taskId}', ${subtaskIndex}, '${status}')">
+        <img class="subtask-item-icon" src="assets/img/icons/trash.png" alt="" onclick="deleteSubtaskEdit('${taskId}', ${subtaskIndex}, '${status}')">
+      </div>
+    </div>
+  `;
+}
+
+
+function generateEditSubtaskInputHTML(taskId, subtaskIndex, subtaskText, status) {
+  return `
+    <div class="edit-subtask-under-container">
+      <input class="edit-input" type="text" id="subTask_${subtaskIndex}_input" value="${subtaskText}">
+      <div class="sub-image-container-edit" id="image-container">
+        <img id="addBtnEdit" src="assets/img/icons/check_blue.png" alt="" onclick="saveEditedSubtask('${taskId}', ${subtaskIndex}, '${status}')" style="display: block;">
+        <div id="sub-seperator" class="subtask-seperator-edit" style="display: block;"></div>
+        <img id="closeBtn" src="./assets/img/icons/trash.png" onclick="deleteSubtaskEdit('${taskId}', ${subtaskIndex}, '${status}')" alt="" style="display: block;">
+      </div>
+    </div>
+  `;
 }

@@ -1,42 +1,33 @@
 let subtaskIndexCounter = 0;
 let currentDraggedElement;
 
+
 async function init() {
   includeHTML();
   await loadCurrentUserBoard();
   showToDos();
 }
 
+
 async function loadCurrentUserBoard() {
-  try {
-    const cleanedEmail = localStorage.getItem('cleanedEmail');
-    const userId = localStorage.getItem('currentUserId');
+  const cleanedEmail = localStorage.getItem('cleanedEmail');
+  const userId = localStorage.getItem('currentUserId');
 
-    if (cleanedEmail && userId) {
-      const path = `users/${cleanedEmail}/${userId}`;
-      const userData = await loadData(path);
+  if (cleanedEmail && userId) {
+    const path = `users/${cleanedEmail}/${userId}`;
+    const userData = await loadData(path);
 
-      if (userData) {
-        currentUser = { id: userId, data: userData };
-        ensureBoardInitialization();  // Initialisiere das Board
-
-        setProfileInitials();
-        console.log('Loaded currentUser:', currentUser);
-      } else {
-        console.error("Keine vollständigen Benutzerdaten gefunden.");
-      }
-    } else {
-      console.error("Keine gereinigte E-Mail-Adresse oder Benutzer-ID im Local Storage gefunden.");
+    if (userData) {
+      currentUser = { id: userId, data: userData };
+      ensureBoardInitialization();
+      setProfileInitials();
     }
-  } catch (error) {
-    console.error("Fehler beim Laden des aktuellen Benutzers:", error);
   }
 }
 
 
 function showToDos() {
   if (!currentUser || !currentUser.data || !currentUser.data.board) {
-    console.error("Keine Aufgaben verfügbar zum Anzeigen.");
     return;
   }
 
@@ -55,7 +46,6 @@ function showToDos() {
   feedbackContainer.innerHTML = '';
   doneContainer.innerHTML = '';
 
-  // Füge Aufgaben zu den entsprechenden Containern hinzu
   for (let i = 0; i < todoTasks.length; i++) {
     const task = todoTasks[i];
     const todoHTML = generateTodoHTML(task, i, 'todo');
@@ -91,6 +81,7 @@ function getCategoryBackgroundColor(category) {
   }
 }
 
+
 function setPriority(priority) {
   let priorityImage;
 
@@ -105,7 +96,6 @@ function setPriority(priority) {
       priorityImage = './assets/img/icons/urgent.png';
       break;
     default:
-      // Setze ein Standardbild, falls keine Übereinstimmung gefunden wurde
       priorityImage = './assets/img/icons/low.png';
       break;
   }
@@ -132,7 +122,6 @@ async function toggleSubtaskCheck(taskId, subtaskIndex, status) {
       boardStatusArray = currentUser.data.board.done;
       break;
     default:
-      console.error("Invalid status:", status);
       return;
   }
 
@@ -140,7 +129,6 @@ async function toggleSubtaskCheck(taskId, subtaskIndex, status) {
   task = boardStatusArray[taskIndex];
 
   if (!task || !task.subtasks || !Array.isArray(task.subtasks)) {
-    console.error("Task or subtasks array not found or invalid.");
     return;
   }
 
@@ -150,16 +138,11 @@ async function toggleSubtaskCheck(taskId, subtaskIndex, status) {
   const userId = localStorage.getItem('currentUserId');
   const taskPath = `users/${cleanedEmail}/${userId}/board/${status}/${taskIndex}`;
 
-  try {
-    await updateData(taskPath, task);
-    console.log('Subtask status updated in Firebase.');
-  } catch (error) {
-    console.error('Error updating subtask status in Firebase:', error);
-  }
-
+  await updateData(taskPath, task);
   showPopUp(taskId, status);
   updateProgressBar(taskId, status);
 }
+
 
 function updateProgressBar(taskId, status) {
   let task;
@@ -179,7 +162,6 @@ function updateProgressBar(taskId, status) {
       boardStatusArray = currentUser.data.board.done;
       break;
     default:
-      console.error("Invalid status:", status);
       return;
   }
 
@@ -207,6 +189,7 @@ function updateProgressBar(taskId, status) {
   }
 }
 
+
 function showOverlayAndPopUp() {
   let overlay = document.getElementById('overlay');
   let popUp = document.getElementById('pop-up');
@@ -233,76 +216,61 @@ function showPopUp(id, status) {
       task = currentUser.data.board.done.find(task => task.id === id);
       break;
     default:
-      console.error("Invalid status:", status);
       return;
   }
 
   if (!task) {
-    console.error(`Task with id "${id}" not found.`);
     return;
   }
 
-  const priority = task.priority ? task.priority : 'low';
+  const priority = task.priority || 'low';
   const popUpHTML = generatePopUpHTML(task, id, priority, status);
   showOverlayAndPopUp();
-  let popUp = document.getElementById('pop-up');
+  const popUp = document.getElementById('pop-up');
   popUp.innerHTML = popUpHTML;
   updateProgressBar(id, status);
 }
 
+
 async function deleteCard(taskId, status) {
-  try {
-    if (!currentUser || !currentUser.data || !currentUser.data.board) {
-      console.error("No current user or tasks available. Task cannot be deleted.");
-      return;
-    }
-
-    let taskList;
-    switch (status.toLowerCase()) {
-      case "todo":
-        taskList = currentUser.data.board.todo;
-        break;
-      case "inprogress":
-        taskList = currentUser.data.board.inProgress;
-        break;
-      case "awaitfeedback":
-        taskList = currentUser.data.board.awaitFeedback;
-        break;
-      case "done":
-        taskList = currentUser.data.board.done;
-        break;
-      default:
-        console.error("Invalid status:", status);
-        return;
-    }
-
-    const taskIndex = taskList.findIndex(task => task.id === taskId);
-    if (taskIndex === -1) {
-      console.error("Task not found in the list.");
-      return;
-    }
-
-    // Entferne den Task aus dem entsprechenden Array
-    taskList.splice(taskIndex, 1);
-
-    // Bestimme den Pfad zum gesamten Board in Firebase
-    const cleanedEmail = localStorage.getItem('cleanedEmail');
-    const userId = localStorage.getItem('currentUserId');
-    const boardPath = `users/${cleanedEmail}/${userId}/board`;
-
-    // Aktualisiere das gesamte Board in Firebase
-    await updateData(boardPath, currentUser.data.board);
-
-    // Aktualisiere das UI
-    closePopUp();
-    showToDos();
-
-    console.log('Task successfully deleted and board updated.');
-  } catch (error) {
-    console.error('Error deleting task:', error);
+  if (!currentUser || !currentUser.data || !currentUser.data.board) {
+    return;
   }
+
+  let taskList;
+  switch (status.toLowerCase()) {
+    case "todo":
+      taskList = currentUser.data.board.todo;
+      break;
+    case "inprogress":
+      taskList = currentUser.data.board.inProgress;
+      break;
+    case "awaitfeedback":
+      taskList = currentUser.data.board.awaitFeedback;
+      break;
+    case "done":
+      taskList = currentUser.data.board.done;
+      break;
+    default:
+      return;
+  }
+
+  const taskIndex = taskList.findIndex(task => task.id === taskId);
+  if (taskIndex === -1) {
+    return;
+  }
+
+  taskList.splice(taskIndex, 1);
+  const cleanedEmail = localStorage.getItem('cleanedEmail');
+  const userId = localStorage.getItem('currentUserId');
+  const boardPath = `users/${cleanedEmail}/${userId}/board`;
+
+  await updateData(boardPath, currentUser.data.board);
+  closePopUp();
+  showToDos();
   updateNoTaskPlaceholders();
 }
+
 
 function closePopUp() {
   const overlay = document.getElementById('overlay');
@@ -310,26 +278,28 @@ function closePopUp() {
   popUp.classList.remove('slide-in-animation');
   popUp.classList.add('closing-animation');
 
-  // Warten Sie auf das Ende der Animation, bevor Sie das Popup ausblenden
   setTimeout(() => {
-    overlay.classList.add('d-none-board'); // Overlay ausblenden
-    popUp.classList.remove('closing-animation'); // Zur Wiederverwendung vorbereiten
-    document.body.classList.remove('no-scroll'); // Body scrollen wieder erlauben
-  }, 500); // Die Dauer der Schließanimation in Millisekunden
+    overlay.classList.add('d-none-board');
+    popUp.classList.remove('closing-animation');
+    document.body.classList.remove('no-scroll');
+  }, 500);
 }
+
 
 function doNotClosePopUp(event) {
   event.stopPropagation();
 }
 
+
 function showAddTaskPopUp(status = 'todo') {
   let overlay = document.getElementById('overlay2');
   let addTaskPopUp = document.getElementById('addTaskPopUp');
-  addTaskPopUp.innerHTML = generateAddTaskPopUpHTML(status); // Übergib den Status
+  addTaskPopUp.innerHTML = generateAddTaskPopUpHTML(status);
   overlay.classList.remove('d-none-board');
   addTaskPopUp.classList.remove('closing-animation');
   addTaskPopUp.classList.add('slide-in-animation');
 }
+
 
 function closeAddTaskPopUp() {
   const overlay = document.getElementById('overlay2');
@@ -343,22 +313,22 @@ function closeAddTaskPopUp() {
   }, 500);
 }
 
+
 function doNotCloseAddTaskPopUp(event) {
   event.stopPropagation();
 }
 
+
 async function createTaskOnBoard(status) {
   if (validateTaskInputs()) {
     const newTask = constructNewTask();
-    newTask.status = status.toLowerCase(); // Setze den Status des neuen Tasks
-    newTask.id = generateUniqueId(); // Eindeutige ID generieren
+    newTask.status = status.toLowerCase();
+    newTask.id = generateUniqueId();
 
     if (!currentUser || !currentUser.data) {
-      console.error("Kein angemeldeter Benutzer oder unvollständige Benutzerdaten. Aufgabe kann nicht hinzugefügt werden.");
       return;
     }
 
-    // Initialisiere das Board- und Status-Arrays, falls sie nicht existieren
     if (!currentUser.data.board) {
       currentUser.data.board = {
         todo: [],
@@ -368,20 +338,11 @@ async function createTaskOnBoard(status) {
       };
     }
 
-    if (!currentUser.data.board.todo) {
-      currentUser.data.board.todo = [];
-    }
-    if (!currentUser.data.board.inProgress) {
-      currentUser.data.board.inProgress = [];
-    }
-    if (!currentUser.data.board.awaitFeedback) {
-      currentUser.data.board.awaitFeedback = [];
-    }
-    if (!currentUser.data.board.done) {
-      currentUser.data.board.done = [];
-    }
+    currentUser.data.board.todo = currentUser.data.board.todo || [];
+    currentUser.data.board.inProgress = currentUser.data.board.inProgress || [];
+    currentUser.data.board.awaitFeedback = currentUser.data.board.awaitFeedback || [];
+    currentUser.data.board.done = currentUser.data.board.done || [];
 
-    // Füge den Task basierend auf dem Status in das richtige Array ein
     switch (newTask.status) {
       case 'todo':
         currentUser.data.board.todo.push(newTask);
@@ -396,7 +357,6 @@ async function createTaskOnBoard(status) {
         currentUser.data.board.done.push(newTask);
         break;
       default:
-        console.error("Invalid status:", newTask.status);
         return;
     }
 
@@ -404,14 +364,10 @@ async function createTaskOnBoard(status) {
     const userId = localStorage.getItem('currentUserId');
     const boardPath = `users/${cleanedEmail}/${userId}/board`;
 
-    try {
-      await updateData(boardPath, currentUser.data.board);
-      localStorage.setItem('currentUser', JSON.stringify(currentUser));
-      resetUI();
-      showToDos();
-    } catch (error) {
-      console.error('Fehler beim Hinzufügen der Aufgabe zu Firebase:', error);
-    }
+    await updateData(boardPath, currentUser.data.board);
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    resetUI();
+    showToDos();
     closeAddTaskPopUp();
   }
 }
@@ -434,23 +390,22 @@ async function showAddTaskPopUpEdit(id, status) {
       task = currentUser.data.board.done.find(task => task.id === id);
       break;
     default:
-      console.error("Invalid status:", status);
       return;
   }
 
   if (!task) {
-    console.error(`Task with id "${id}" not found.`);
     return;
   }
 
   task.contacts = Array.isArray(task.contacts) ? task.contacts : [];
   selectedContacts = [...task.contacts];
-  let popUp = document.getElementById('pop-up');
-  let date = task.dueDate;
-  let category = task.category;
-  let priority = task.priority;
-  let subtasks = generateSubtaskHTMLEdit(id, task.subtasks, status);
-  let usersHTML = generateUserHTMLEdit(task.contacts);
+
+  const popUp = document.getElementById('pop-up');
+  const date = task.dueDate;
+  const category = task.category;
+  const priority = task.priority;
+  const subtasks = generateSubtaskHTMLEdit(id, task.subtasks, status);
+  const usersHTML = generateUserHTMLEdit(task.contacts);
 
   popUp.innerHTML = generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks, priority, id, status);
   renderTaskContactList(filteredContacts);
@@ -459,22 +414,21 @@ async function showAddTaskPopUpEdit(id, status) {
 }
 
 
-
-
 function generateSubtaskHTMLEdit(taskIndex, subtasks, status) {
   let subtaskHTML = '';
 
   if (subtasks && Array.isArray(subtasks)) {
     for (let i = 0; i < subtasks.length; i++) {
       const subtask = subtasks[i];
-      subtaskHTML += generateSubtaskHTML(taskIndex, i, subtask, status); // Hier den Status übergeben
+      subtaskHTML += generateSubtaskHTML(taskIndex, i, subtask, status);
     }
   }
   return subtaskHTML;
 }
 
+
 async function addSubtaskToEditWindow(taskId) {
-  ensureBoardInitialization();  // Aufruf der Initialisierungsfunktion
+  ensureBoardInitialization();
 
   let newSubtaskText = document.getElementById('subTaskInputEdit').value.trim();
 
@@ -482,7 +436,6 @@ async function addSubtaskToEditWindow(taskId) {
     let task;
     let taskIndex = -1;
 
-    // Suchen Sie die Aufgabe basierend auf der ID
     if (currentUser && currentUser.data && currentUser.data.board) {
       const allTasks = [
         ...currentUser.data.board.todo,
@@ -496,32 +449,25 @@ async function addSubtaskToEditWindow(taskId) {
     }
 
     if (!task) {
-      console.error('Task not found.');
       return;
     }
 
-    // Initialisieren Sie das Subtasks-Array, falls es nicht vorhanden ist
     if (!task.subtasks || !Array.isArray(task.subtasks)) {
       task.subtasks = [];
     }
 
-    task.subtasks.push({ text: newSubtaskText, completed: false });
+    const newSubtask = { text: newSubtaskText, completed: false, status: task.status };
+    task.subtasks.push(newSubtask);
 
     const cleanedEmail = localStorage.getItem('cleanedEmail');
     const userId = localStorage.getItem('currentUserId');
     const subtaskPath = `users/${cleanedEmail}/${userId}/board/${task.status}/${taskIndex}/subtasks`;
     const boardPath = `users/${cleanedEmail}/${userId}/board`;
 
-    try {
-      await updateData(subtaskPath, task.subtasks);
-      await updateData(boardPath, currentUser.data.board);  // Aktualisiere das gesamte Board
-      console.log('New subtask added and board updated in Firebase.');
-    } catch (error) {
-      console.error('Error adding subtask and updating board in Firebase:', error);
-    }
+    await updateData(subtaskPath, task.subtasks);
+    await updateData(boardPath, currentUser.data.board);
 
-    updateSubtaskUI(taskIndex, task.subtasks);
-
+    updateSubtaskUI(taskIndex, task.subtasks, task.status);
     document.getElementById('subTaskInputEdit').value = '';
     showToDos();
   }
@@ -552,9 +498,11 @@ function updateAddButtonEdit(isInputNotEmpty) {
   addButtonImage.style.display = 'block';
 }
 
+
 function updateElementVisibilityEdit(element, shouldDisplay) {
   element.style.display = shouldDisplay ? 'block' : 'none';
 }
+
 
 function clearInputFieldEdit() {
   const subtaskInput = document.getElementById('subTaskInputEdit');
@@ -566,17 +514,8 @@ function editSubtaskEdit(taskId, subtaskIndex, status) {
   let subtaskItem = document.getElementById(`subTaskItem_${subtaskIndex}`);
   let subtaskSpan = document.getElementById(`subTask_${subtaskIndex}_span`);
   let subtaskText = subtaskSpan.innerHTML.trim();
-  let subtaskInput = `
-    <div class="edit-subtask-under-container">
-      <input class="edit-input" type="text" id="subTask_${subtaskIndex}_input" value="${subtaskText}">
-      <div class="sub-image-container-edit" id="image-container">
-        <img id="addBtnEdit" src="assets/img/icons/check_blue.png" alt="" onclick="saveEditedSubtask('${taskId}', ${subtaskIndex}, '${status}')" style="display: block;">
-        <div id="sub-seperator" class="subtask-seperator-edit" style="display: block;"></div>
-        <img id="closeBtn" src="./assets/img/icons/trash.png" onclick="deleteSubtaskEdit('${taskId}', ${subtaskIndex}, '${status}')" alt="" style="display: block;">
-      </div>
-    </div>
-  `;
-  subtaskItem.innerHTML = subtaskInput;
+
+  subtaskItem.innerHTML = generateEditSubtaskInputHTML(taskId, subtaskIndex, subtaskText, status);
 
   let subtaskInputElement = document.getElementById(`subTask_${subtaskIndex}_input`);
   subtaskInputElement.focus();
@@ -584,19 +523,18 @@ function editSubtaskEdit(taskId, subtaskIndex, status) {
   subtaskInputElement.addEventListener('keydown', function (event) {
     if (event.key === 'Enter') {
       event.preventDefault();
-      saveEditedSubtask(taskId, subtaskIndex, status); // Änderungen speichern
+      saveEditedSubtask(taskId, subtaskIndex, status);
     }
   });
 }
 
+
 async function saveEditedSubtask(taskId, subtaskIndex, status) {
-  let subtaskInput = document.getElementById(`subTask_${subtaskIndex}_input`);
-  let newText = subtaskInput.value.trim();
+  const subtaskInput = document.getElementById(`subTask_${subtaskIndex}_input`);
+  const newText = subtaskInput.value.trim();
   let task;
-  let taskIndex = -1;
   let boardStatusArray;
 
-  // Suchen Sie die Aufgabe basierend auf der ID und dem Status
   switch (status.toLowerCase()) {
     case "todo":
       boardStatusArray = currentUser.data.board.todo;
@@ -611,56 +549,34 @@ async function saveEditedSubtask(taskId, subtaskIndex, status) {
       boardStatusArray = currentUser.data.board.done;
       break;
     default:
-      console.error("Invalid status:", status);
       return;
   }
 
-  taskIndex = boardStatusArray.findIndex(t => t.id === taskId);
+  const taskIndex = boardStatusArray.findIndex(t => t.id === taskId);
   task = boardStatusArray[taskIndex];
 
   if (!task || !task.subtasks || !Array.isArray(task.subtasks)) {
-    console.error("Task or subtasks array not found or invalid.");
     return;
   }
 
-  task.subtasks[subtaskIndex].text = newText;  // Aktualisieren des Textfelds der Subtask
+  task.subtasks[subtaskIndex].text = newText;
 
-  // Speichern der aktualisierten Subtask-Liste in Firebase
   const cleanedEmail = localStorage.getItem('cleanedEmail');
   const userId = localStorage.getItem('currentUserId');
   const taskPath = `users/${cleanedEmail}/${userId}/board/${status}/${taskIndex}`;
 
-  try {
-    await updateData(taskPath, task);
-    console.log('Subtask updated in Firebase.');
-  } catch (error) {
-    console.error('Error updating subtask in Firebase:', error);
-  }
+  await updateData(taskPath, task);
 
-  // Aktualisieren des UI
-  let subtaskItem = document.getElementById(`subTaskItem_${subtaskIndex}`);
-  subtaskItem.innerHTML = `
-    <div class="subtask-item-edit" id="subTaskItem_${subtaskIndex}">
-      <div>
-        •
-        <span id="subTask_${subtaskIndex}_span">${newText}</span>
-      </div>
-      <div class="subtask-item-icons">
-        <img class="subtask-item-icon" style="border-right: 1px solid rgba(209, 209, 209, 1);" src="assets/img/icons/edit_dark.png" alt="" onclick="editSubtaskEdit('${taskId}', ${subtaskIndex}, '${status}')">
-        <img class="subtask-item-icon" src="assets/img/icons/trash.png" alt="" onclick="deleteSubtaskEdit('${taskId}', ${subtaskIndex}, '${status}')">
-      </div>
-    </div>
-  `;
-  showToDos(); // Aktualisieren des gesamten To-Do-Boards
+  const subtaskItem = document.getElementById(`subTaskItem_${subtaskIndex}`);
+  subtaskItem.innerHTML = generateEditedSubtaskHTML(taskId, subtaskIndex, newText, status);
+  showToDos();
 }
 
 
 async function deleteSubtaskEdit(taskId, subtaskIndex, status) {
   let task;
-  let taskIndex = -1;
   let boardStatusArray;
 
-  // Suchen Sie die Aufgabe basierend auf der ID und dem Status
   switch (status.toLowerCase()) {
     case "todo":
       boardStatusArray = currentUser.data.board.todo;
@@ -675,15 +591,13 @@ async function deleteSubtaskEdit(taskId, subtaskIndex, status) {
       boardStatusArray = currentUser.data.board.done;
       break;
     default:
-      console.error("Invalid status:", status);
       return;
   }
 
-  taskIndex = boardStatusArray.findIndex(t => t.id === taskId);
+  const taskIndex = boardStatusArray.findIndex(t => t.id === taskId);
   task = boardStatusArray[taskIndex];
 
   if (!task || !task.subtasks || !Array.isArray(task.subtasks)) {
-    console.error("Subtasks array not found or invalid for the task.");
     return;
   }
 
@@ -693,12 +607,7 @@ async function deleteSubtaskEdit(taskId, subtaskIndex, status) {
   const userId = localStorage.getItem('currentUserId');
   const taskPath = `users/${cleanedEmail}/${userId}/board/${status}/${taskIndex}`;
 
-  try {
-    await updateData(taskPath, task);
-    console.log('Subtask removed and board updated in Firebase.');
-  } catch (error) {
-    console.error('Error removing subtask and updating board in Firebase:', error);
-  }
+  await updateData(taskPath, task);
 
   const subtaskContainer = document.getElementById(`subTaskItem_${subtaskIndex}`);
   if (subtaskContainer) {
@@ -708,9 +617,10 @@ async function deleteSubtaskEdit(taskId, subtaskIndex, status) {
   showToDos();
 }
 
+
 function updateSubtaskUI(taskIndex, subtasks, status) {
   const subtaskContainer = document.getElementById('subtaskContainerEdit');
-  subtaskContainer.innerHTML = ''; // Leere den Container
+  subtaskContainer.innerHTML = '';
 
   for (let i = 0; i < subtasks.length; i++) {
     const subtaskHTML = generateSubtaskHTML(taskIndex, i, subtasks[i], status);
@@ -719,16 +629,8 @@ function updateSubtaskUI(taskIndex, subtasks, status) {
 }
 
 
-
-// function updateSubtaskEdit(index) {
-//   showPopUp(index);
-// }
-
 async function updateSubtaskEdit(id, status) {
   let taskList;
-  let taskIndex = -1;
-
-  console.log('Update Task:', id, status);
 
   switch (status.toLowerCase()) {
     case "todo":
@@ -744,24 +646,19 @@ async function updateSubtaskEdit(id, status) {
       taskList = currentUser.data.board.done;
       break;
     default:
-      console.error("Invalid status:", status);
       return;
   }
 
   if (!taskList || !Array.isArray(taskList)) {
-    console.error(`Task list for status "${status}" not found or invalid.`);
     return;
   }
 
-  const task = taskList.find(t => t.id === id);
-  taskIndex = taskList.findIndex(t => t.id === id);
+  const taskIndex = taskList.findIndex(t => t.id === id);
+  const task = taskList[taskIndex];
 
   if (taskIndex === -1 || !task) {
-    console.error(`Task with id "${id}" not found.`);
     return;
   }
-
-  console.log('Task found:', task);
 
   const titleElement = document.getElementById('title');
   const descriptionElement = document.getElementById('description');
@@ -769,7 +666,6 @@ async function updateSubtaskEdit(id, status) {
   const priorityElement = document.querySelector('.priority-button.active');
 
   if (!titleElement || !descriptionElement || !dueDateElement || !priorityElement) {
-    console.error('Required elements for updating task not found.');
     return;
   }
 
@@ -777,25 +673,17 @@ async function updateSubtaskEdit(id, status) {
   task.description = descriptionElement.value;
   task.dueDate = dueDateElement.value;
   task.priority = priorityElement.getAttribute('data-priority');
-  task.contacts = selectedContacts; // Aktualisiere die Kontakte mit den ausgewählten Kontakten
+  task.contacts = selectedContacts;
 
-  console.log('Updated task data:', task);
-
-  // Aktualisiere die Aufgabe in Firebase
   const cleanedEmail = localStorage.getItem('cleanedEmail');
   const userId = localStorage.getItem('currentUserId');
   const taskPath = `users/${cleanedEmail}/${userId}/board/${status}/${taskIndex}`;
 
-  try {
-    await updateData(taskPath, task);
-    console.log('Task updated in Firebase.');
-  } catch (error) {
-    console.error('Error updating task in Firebase:', error);
-  }
-
-  showPopUp(id, status); // Zeige das aktualisierte Popup an
-  showToDos(); // Aktualisiere das Board
+  await updateData(taskPath, task);
+  showPopUp(id, status);
+  showToDos();
 }
+
 
 function handleKeyPress(event, taskId) {
   if (event.key === 'Enter') {
@@ -804,16 +692,15 @@ function handleKeyPress(event, taskId) {
   }
 }
 
+
 function startdragging(id, status) {
   currentDraggedElement = { id, status };
-  console.log('Started dragging:', currentDraggedElement);
-
-  // Füge Highlight-Klasse zum aktuellen Container hinzu
   const currentContainer = document.getElementById(status.toLowerCase() + '-container');
   if (currentContainer) {
     currentContainer.classList.add('highlight');
   }
 }
+
 
 function onDragLeave(ev) {
   ev.preventDefault();
@@ -822,6 +709,7 @@ function onDragLeave(ev) {
     target.classList.remove('highlight');
   }
 }
+
 
 function onDragEnter(ev) {
   ev.preventDefault();
@@ -832,14 +720,13 @@ function onDragEnter(ev) {
 }
 
 
-
-
 function allowDrop(ev) {
   ev.preventDefault();
 }
 
+
 async function moveTo(newStatus) {
-  ensureBoardInitialization();  // Aufruf der Initialisierungsfunktion
+  ensureBoardInitialization();
 
   const currentContainer = document.getElementById(currentDraggedElement.status.toLowerCase() + '-container');
   const targetContainer = document.getElementById(newStatus.toLowerCase() + '-container');
@@ -890,18 +777,14 @@ async function moveTo(newStatus) {
       }
       break;
     default:
-      console.error("Invalid current status:", currentStatus);
       return;
   }
 
   if (!task) {
-    console.error(`Task with id "${id}" not found in current status "${currentStatus}" array.`);
     return;
   }
 
   task.status = newStatus;
-
-  console.log("newStatus Array before push:", currentUser.data.board[newStatus]); // Debugging-Ausgabe
 
   if (!currentUser.data.board[newStatus]) {
     currentUser.data.board[newStatus] = [];
@@ -921,20 +804,17 @@ async function moveTo(newStatus) {
       currentUser.data.board.done.push(task);
       break;
     default:
-      console.error("Invalid target status:", newStatus);
       return;
   }
-
-  console.log("newStatus Array after push:", currentUser.data.board[newStatus]); // Debugging-Ausgabe
 
   await saveBoard();
   showToDos();
 
-  // Highlighting entfernen
   if (targetContainer) {
     targetContainer.classList.remove('highlight');
   }
 }
+
 
 function ensureBoardInitialization() {
   if (!currentUser.data.board) {
@@ -951,18 +831,14 @@ function ensureBoardInitialization() {
   currentUser.data.board.done = currentUser.data.board.done || [];
 }
 
+
 async function saveBoard() {
   const cleanedEmail = localStorage.getItem('cleanedEmail');
   const userId = localStorage.getItem('currentUserId');
   const boardPath = `users/${cleanedEmail}/${userId}/board`;
-
-  try {
-    await updateData(boardPath, currentUser.data.board);
-    console.log('Board updated in Firebase.');
-  } catch (error) {
-    console.error('Error updating board in Firebase:', error);
-  }
+  await updateData(boardPath, currentUser.data.board);
 }
+
 
 function updateNoTaskPlaceholders() {
   const columns = [
@@ -989,7 +865,6 @@ function updateNoTaskPlaceholders() {
 }
 
 
-// Function to filter tasks
 function filterTasks() {
   const searchTerm = document.getElementById('searchInput').value.toLowerCase();
 
@@ -1022,7 +897,7 @@ function displayFilteredTasks(todoTasks, inProgressTasks, feedbackTasks, doneTas
   doneContainer.innerHTML = '';
 
   if (todoTasks.length === 0) {
-    todoContainer.innerHTML = '<div class="no-task-box">Keine Ergebnisse gefunden</div>';
+    todoContainer.innerHTML = '<div class="no-task-box">No tasks found</div>';
   } else {
     todoTasks.forEach((task) => {
       todoContainer.innerHTML += generateTodoHTML(task, task.id, 'todo');
@@ -1030,7 +905,7 @@ function displayFilteredTasks(todoTasks, inProgressTasks, feedbackTasks, doneTas
   }
 
   if (inProgressTasks.length === 0) {
-    inProgressContainer.innerHTML = '<div class="no-task-box">Keine Ergebnisse gefunden</div>';
+    inProgressContainer.innerHTML = '<div class="no-task-box">No tasks found</div>';
   } else {
     inProgressTasks.forEach((task) => {
       inProgressContainer.innerHTML += generateTodoHTML(task, task.id, 'inProgress');
@@ -1038,7 +913,7 @@ function displayFilteredTasks(todoTasks, inProgressTasks, feedbackTasks, doneTas
   }
 
   if (feedbackTasks.length === 0) {
-    feedbackContainer.innerHTML = '<div class="no-task-box">Keine Ergebnisse gefunden</div>';
+    feedbackContainer.innerHTML = '<div class="no-task-box">No tasks found</div>';
   } else {
     feedbackTasks.forEach((task) => {
       feedbackContainer.innerHTML += generateTodoHTML(task, task.id, 'awaitFeedback');
@@ -1046,7 +921,7 @@ function displayFilteredTasks(todoTasks, inProgressTasks, feedbackTasks, doneTas
   }
 
   if (doneTasks.length === 0) {
-    doneContainer.innerHTML = '<div class="no-task-box">Keine Ergebnisse gefunden</div>';
+    doneContainer.innerHTML = '<div class="no-task-box">No tasks found</div>';
   } else {
     doneTasks.forEach((task) => {
       doneContainer.innerHTML += generateTodoHTML(task, task.id, 'done');
@@ -1054,32 +929,33 @@ function displayFilteredTasks(todoTasks, inProgressTasks, feedbackTasks, doneTas
   }
 }
 
+
 document.addEventListener('DOMContentLoaded', (event) => {
   document.getElementById('ToDos').addEventListener('dragenter', onDragEnter);
   document.getElementById('ToDos').addEventListener('dragleave', onDragLeave);
   document.getElementById('ToDos').addEventListener('drop', (event) => {
-      moveTo('todo');
-      event.currentTarget.classList.remove('highlight');
+    moveTo('todo');
+    event.currentTarget.classList.remove('highlight');
   });
 
   document.getElementById('progress-container').addEventListener('dragenter', onDragEnter);
   document.getElementById('progress-container').addEventListener('dragleave', onDragLeave);
   document.getElementById('progress-container').addEventListener('drop', (event) => {
-      moveTo('inprogress');
-      event.currentTarget.classList.remove('highlight');
+    moveTo('inprogress');
+    event.currentTarget.classList.remove('highlight');
   });
 
   document.getElementById('feedback-container').addEventListener('dragenter', onDragEnter);
   document.getElementById('feedback-container').addEventListener('dragleave', onDragLeave);
   document.getElementById('feedback-container').addEventListener('drop', (event) => {
-      moveTo('awaitfeedback');
-      event.currentTarget.classList.remove('highlight');
+    moveTo('awaitfeedback');
+    event.currentTarget.classList.remove('highlight');
   });
 
   document.getElementById('done-container').addEventListener('dragenter', onDragEnter);
   document.getElementById('done-container').addEventListener('dragleave', onDragLeave);
   document.getElementById('done-container').addEventListener('drop', (event) => {
-      moveTo('done');
-      event.currentTarget.classList.remove('highlight');
+    moveTo('done');
+    event.currentTarget.classList.remove('highlight');
   });
 });
