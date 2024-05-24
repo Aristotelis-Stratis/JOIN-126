@@ -1,100 +1,32 @@
+/**
+ * Filtered list of contacts.
+ * @type {Array}
+ */
 let filteredContacts = [];
 
+
+/**
+ * Initializes tasks by including HTML, loading the current user, loading all contacts, 
+ * and rendering the task contact list.
+ */
 async function initTasks() {
     includeHTML();
     currentUser = await loadCurrentUser();
-    if (currentUser) {
-        await loadTasksFromFirebase();
-        await loadAllContacts();
-        filteredContacts = currentUser.data.contacts;
-        renderTaskContactList(filteredContacts);
-    } else {
-        console.error("Current user could not be loaded.");
-    }
-}
-
-
-function filterContacts(input) {
-    filteredContacts = currentUser.data.contacts.filter(contact =>
-        contact.name.toLowerCase().includes(input.toLowerCase())
-    );
-    renderTaskContactList(filteredContacts);
-}
-
-
-function renderTaskContactList(contacts) {
-    if (!Array.isArray(contacts)) {
-        console.error('Contacts is not an array:', contacts);
-        return;
-    }
-    const contactListContainer = document.getElementById('task-contact-list');
-    contactListContainer.innerHTML = '';
-    for (let i = 0; i < contacts.length; i++) {
-        const contact = contacts[i];
-        const isChecked = isSelected(contact);
-        contactListContainer.innerHTML += generateContactHTML(contact, i, isChecked);
-    }
-}
-
-
-function toggleContactSelection(index) {
-    event.stopPropagation();
-    const contactItem = document.getElementById(`contact-item-${index}`);
-    const contact = filteredContacts[index];
-    if (isSelected(contact)) {
-        removeContact(contact);
-        setCheckboxImage(contactItem, false);
-    } else {
-        addContact(contact);
-        setCheckboxImage(contactItem, true);
-    }
-    renderSelectedContacts();
-
-    
-    const assignInput = document.getElementById('assignedTo');
-    assignInput.value = '';
-    assignInput.focus();
+    await loadAllContacts();
     filteredContacts = currentUser.data.contacts;
     renderTaskContactList(filteredContacts);
 }
 
 
-function renderSelectedContacts() {
-    const container = document.querySelector('.selected-contacts-container');
-    container.innerHTML = '';
-
-    selectedContacts.forEach(contact => {
-        container.insertAdjacentHTML('beforeend', createContactIconHTML(contact));
-    });
-}
-
-
-function toggleAssignDropdownMenu() {
-    let dropdownMenu = document.getElementById('assign-dropdown-menu');
-    let arrow = document.getElementById('arrow-assign-to');
-    if (dropdownMenu.classList.contains('visible')) {
-        dropdownMenu.classList.remove('visible');
-        arrow.style.transform = "rotate(0deg)";
-    } else {
-        dropdownMenu.classList.add('visible');
-        arrow.style.transform = "rotate(180deg)";
-    }
-    filteredContacts = currentUser.data.contacts;
-    renderTaskContactList(filteredContacts);
-}
-
-
+/**
+ * Creates a new task, validates the inputs, constructs the task, assigns a unique ID, 
+ * and updates the user's board with the new task. Also handles UI reset and redirection.
+ */
 async function createTask() {
     if (validateTaskInputs()) {
         const newTask = constructNewTask();
-        newTask.id = generateUniqueId(); // Eindeutige ID generieren
+        newTask.id = generateUniqueId();
 
-        if (!currentUser) {
-            console.error("No current user logged in. Task cannot be added.");
-            return;
-        }
-
-        // Initialisiere das Board- und Status-Arrays, falls sie nicht existieren
         if (!currentUser.data.board) {
             currentUser.data.board = {
                 todo: [],
@@ -124,34 +56,38 @@ async function createTask() {
         const userId = localStorage.getItem('currentUserId');
         const taskPath = `users/${cleanedEmail}/${userId}/board/todo/${newTaskIndex}`;
 
-        try {
-            await updateData(taskPath, newTask);
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
 
-            resetUI();
-            initiateConfirmation('Task added to <img class="add-task-icon-board" src="assets/img/icons/board.png" alt="Board">');
-            directToBoard();
-        } catch (error) {
-            console.error('Fehler beim Hinzufügen der Aufgabe zu Firebase:', error);
-        }
+        await updateData(taskPath, newTask);
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+        resetUI();
+        initiateConfirmation('Task added to <img class="add-task-icon-board" src="assets/img/icons/board.png" alt="Board">');
+        directToBoard();
+
     }
 }
 
 
+/**
+ * Redirects the user to the board page after a delay of 2.5 seconds.
+ */
 function directToBoard() {
     setTimeout(() => {
         window.location.href = 'board.html';
-    }, 2500);
+    }, 2000);
 }
 
 
+/**
+ * Constructs a new task object by gathering data from various input fields.
+ * @returns {Object} The new task object.
+ */
 function constructNewTask() {
     let title = document.getElementById('title').value;
     let description = document.getElementById('description').value;
     let dueDate = document.getElementById('dueDate').value;
     let priority = selectedPriority[0];
     let category = document.getElementById('category-todo').value;
-
     return {
         title,
         description,
@@ -165,12 +101,9 @@ function constructNewTask() {
 }
 
 
-function deleteStorage() {
-    allTasks = [];
-    setItem('tasks', JSON.stringify(allTasks));
-}
-
-
+/**
+ * Resets the user interface by clearing input fields and resetting selected options.
+ */
 function resetUI() {
     document.querySelectorAll('.priority-button.active').forEach(button => {
         button.classList.remove('active');
@@ -191,83 +124,163 @@ function resetUI() {
 }
 
 
+/**
+ * Loads contacts from Firebase for the current user and updates the current user's data with the loaded contacts.
+ */
 async function loadContactsFromFirebase() {
     const cleanedEmail = localStorage.getItem('cleanedEmail');
     const userId = localStorage.getItem('currentUserId');
     const contactsPath = `users/${cleanedEmail}/${userId}/contacts`;
 
-    try {
-        const contactsData = await loadData(contactsPath);
-        if (contactsData) {
-            currentUser.data.contacts = Object.values(contactsData);
-        } else {
-            currentUser.data.contacts = [];
-        }
-        console.log('Contacts successfully loaded from Firebase:', currentUser.data.contacts);
-    } catch (error) {
-        console.error('Error loading contacts from Firebase:', error);
-        currentUser.data.contacts = [];
-    }
+    const contactsData = await loadData(contactsPath);
+    currentUser.data.contacts = contactsData;
 }
 
 
+/**
+ * Loads all contacts for the current user from Firebase and updates the global list of all contacts.
+ */
 async function loadAllContacts() {
     await loadContactsFromFirebase();
-    if (currentUser && currentUser.data && currentUser.data.contacts) {
-        allContacts = currentUser.data.contacts;
+    allContacts = currentUser.data.contacts;
+}
+
+
+/**
+ * Filters the contacts based on the input provided and renders the filtered contact list.
+ * @param {string} input - The input string to filter contacts by name.
+ */
+function filterContacts(input) {
+    filteredContacts = currentUser.data.contacts.filter(contact =>
+        contact.name.toLowerCase().includes(input.toLowerCase())
+    );
+    renderTaskContactList(filteredContacts);
+}
+
+
+/**
+ * Renders the task contact list based on the provided contacts array.
+ * @param {Array} contacts - The array of contacts to render.
+ */
+function renderTaskContactList(contacts) {
+    const contactListContainer = document.getElementById('task-contact-list');
+    contactListContainer.innerHTML = '';
+    for (let i = 0; i < contacts.length; i++) {
+        const contact = contacts[i];
+        const isChecked = isSelected(contact);
+        contactListContainer.innerHTML += generateContactHTML(contact, i, isChecked);
+    }
+}
+
+
+/**
+ * Toggles the selection of a contact based on its index in the filtered contacts list.
+ * @param {number} index - The index of the contact to toggle selection for.
+ */
+function toggleContactSelection(index) {
+    event.stopPropagation();
+    const contactItem = document.getElementById(`contact-item-${index}`);
+    const contact = filteredContacts[index];
+    if (isSelected(contact)) {
+        removeContact(contact);
+        setCheckboxImage(contactItem, false);
     } else {
-        console.error("Keine Kontaktdaten verfügbar für den aktuellen Benutzer.");
+        addContact(contact);
+        setCheckboxImage(contactItem, true);
     }
+    renderSelectedContacts();
+    const assignInput = document.getElementById('assignedTo');
+    assignInput.value = '';
+    assignInput.focus();
+    filteredContacts = currentUser.data.contacts;
+    renderTaskContactList(filteredContacts);
 }
 
 
-async function loadTasksFromFirebase() {
-    const cleanedEmail = localStorage.getItem('cleanedEmail');
-    const userId = localStorage.getItem('currentUserId');
-    const tasksPath = `users/${cleanedEmail}/${userId}/board/todo`;
+/**
+ * Renders the selected contacts by creating their icons and inserting them into the container.
+ */
+function renderSelectedContacts() {
+    const container = document.querySelector('.selected-contacts-container');
+    container.innerHTML = '';
 
-    try {
-        const tasksData = await loadData(tasksPath);
-        if (tasksData) {
-            currentUser.data.board.todo = Object.values(tasksData);
-        } else {
-            currentUser.data.board.todo = [];
-        }
-        console.log('Tasks successfully loaded from Firebase:', currentUser.data.board.todo);
-    } catch (error) {
-        console.error('Error loading tasks from Firebase:', error);
-        currentUser.data.board.todo = [];
-    }
+    selectedContacts.forEach(contact => {
+        container.insertAdjacentHTML('beforeend', createContactIconHTML(contact));
+    });
 }
 
 
+/**
+ * Toggles the visibility of the assign dropdown menu and updates the arrow icon accordingly.
+ * Also, refreshes the task contact list.
+ */
+function toggleAssignDropdownMenu() {
+    let dropdownMenu = document.getElementById('assign-dropdown-menu');
+    let arrow = document.getElementById('arrow-assign-to');
+    if (dropdownMenu.classList.contains('visible')) {
+        dropdownMenu.classList.remove('visible');
+        arrow.style.transform = "rotate(0deg)";
+    } else {
+        dropdownMenu.classList.add('visible');
+        arrow.style.transform = "rotate(180deg)";
+    }
+    filteredContacts = currentUser.data.contacts;
+    renderTaskContactList(filteredContacts);
+}
+
+
+/**
+ * Checks if a contact is already selected.
+ * @param {Object} contact - The contact object to check.
+ * @returns {boolean} True if the contact is selected, otherwise false.
+ */
 function isSelected(contact) {
     return selectedContacts.some(selectedContact => selectedContact.id === contact.id);
 }
 
 
+/**
+ * Adds a contact to the selected contacts list.
+ * @param {Object} contact - The contact object to add.
+ */
 function addContact(contact) {
     selectedContacts.push(contact);
 }
 
 
-
+/**
+ * Removes a contact from the selected contacts list.
+ * @param {Object} contact - The contact object to remove.
+ */
 function removeContact(contact) {
     selectedContacts = selectedContacts.filter(selected => selected.id !== contact.id);
 }
 
 
+/**
+ * Sets the image of a checkbox element based on the isChecked parameter.
+ * @param {Element} element - The checkbox element.
+ * @param {boolean} isChecked - Indicates whether the checkbox is checked.
+ */
 function setCheckboxImage(element, isChecked) {
     updateCheckboxImage(element, isChecked);
 }
 
 
+/**
+ * Updates the image of a checkbox element based on the isChecked parameter.
+ * @param {Element} element - The checkbox element.
+ * @param {boolean} isChecked - Indicates whether the checkbox is checked.
+ */
 function updateCheckboxImage(element, isChecked) {
     const checkboxImg = element.querySelector('img');
     checkboxImg.src = isChecked ? "assets/img/icons/checkbox-checked-black-24.png" : "assets/img/icons/checkbox-empty-black-24.png";
 }
 
 
+/**
+ * Toggles the visibility of the category dropdown menu and rotates the arrow accordingly.
+ */
 function toggleCategoryDropdownMenu() {
     let dropdownMenu = document.getElementById('category-dropdown-menu');
     let arrow = document.getElementById('arrow-category');
@@ -282,6 +295,10 @@ function toggleCategoryDropdownMenu() {
 }
 
 
+/**
+ * Sets the selected category based on the provided index.
+ * @param {number} index - The index of the category.
+ */
 function setSelectedCategory(index) {
     var categoryNames = ['Technical Task', 'User Story'];
     var selectedCategory = categoryNames[index - 1];
@@ -294,6 +311,9 @@ function setSelectedCategory(index) {
 }
 
 
+/**
+ * Adds a subtask to the list of subtasks.
+ */
 function addSubtask() {
     let subtaskInput = document.getElementById('subTaskInput');
     let subtaskText = subtaskInput.value;
@@ -305,6 +325,10 @@ function addSubtask() {
 }
 
 
+/**
+ * Edits a subtask identified by its index.
+ * @param {number} subtaskIndex - The index of the subtask to edit.
+ */
 function editSubtask(subtaskIndex) {
     const subtaskItem = document.getElementById(`subtask_${subtaskIndex}`);
     const subtask = subtasks[subtaskIndex];
@@ -314,6 +338,11 @@ function editSubtask(subtaskIndex) {
 }
 
 
+/**
+ * Updates a subtask identified by its index with the new text value.
+ * If the new text is empty, the subtask will be removed.
+ * @param {number} subtaskIndex - The index of the subtask to update.
+ */
 function updateSubtask(subtaskIndex) {
     const newText = getSubtaskInputValue(subtaskIndex);
     if (newText) {
@@ -325,24 +354,40 @@ function updateSubtask(subtaskIndex) {
 }
 
 
+/**
+ * Sets focus on the provided input field and places the cursor at the end of the input value.
+ * @param {HTMLInputElement} inputField - The input field to focus on.
+ */
 function focusAndSetCursorAtEnd(inputField) {
     inputField.focus();
     inputField.setSelectionRange(inputField.value.length, inputField.value.length);
 }
 
 
+/**
+ * Retrieves the value of the input field associated with the given subtask index.
+ * @param {number} subtaskIndex - The index of the subtask.
+ * @returns {string} The value of the input field.
+ */
 function getSubtaskInputValue(subtaskIndex) {
     const inputField = document.getElementById(`editInputField_${subtaskIndex}`);
     return inputField.value.trim();
 }
 
 
+/**
+ * Deletes a subtask identified by its index.
+ * @param {number} subtaskIndex - The index of the subtask to delete.
+ */
 function deleteSubtask(subtaskIndex) {
     subtasks.splice(subtaskIndex, 1);
     renderSubtasks();
 }
 
 
+/**
+ * Renders all subtasks in the subtask container.
+ */
 function renderSubtasks() {
     let subtaskContainer = document.getElementById('subtaskContainer');
     subtaskContainer.innerHTML = '';
@@ -352,21 +397,3 @@ function renderSubtasks() {
         subtaskContainer.insertAdjacentHTML('beforeend', subtaskItemHTML);
     }
 }
-
-
-// function editSubtask(subtaskIndex) {
-//     const subtaskItem = document.getElementById(`subtask_${subtaskIndex}`);
-//     subtaskItem.style.padding = '0';
-//     subtaskItem.innerHTML = createEditInputField(subtasks[subtaskIndex], subtaskIndex);
-//     focusAndSetCursorAtEnd(subtaskItem.querySelector('.edit-input-field'));
-// }
-
-// function updateSubtask(subtaskIndex) {
-//     const newText = getSubtaskInputValue(subtaskIndex);
-//     if (newText) {
-//         subtasks[subtaskIndex] = newText;
-//     } else {
-//         subtasks.splice(subtaskIndex, 1);
-//     }
-//     renderSubtasks();
-// }
