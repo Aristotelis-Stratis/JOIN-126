@@ -53,43 +53,45 @@ function generatePopUpHTML(task, index, priority, status) {
   let subtasksHTML = generateSubtasksHTML(index, task.subtasks, status);
 
   return `
-    <div class="pop-up-headline-flex">
-        <div class="board-pop-up-headline" style="background-color: ${backgroundColor}">${category}</div>
-        <img onclick="closePopUp()" src="./assets/img/icons/close.png" alt="Close-PNG">
-      </div>
-      <div class="board-task-pop-up-headline">${taskName}</div>
-      <div class="board-pop-up-description"><span>${taskDescription}</span></div>
-      <div class="popup-date-container">
-        <span class="popup-blue-span">Due date:</span> <span>${date}</span>
-      </div>
-      <div class="popup-prio-container">
-        <span class="popup-blue-span">Priority:</span> <span class="popup-medium-image">${priority}<img
-            src="${priorityImage}" alt="Medium-Image"></span>
-      </div>
-      <div class="popup-assignedto-container">
-        <span class="popup-blue-span">Assigned To:</span>
-        <div class="popup-names-container">
-          <div class="popup-names">
-            ${usersHTML}
+    <div class="board-pop-up-inner">
+      <div class="pop-up-headline-flex">
+          <div class="board-pop-up-headline" style="background-color: ${backgroundColor}">${category}</div>
+          <img onclick="closePopUp()" src="./assets/img/icons/close.png" alt="Close-PNG">
+        </div>
+        <div class="board-task-pop-up-headline">${taskName}</div>
+        <div class="board-pop-up-description"><span>${taskDescription}</span></div>
+        <div class="popup-date-container">
+          <span class="popup-blue-span">Due date:</span> <span>${date}</span>
+        </div>
+        <div class="popup-prio-container">
+          <span class="popup-blue-span">Priority:</span> <span class="popup-medium-image">${priority}<img
+              src="${priorityImage}" alt="Medium-Image"></span>
+        </div>
+        <div class="popup-assignedto-container">
+          <span class="popup-blue-span">Assigned To:</span>
+          <div class="popup-names-container">
+            <div class="popup-names">
+              ${usersHTML}
+            </div>
           </div>
         </div>
-      </div>
-      <div class="popup-subtask-container">
-        <span class="popup-blue-span">Subtasks</span>
-        <div id="subtasks">${subtasksHTML}</div>
-      </div>
-      <div class="popup-del-edit-container">
-        <div onclick="deleteCard('${index}', '${status}')" class="popup-delete-and-edit">
-          <img src="./assets/img/icons/trash.png" alt="Trash-Image">
-          <span class="weight-700">Delete</span>
+        <div class="popup-subtask-container">
+          <span class="popup-blue-span">Subtasks</span>
+          <div id="subtasks">${subtasksHTML}</div>
         </div>
-        <span>|</span>
-        <div class="popup-edit" onclick="showAddTaskPopUpEdit('${index}', '${status}')">
-          <img src="./assets/img/icons/edit_dark.png" alt="edit-Image">
-          <span class="weight-700">Edit</span>
+        <div class="popup-del-edit-container">
+          <div onclick="deleteCard('${index}', '${status}')" class="popup-delete-and-edit">
+            <img src="./assets/img/icons/trash.png" alt="Trash-Image">
+            <span class="weight-700">Delete</span>
+          </div>
+          <span>|</span>
+          <div class="popup-edit" onclick="showAddTaskPopUpEdit('${index}', '${status}')">
+            <img src="./assets/img/icons/edit_dark.png" alt="edit-Image">
+            <span class="weight-700">Edit</span>
+          </div>
         </div>
-      </div>
-    `;
+    </div>
+  `;
 }
 
 
@@ -106,7 +108,7 @@ function generateAddTaskPopUpHTML(status) {
               <div class="form-group">
                 <label for="title">Title<span class="form-required-color">*</span></label>
                 <input type="text" id="title" required placeholder="Enter a title"
-                  oninput="hideValidationError('title', 'title-error-message')">
+                  oninput="hideValidationError('title', 'title-error-message')" maxlength="30">
                 <span id="title-error-message" class="error-message">This field is required.</span>
               </div>
               <div class="form-group">
@@ -304,85 +306,87 @@ function handleSubtaskKeyDown(event) {
 
 function generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks, priority, index, status) {
   return `
-      <div class="form-container">
-          <div class="task-title-popup-edit">
-              <h1>Edit Task</h1>
-              <img onclick="closePopUp()" src="./assets/img/icons/close.png" alt="Close-PNG">
-          </div>
-          <form class="task-form-edit" id="taskForm">
-              <div class="form-left-edit">
-                  <div class="form-group-edit">
-                      <label for="title">Title<span class="form-required-color">*</span></label>
-                      <input type="text" id="title" required value="${task.title}" oninput="hideValidationError('title', 'title-error-message')">
-                      <span id="title-error-message" class="error-message">This field is required.</span>
-                  </div>
-                  <div class="form-group-edit">
-                      <label for="description">Description</label>
-                      <textarea class="no-validate" id="description" placeholder="Enter a Description">${task.description}</textarea>
-                  </div>
-                  <div class="form-group-edit">
-                      <label for="assignedTo">Assigned to</label>
-                      <div class="drop-down-menu-container" onclick="toggleAssignDropdownMenu()">
-                          <div class="drop-down-image-container">
-                              <img id="arrow-assign-to" src="assets/img/icons/arrow_drop_down.png" alt="">
-                          </div>
-                          <input class="no-validate task-assign" type="text" id="assignedTo" placeholder="Select contacts to assign" oninput="filterContacts(this.value)">
-                          <div id="assign-dropdown-menu" class="dropdown-menu">
-                              <div class="task-contact-list" id="task-contact-list"></div>
-                          </div>
-                          <div class="users-edit-flex"></div>
-                      </div>
-                      <div class="selected-contacts-container" id="selected-contacts-list-edit">
-                          ${usersHTML}
-                      </div>
-                  </div>
+      <div class="form-container-inner">
+          <div class="form-container">
+              <div class="task-title-popup-edit">
+                  <h1>Edit Task</h1>
+                  <img onclick="closePopUp()" src="./assets/img/icons/close.png" alt="Close-PNG">
               </div>
-              <div class="form-right-edit">
-                  <div class="form-group-edit">
-                      <label for="dueDate">Due date<span class="form-required-color"></span></label>
-                      <input type="date" id="dueDate" required value="${date}" onchange="validateDueDate()">
-                      <span id="date-error-message" class="error-message" style="display: none;">This field is required</span>
-                  </div>
-                  <div class="form-group priority">
-                      <label>Prio</label>
-                      <div class="priority-button-container">
-                          <button id="priority-urgent" class="priority-button on-edit ${priority === 'urgent' ? 'active' : ''}" data-priority="urgent" onclick="togglePriority('priority-urgent')"><span>Urgent</span> <img src="assets/img/icons/urgent.png" alt="Urgent Priority"></button>
-                          <button id="priority-medium" class="priority-button on-edit ${priority === 'medium' ? 'active' : ''}" data-priority="medium" onclick="togglePriority('priority-medium')"><span>Medium</span> <img src="assets/img/icons/medium.png" alt="Medium Priority"></button>
-                          <button id="priority-low" class="priority-button on-edit ${priority === 'low' ? 'active' : ''}" data-priority="low" onclick="togglePriority('priority-low')"><span>Low</span> <img src="assets/img/icons/low.png" alt="Low Priority"></button>
+              <form class="task-form-edit" id="taskForm">
+                  <div class="form-left-edit">
+                      <div class="form-group-edit">
+                          <label for="title">Title<span class="form-required-color">*</span></label>
+                          <input type="text" id="title" required value="${task.title}" oninput="hideValidationError('title', 'title-error-message')">
+                          <span id="title-error-message" class="error-message">This field is required.</span>
                       </div>
-                  </div>
-                  <div class="form-group-edit select-container">
-                      <label for="category">Category</label>
-                      <div class="select-dropdown" style="pointer-events: none; color: lightgrey;" id="select-dropdown">
-                          <div class="selected-option" id="selected-option">${category}</div>
-                          <div class="drop-down-image-container">
-                              <img id="arrow-category" src="assets/img/icons/arrow_drop_down.png" alt="">
+                      <div class="form-group-edit">
+                          <label for="description">Description</label>
+                          <textarea class="no-validate" id="description" placeholder="Enter a Description">${task.description}</textarea>
+                      </div>
+                      <div class="form-group-edit">
+                          <label for="assignedTo">Assigned to</label>
+                          <div class="drop-down-menu-container" onclick="toggleAssignDropdownMenu()">
+                              <div class="drop-down-image-container">
+                                  <img id="arrow-assign-to" src="assets/img/icons/arrow_drop_down.png" alt="">
+                              </div>
+                              <input class="no-validate task-assign" type="text" id="assignedTo" placeholder="Select contacts to assign" oninput="filterContacts(this.value)">
+                              <div id="assign-dropdown-menu" class="dropdown-menu">
+                                  <div class="task-contact-list" id="task-contact-list"></div>
+                              </div>
+                              <div class="users-edit-flex"></div>
+                          </div>
+                          <div class="selected-contacts-container" id="selected-contacts-list-edit">
+                              ${usersHTML}
                           </div>
                       </div>
-                      <select id="category-todo" required class="d-none task-category">
-                          <option value="Technical Task">Technical Task</option>
-                          <option value="User Story">User Story</option>
-                      </select>
-                      <div id="category-error-message" class="error-message">This field is required.</div>
                   </div>
-                  <div class="form-group">
-                      <label>Subtasks</label>
-                      <div class="drop-down-menu-container">
-                          <div class="sub-image-container" id="image-container">
-                              <img id="addBtnEdit" src="assets/img/icons/add.png" alt="" onclick="addSubtaskToEditWindow('${index}')">
-                              <div id="sub-seperator" class="subtask-seperator" style="display:none;"></div>
-                              <img id="closeBtn" src="assets/img/icons/close.png" onclick="clearInputFieldEdit(), toggleAddButtonImageEdit()" alt="" style="display:none;">
+                  <div class="form-right-edit">
+                      <div class="form-group-edit">
+                          <label for="dueDate">Due date<span class="form-required-color"></span></label>
+                          <input type="date" id="dueDate" required value="${date}" onchange="validateDueDate()">
+                          <span id="date-error-message" class="error-message" style="display: none;">This field is required</span>
+                      </div>
+                      <div class="form-group priority">
+                          <label>Prio</label>
+                          <div class="priority-button-container">
+                              <button id="priority-urgent" class="priority-button on-edit ${priority === 'urgent' ? 'active' : ''}" data-priority="urgent" onclick="togglePriority('priority-urgent')"><span>Urgent</span> <img src="assets/img/icons/urgent.png" alt="Urgent Priority"></button>
+                              <button id="priority-medium" class="priority-button on-edit ${priority === 'medium' ? 'active' : ''}" data-priority="medium" onclick="togglePriority('priority-medium')"><span>Medium</span> <img src="assets/img/icons/medium.png" alt="Medium Priority"></button>
+                              <button id="priority-low" class="priority-button on-edit ${priority === 'low' ? 'active' : ''}" data-priority="low" onclick="togglePriority('priority-low')"><span>Low</span> <img src="assets/img/icons/low.png" alt="Low Priority"></button>
                           </div>
-                          <input class="no-validate subtask" type="text" id="subTaskInputEdit" maxlength="15" placeholder="Add new subtask" onkeypress="handleKeyPress(event, '${index}')" oninput="toggleAddButtonImageEdit()">
                       </div>
-                      <div class="subtask-container-edit" id="subtaskContainerEdit">
-                          ${subtasks}
+                      <div class="form-group-edit select-container">
+                          <label for="category">Category</label>
+                          <div class="select-dropdown" style="pointer-events: none; color: lightgrey;" id="select-dropdown">
+                              <div class="selected-option" id="selected-option">${category}</div>
+                              <div class="drop-down-image-container">
+                                  <img id="arrow-category" src="assets/img/icons/arrow_drop_down.png" alt="">
+                              </div>
+                          </div>
+                          <select id="category-todo" required class="d-none task-category">
+                              <option value="Technical Task">Technical Task</option>
+                              <option value="User Story">User Story</option>
+                          </select>
+                          <div id="category-error-message" class="error-message">This field is required.</div>
+                      </div>
+                      <div class="form-group">
+                          <label>Subtasks</label>
+                          <div class="drop-down-menu-container">
+                              <div class="sub-image-container" id="image-container">
+                                  <img id="addBtnEdit" src="assets/img/icons/add.png" alt="" onclick="addSubtaskToEditWindow('${index}')">
+                                  <div id="sub-seperator" class="subtask-seperator" style="display:none;"></div>
+                                  <img id="closeBtn" src="assets/img/icons/close.png" onclick="clearInputFieldEdit(), toggleAddButtonImageEdit()" alt="" style="display:none;">
+                              </div>
+                              <input class="no-validate subtask" type="text" id="subTaskInputEdit" maxlength="15" placeholder="Add new subtask" onkeypress="handleKeyPress(event, '${index}')" oninput="toggleAddButtonImageEdit()">
+                          </div>
+                          <div class="subtask-container-edit" id="subtaskContainerEdit">
+                              ${subtasks}
+                          </div>
                       </div>
                   </div>
+              </form>
+              <div class="edit-btn-position">
+                  <button class="fb rb" onclick="updateSubtaskEdit('${index}', '${status}')">OK<img src="assets/img/icons/check.png" alt="Update Task"></button>
               </div>
-          </form>
-          <div class="edit-btn-position">
-              <button class="fb rb" onclick="updateSubtaskEdit('${index}', '${status}')">OK<img src="assets/img/icons/check.png" alt="Update Task"></button>
           </div>
       </div>
   `;

@@ -1175,6 +1175,14 @@ h3 {
     padding-left: 8px;
 }
 
+.add-task-wrapper-board {
+    position: relative;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    width: 100%;
+}
+
 .select-container {
     position: relative;
 }
@@ -1206,6 +1214,29 @@ h3 {
 .form-container {
     width: 100%;
     margin-bottom: 100px;
+}
+
+.form-container-inner {
+    width: 100%;
+    height: auto;
+    max-height: 75vh;
+    padding-right: 10px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.task-title-popup-edit,
+.task-form-edit,
+.form-left-edit,
+.form-right-edit,
+.form-group-edit,
+.priority-button-container,
+.selected-contacts-container,
+.edit-btn-position {
+    margin-bottom: 24px;
+    /* Abstand zwischen den Abschnitten */
+    width: 100%;
 }
 
 .task-title h1 {
@@ -1518,6 +1549,9 @@ input[type=submit]:hover {
 .subtask-container {
     display: flex;
     flex-direction: column;
+    max-height: 150px;
+    overflow: auto;
+    overflow-x: hidden;
 }
 
 .subtask-item {
@@ -1788,6 +1822,10 @@ input[type=submit]:hover {
     cursor: pointer;
 }
 
+.task-name {
+    line-break: anywhere;
+}
+
 .task-name,
 .card-middle-part,
 .subtasks,
@@ -1833,8 +1871,8 @@ input[type=submit]:hover {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    display: flex;
     max-width: 100%;
-
 }
 
 .task-category-board-alternative {
@@ -1929,19 +1967,34 @@ input[type=submit]:hover {
 .board-pop-up {
     width: 525px;
     height: auto;
-    max-height: 80vh;
+    max-height: 75vh;
+    box-sizing: border-box;
     padding: 48px 40px 48px 40px;
-    gap: 24px;
     border-radius: 30px;
     background-color: #f7f6f8;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     position: absolute;
+    overflow: hidden;
+}
+
+.board-pop-up-inner {
+    width: 100%;
+    height: auto;
+    max-height: 75vh;
+    padding-right: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
 .add-task-popup {
     width: 70%;
+    max-height: 75vh;
     height: 90%;
     padding: 0px 40px 48px 40px;
     gap: 24px;
@@ -1994,17 +2047,23 @@ input[type=submit]:hover {
     padding: 4px 24px 4px 24px;
     font-weight: 400;
     font-size: 23px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .board-task-pop-up-headline {
     font-weight: 700;
-    font-size: 61px;
+    font-size: 48px;
+    line-break: anywhere;
 }
 
 .board-pop-up-description {
     width: 100%;
     font-weight: 400;
     font-size: 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .board-pop-up-description span {
@@ -2059,7 +2118,7 @@ input[type=submit]:hover {
 .popup-names {
     flex-wrap: wrap;
     display: flex;
-    gap: 18px;
+    gap: 15px;
     padding-left: 16px;
     padding-top: 8px;
     padding-bottom: 8px;
@@ -2069,8 +2128,7 @@ input[type=submit]:hover {
     display: flex;
     align-items: center;
     gap: 16px;
-    width: 225px;
-
+    width: 180px;
 }
 
 .popup-subtask-container {
@@ -2473,6 +2531,10 @@ input[type=submit]:hover {
         margin-bottom: 50px;
         box-sizing: border-box;
     }
+
+    .task-title-popup h1 {
+        font-size: 40px;
+    }
 }
 
 @media (max-width: 1200px) {
@@ -2483,7 +2545,6 @@ input[type=submit]:hover {
     .board-input {
         width: 200px !important;
     }
-
 }
 
 
@@ -2566,7 +2627,6 @@ input[type=submit]:hover {
         padding-left: 50px;
         padding-right: 50px;
     }
-
 }
 
 @media (max-width: 980px) {
@@ -2822,6 +2882,23 @@ input[type=submit]:hover {
 @media (max-width: 600px) {
     .board-pop-up {
         width: 70%;
+        padding: 20px 20px;
+    }
+
+    .board-pop-up-inner {
+        padding-right: 0px;
+    }
+
+    .popup-del-edit-container {
+        width: 90%;
+    }
+
+    .board-pop-up-headline {
+        font-size: 12px;
+    }
+
+    .username-HTML {
+        width: 150px;
     }
 }
 
@@ -2999,7 +3076,8 @@ input[type=submit]:hover {
 
     input[type=text],
     input[type=date],
-    textarea {
+    textarea,
+    #selected-option {
         font-size: 16px;
     }
 
@@ -3014,7 +3092,15 @@ input[type=submit]:hover {
     }
 
     .task-title-popup h1 {
-        font-size: 48px;
+        font-size: 32px;
+    }
+    
+    .username-HTML {
+        width: unset;
+    }
+
+    .username-HTML div {
+        font-size: 0px;
     }
 }
 
@@ -3037,7 +3123,6 @@ input[type=submit]:hover {
     .contact-email {
         font-size: 12px;
     }
-
 }
 
 @media (max-width:350px) {
