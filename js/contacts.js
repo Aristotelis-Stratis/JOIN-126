@@ -11,7 +11,11 @@ async function initContacts() {
     await loadAllContacts();
 }
 
-
+/**
+ * Creates a new contact and adds it to the current user's contacts.
+ * @async
+ * @function createContact
+ */
 async function createContact() {
     let nameInput = document.getElementById('inputName');
     let emailInput = document.getElementById('inputEmail');
@@ -22,22 +26,14 @@ async function createContact() {
         if (currentUser && currentUser.data) {
             currentUser.data.contacts.push(contact);
             const newContactIndex = currentUser.data.contacts.length - 1;
-
             const cleanedEmail = localStorage.getItem('cleanedEmail');
             const userId = localStorage.getItem('currentUserId');
             const basePath = `users/${cleanedEmail}/${userId}`;
             const contactPath = `${basePath}/contacts/${newContactIndex}`;
-
-            try {
-                await updateData(contactPath, contact);
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                renderContacts();
-                showCreationConfirmation();
-            } catch (error) {
-                console.error('Fehler beim Hinzufügen des Kontakts zu Firebase:', error);
-            }
-        } else {
-            console.error('Fehler: Kein gültiger aktueller Benutzer oder Kontaktliste nicht verfügbar.');
+            await updateData(contactPath, contact);
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            renderContacts();
+            showCreationConfirmation();
         }
     }
 }
@@ -331,27 +327,14 @@ async function saveUpdatedContact() {
         const basePath = `users/${cleanedEmail}/${userId}`;
         const contactsPath = `${basePath}/contacts`;
 
-        console.log('Aktualisiere Kontakt:', updatedContact);
-        console.log('Kontakte Pfad:', contactsPath);
+        await updateData(contactsPath, currentUser.data.contacts);
+        await updateContactInTasks(currentEditingId, updatedContact);
 
-        try {
-
-            await updateData(contactsPath, currentUser.data.contacts);
-            await updateContactInTasks(currentEditingId, updatedContact);
-
-            console.log('Kontaktdaten erfolgreich aktualisiert:', updatedContact);
-
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-
-            updateContactUI(contactIndex, updatedName, updatedEmail, updatedNumber);
-            renderContacts();
-            openContactDetails(contactIndex);
-            showEditConfirmation();
-        } catch (error) {
-            console.error('Fehler beim Speichern der aktualisierten Kontaktdaten:', error);
-        }
-    } else {
-        console.error('Kontaktindex nicht gefunden.');
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        updateContactUI(contactIndex, updatedName, updatedEmail, updatedNumber);
+        renderContacts();
+        openContactDetails(contactIndex);
+        showEditConfirmation();
     }
 }
 

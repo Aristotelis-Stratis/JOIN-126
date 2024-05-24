@@ -22,45 +22,33 @@ async function createTask() {
     if (validateTaskInputs()) {
         const newTask = constructNewTask();
         newTask.id = generateUniqueId();
-
-        if (!currentUser.data.board) {
-            currentUser.data.board = {
-                todo: [],
-                inProgress: [],
-                awaitFeedback: [],
-                done: []
-            };
-        }
-
-        if (!currentUser.data.board.todo) {
-            currentUser.data.board.todo = [];
-        }
-        if (!currentUser.data.board.inProgress) {
-            currentUser.data.board.inProgress = [];
-        }
-        if (!currentUser.data.board.awaitFeedback) {
-            currentUser.data.board.awaitFeedback = [];
-        }
-        if (!currentUser.data.board.done) {
-            currentUser.data.board.done = [];
-        }
-
+        initializeBoard(currentUser.data);
         const newTaskIndex = currentUser.data.board.todo.length;
         currentUser.data.board.todo[newTaskIndex] = newTask;
-
         const cleanedEmail = localStorage.getItem('cleanedEmail');
         const userId = localStorage.getItem('currentUserId');
         const taskPath = `users/${cleanedEmail}/${userId}/board/todo/${newTaskIndex}`;
-
-
         await updateData(taskPath, newTask);
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
-
         resetUI();
         initiateConfirmation('Task added to <img class="add-task-icon-board" src="assets/img/icons/board.png" alt="Board">');
         directToBoard();
-
     }
+}
+
+
+/**
+ * Initializes the user's board by ensuring all necessary sections exist.
+ */
+function initializeBoard(data) {
+    const board = data.board || {};
+    const sections = ['todo', 'inProgress', 'awaitFeedback', 'done'];
+    sections.forEach(section => {
+        if (!board[section]) {
+            board[section] = [];
+        }
+    });
+    data.board = board;
 }
 
 
@@ -127,7 +115,6 @@ async function loadContactsFromFirebase() {
     const cleanedEmail = localStorage.getItem('cleanedEmail');
     const userId = localStorage.getItem('currentUserId');
     const contactsPath = `users/${cleanedEmail}/${userId}/contacts`;
-
     const contactsData = await loadData(contactsPath);
     currentUser.data.contacts = contactsData;
 }
