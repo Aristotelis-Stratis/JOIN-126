@@ -1,5 +1,7 @@
+/**
+ * Initializes the application by setting up event listeners, validating animations, ensuring the guest user exists, and loading remembered user data.
+ */
 async function init() {
-    console.log('Initialization complete');
     const inputs = document.querySelectorAll('input');
     startEventlistener(inputs);
     animationValidation();
@@ -9,6 +11,10 @@ async function init() {
 }
 
 
+/**
+ * Adds 'invalid' event listeners to input elements to handle validation errors.
+ * @param {NodeList} inputs - List of input elements to attach event listeners to.
+ */
 function startEventlistener(inputs) {
     inputs.forEach((input) => {
         input.addEventListener('invalid', (evt) => {
@@ -21,6 +27,12 @@ function startEventlistener(inputs) {
     });
 }
 
+
+/**
+ * Adds 'keyup' event listeners to input elements to check the state of a button if a specific checkbox is present.
+ * @param {NodeList} inputs - List of input elements to attach event listeners to.
+ * @returns {boolean} - Returns false if the checkbox is not found.
+ */
 function eventListenerKeyup(inputs) {
     if (getById('checkbox')) {
         inputs.forEach((input) => {
@@ -34,6 +46,10 @@ function eventListenerKeyup(inputs) {
     }
 }
 
+
+/**
+ * Enables or disables the register button based on input validation.
+ */
 function checkButton() {
     if (enableButtonRequirement()) {
         document.getElementById('register').disabled = false;
@@ -42,22 +58,43 @@ function checkButton() {
     }
 }
 
+
+/**
+ * Checks if all requirements to enable the button are met.
+ * @returns {boolean} - True if all requirements are met, otherwise false.
+ */
 function enableButtonRequirement() {
     let requirement = getById('checkbox').checked && getValue('name') !== '' && getValue('email') !== '' && getValue('password') !== '' && getValue('confirmPassword') !== '';
     return requirement;
 }
 
+
+/**
+ * Gets the value of an input element by its ID.
+ * @param {string} id - The ID of the input element.
+ * @returns {string} - The value of the input element.
+ */
 function getValue(id) {
     let element = document.getElementById(id).value;
     return element;
 }
 
+
+/**
+ * Gets an element by its ID.
+ * @param {string} id - The ID of the element.
+ * @returns {HTMLElement} - The DOM element with the specified ID.
+ */
 function getById(id) {
     let element = document.getElementById(id);
     return element;
 }
 
 
+/**
+ * Initializes the registry process for a new user. Checks if the user already exists,
+ * creates a new user if not, and redirects to the login page after a short animation.
+ */
 async function initRegistry() {
     let username = document.getElementById('name').value;
     let email = document.getElementById('email').value;
@@ -66,109 +103,118 @@ async function initRegistry() {
     let userExists = await loadData(`users/${btoa(email)}`);
 
     if (!userExists) {
-        const initials = getInitials(username);
-
-        let newUser = {
-            name: username,
-            email: email,
-            password: password,
-            contacts: [{
-                id: generateUniqueId(),
-                color: randomColor(),
-                name: username,
-                email: email,
-                number: "",
-                initials: initials
-            }],
-            board: {
-                todo: [
-                    {
-                        id: generateUniqueId(),
-                        title: "TestTask",
-                        description: "TestDescription",
-                        dueDate: "2012-12-12",
-                        priority: "urgent",
-                        contacts: [],
-                        subtasks: [
-                            { text: "TestSubtask", completed: false }
-                        ],
-                        status: "todo",
-                        category: "User Story"
-                    }
-                ],
-                inProgress: [],
-                awaitFeedback: [],
-                done: []
-            },
-            summary: {}
-        };
-
+        let newUser = createNewUser(username, email, password);
         await postData(`users/${cleanedEmail}`, newUser);
-        console.log('Du hast dich erfolgreich registriert!');
         startSlideInUpAnim();
         window.setTimeout(() => { window.location.href = "login.html"; }, 2500);
-    } else {
-        console.log('Die Emailadresse existiert bereits!');
     }
 }
 
 
+/**
+ * Creates a new user object with the provided details.
+ * @param {string} username - The username of the new user.
+ * @param {string} email - The email of the new user.
+ * @param {string} password - The password of the new user.
+ * @returns {object} - The new user object.
+ */
+function createNewUser(username, email, password) {
+    const initials = getInitials(username);
+
+    return {
+        name: username,
+        email: email,
+        password: password,
+        contacts: [{
+            id: generateUniqueId(),
+            color: randomColor(),
+            name: username,
+            email: email,
+            number: "",
+            initials: initials
+        }],
+        board: {
+            todo: [
+                {
+                    id: generateUniqueId(),
+                    title: "TestTask",
+                    description: "TestDescription",
+                    dueDate: "2012-12-12",
+                    priority: "urgent",
+                    contacts: [],
+                    subtasks: [
+                        { text: "TestSubtask", completed: false }
+                    ],
+                    status: "todo",
+                    category: "User Story"
+                }
+            ],
+            inProgress: [],
+            awaitFeedback: [],
+            done: []
+        },
+        summary: {}
+    };
+}
+
+
+/**
+ * Handles user login by validating credentials and setting the current user.
+ */
 async function login() {
     let email = document.getElementById('email').value;
     let password = document.getElementById('password').value;
     let cleanedEmail = email.replace(/[^\w\s]/gi, '');
-
     let usersData = await loadData(`users/${cleanedEmail}`);
-    console.log("Geladene Benutzerdaten:", usersData);
-
     if (usersData) {
-        let userKey = Object.keys(usersData)[0];
-        let user = usersData[userKey];
+        let user = Object.values(usersData)[0];
 
         if (user && user.password === password) {
             rememberCheck();
-            console.log('Login erfolgreich!');
-            await setCurrentUser(user, userKey, cleanedEmail);
+            await setCurrentUser(user, cleanedEmail);
             setTimeout(() => {
                 window.location.href = 'summary.html';
-            }, 5000);
+            }, 250);
         } else {
-            inputValidation('email', 'emailErrorField', ' ');
-            inputValidation('password', 'passwordErrorField', 'Invalid email or password.');
-            console.log('Login fehlgeschlagen. Bitte überprüfe deine Anmeldedaten und versuche es erneut.');
+            showErrorMessages('Invalid email or password.');
         }
     } else {
-        inputValidation('email', 'emailErrorField', ' ');
-        console.log('Benutzer nicht gefunden. Bitte überprüfe deine Anmeldedaten und versuche es erneut.');
+        showErrorMessages('User not found. Please check your credentials and try again.');
     }
 }
 
+/**
+ * Displays error messages on the login form.
+ * @param {string} message - The error message to be displayed.
+ */
+function showErrorMessages(message) {
+    inputValidation('email', 'emailErrorField', ' ');
+    inputValidation('password', 'passwordErrorField', message);
+}
 
 
+/**
+ * Logs in as a guest user. Fetches guest user data and sets the current user as guest.
+ */
 async function loginAsGuest() {
-    try {
-        let guestEmail = "guest@example.com";
-        let cleanedEmail = guestEmail.replace(/[^\w\s]/gi, '');
-        let guestUserId = "guest";
+    let guestEmail = "guest@example.com";
+    let cleanedEmail = guestEmail.replace(/[^\w\s]/gi, '');
+    let guestUserId = "guest";
 
-        let guestUser = await loadData(`users/${cleanedEmail}/${guestUserId}`);
-        if (guestUser) {
-            console.log('Logged in as guest:', guestUser);
-            localStorage.setItem('currentUserId', guestUserId);
-            localStorage.setItem('cleanedEmail', cleanedEmail);
+    let guestUser = await loadData(`users/${cleanedEmail}/${guestUserId}`);
+    localStorage.setItem('currentUserId', guestUserId);
+    localStorage.setItem('cleanedEmail', cleanedEmail);
 
-            await setCurrentUser(guestUser, guestUserId, cleanedEmail);
-            setTimeout(() => {
-                window.location.href = 'contacts.html';
-            }, 5000);
-        } else {
-            console.log('Guest user not found. Please check the database setup.');
-        }
-    } catch (error) {
-        console.error('Error logging in as guest:', error);
-    }
+    await setCurrentUser(guestUser, guestUserId, cleanedEmail);
+    setTimeout(() => {
+        window.location.href = 'contacts.html';
+    }, 250);
 }
 
+
+/**
+ * Ensures that a guest user exists in the database. If not, creates a new guest user.
+ */
 async function ensureGuestUserExists() {
     let guestEmail = "guest@example.com";
     let cleanedEmail = guestEmail.replace(/[^\w\s]/gi, '');
@@ -178,59 +224,30 @@ async function ensureGuestUserExists() {
     let guestUser = await loadData(path);
 
     if (!guestUser || !guestUser.contacts) {
-        let newUser = {
-            name: "Guest",
-            email: guestEmail,
-            password: "",
-            contacts: [{
-                id: generateUniqueId(),
-                color: randomColor(),
-                name: "Max Mustermann",
-                email: "max@mustermann.com",
-                number: "1234567890",
-                initials: "MM"
-            }],
-            board: {
-                todo: [
-                    {
-                        id: generateUniqueId(),
-                        title: "TestTask",
-                        description: "TestDescription",
-                        dueDate: "2012-12-12",
-                        priority: "urgent",
-                        contacts: [],
-                        subtasks: [
-                            { text: "TestSubtask", completed: false }
-                        ],
-                        status: "todo",
-                        category: "User Story"
-                    }
-                ],
-                inProgress: [],
-                awaitFeedback: [],
-                done: []
-            },
-            summary: {}
-        };
+        let newUser = createNewUser("Guest", guestEmail, "");
         let response = await updateData(path, newUser);
-        console.log('Attempt to create/update guest user:', response);
-    } else {
-        console.log('Guest user already exists and is fully initialized:', guestUser);
     }
 }
 
 
-
-
+/**
+ * Sets the current user in the local storage.
+ * @param {object} user - The user object.
+ * @param {string} userId - The user ID.
+ * @param {string} cleanedEmail - The cleaned email of the user.
+ */
 async function setCurrentUser(user, userId, cleanedEmail) {
     localStorage.setItem('currentUserId', userId);
     localStorage.setItem('currentUser', JSON.stringify(user));
-    localStorage.setItem('cleanedEmail', cleanedEmail); // Speichere den cleanedEmail im localStorage
-    console.log('Current user set successfully:', user);
+    localStorage.setItem('cleanedEmail', cleanedEmail);
 }
 
 
-
+/**
+ * Changes the icon based on the input field's value and type.
+ * @param {string} inputField - The ID of the input field.
+ * @param {string} inputIcon - The ID of the icon element.
+ */
 function changeIcon(inputField, inputIcon) {
     let input = document.getElementById(inputField);
     let icon = document.getElementById(inputIcon);
@@ -253,6 +270,11 @@ function changeIcon(inputField, inputIcon) {
 }
 
 
+/**
+ * Toggles the visibility of the password in the input field.
+ * @param {string} inputField - The ID of the input field.
+ * @param {string} inputIcon - The ID of the icon element.
+ */
 function showPassword(inputField, inputIcon) {
     let input = document.getElementById(inputField);
     let icon = document.getElementById(inputIcon);
@@ -267,6 +289,12 @@ function showPassword(inputField, inputIcon) {
 }
 
 
+/**
+ * Validates the input field and displays an error message if the input is empty.
+ * @param {string} inputId - The ID of the input field.
+ * @param {string} messageFieldId - The ID of the field where the error message will be displayed.
+ * @param {string} errorMessage - The error message to be displayed if the input is not empty.
+ */
 function inputValidation(inputId, messageFieldId, errorMessage) {
     let input = document.getElementById(inputId);
 
@@ -280,6 +308,9 @@ function inputValidation(inputId, messageFieldId, errorMessage) {
 }
 
 
+/**
+ * Checks if the password and confirm password fields match and displays an error message if they don't.
+ */
 function checkPassword() {
     let passwordInput = document.getElementById('password').value;
     let confirmInput = document.getElementById('confirmPassword').value;
@@ -293,19 +324,31 @@ function checkPassword() {
 }
 
 
+/**
+ * Hides the error message and removes the error styling from the input field.
+ * @param {string} messageFieldId - The ID of the field where the error message is displayed.
+ * @param {string} inputId - The ID of the input field.
+ */
 function hideError(messageFieldId, inputId) {
     document.getElementById(messageFieldId).textContent = '';
     document.getElementById(inputId).parentNode.classList.remove('error-div');
 }
 
 
+/**
+ * Checks the state of the privacy policy checkbox and updates the button state accordingly.
+ */
 function privacyPolicyCheck() {
     let checkbox = document.getElementById('checkbox');
-
     checkCheckbox(checkbox);
     checkButton();
 }
 
+
+/**
+ * Toggles the checkbox state.
+ * @param {HTMLInputElement} checkbox - The checkbox element.
+ */
 function checkCheckbox(checkbox) {
     if (!checkbox.checked) {
         checkbox.checked = true;
@@ -314,6 +357,11 @@ function checkCheckbox(checkbox) {
     }
 }
 
+
+/**
+ * Validates if the overlay exists and removes it. Returns false if the overlay doesn't exist.
+ * @returns {boolean} - Returns false if the overlay doesn't exist.
+ */
 function animationValidation() {
     if (document.getElementById('overlay')) {
         removeOverlay();
@@ -322,6 +370,10 @@ function animationValidation() {
     }
 }
 
+
+/**
+ * Removes the overlay element after a delay and displays the main logo.
+ */
 function removeOverlay() {
     let overlay = document.getElementById('overlay');
     let logo = document.getElementById('main-logo');
@@ -333,11 +385,15 @@ function removeOverlay() {
 }
 
 
+
+/**
+ * Loads remembered user data (email and password) from localStorage and sets the input fields.
+ * If the data is found, it updates the input fields and toggles the password icon.
+ */
 function loadRememberData() {
     try {
         let rememberEmail = JSON.parse(localStorage.getItem('email'));
         let rememberPassword = JSON.parse(localStorage.getItem('password'));
-
         if (rememberEmail != null && rememberPassword != null) {
             changeIcon('password', 'passwordIcon');
             getById('email').value = rememberEmail;
@@ -350,9 +406,12 @@ function loadRememberData() {
     }
 }
 
+
+/**
+ * Checks the state of the "remember me" checkbox and either saves or deletes the user data accordingly.
+ */
 function rememberCheck() {
     let checkbox = getById('rememberCheckbox');
-
     if (checkbox.checked) {
         saveUserData();
     } else if (!checkbox.checked) {
@@ -360,16 +419,28 @@ function rememberCheck() {
     }
 }
 
+
+/**
+ * Deletes the stored user data (email and password) from localStorage.
+ */
 function deleteUserData() {
     localStorage.setItem('email', '');
     localStorage.setItem('password', '');
 }
 
+
+/**
+ * Saves the current user data (email and password) to localStorage.
+ */
 function saveUserData() {
     localStorage.setItem('email', `"${getValue('email')}"`);
     localStorage.setItem('password', `"${getValue('password')}"`);
 }
 
+
+/**
+ * Starts the slide-in-up animation by removing the 'd-none' class from the registration overlay.
+ */
 function startSlideInUpAnim() {
     getById('reg-overlay').classList.remove('d-none');
 }
