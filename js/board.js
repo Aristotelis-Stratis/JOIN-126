@@ -435,6 +435,7 @@ async function addSubtaskToEditWindow(taskId) {
   if (newSubtaskText !== '') {
     let task;
     let taskIndex = -1;
+    let status;
 
     if (currentUser && currentUser.data && currentUser.data.board) {
       const allTasks = [
@@ -446,6 +447,16 @@ async function addSubtaskToEditWindow(taskId) {
 
       taskIndex = allTasks.findIndex(t => t.id === taskId);
       task = allTasks[taskIndex];
+
+      if (taskIndex < currentUser.data.board.todo.length) {
+        status = 'todo';
+      } else if (taskIndex < currentUser.data.board.todo.length + currentUser.data.board.inProgress.length) {
+        status = 'inProgress';
+      } else if (taskIndex < currentUser.data.board.todo.length + currentUser.data.board.inProgress.length + currentUser.data.board.awaitFeedback.length) {
+        status = 'awaitFeedback';
+      } else {
+        status = 'done';
+      }
     }
 
     if (!task) {
@@ -461,13 +472,13 @@ async function addSubtaskToEditWindow(taskId) {
 
     const cleanedEmail = localStorage.getItem('cleanedEmail');
     const userId = localStorage.getItem('currentUserId');
-    const subtaskPath = `users/${cleanedEmail}/${userId}/board/${task.status}/${taskIndex}/subtasks`;
+    const subtaskPath = `users/${cleanedEmail}/${userId}/board/${status}/${taskIndex}/subtasks`;
     const boardPath = `users/${cleanedEmail}/${userId}/board`;
 
     await updateData(subtaskPath, task.subtasks);
     await updateData(boardPath, currentUser.data.board);
 
-    updateSubtaskUI(taskIndex, task.subtasks, task.status);
+    updateSubtaskUI(task.id, task.subtasks, task.status);
     document.getElementById('subTaskInputEdit').value = '';
     showToDos();
   }
@@ -560,18 +571,14 @@ async function saveEditedSubtask(taskId, subtaskIndex, status) {
   }
 
   task.subtasks[subtaskIndex].text = newText;
-
   const cleanedEmail = localStorage.getItem('cleanedEmail');
   const userId = localStorage.getItem('currentUserId');
   const taskPath = `users/${cleanedEmail}/${userId}/board/${status}/${taskIndex}`;
-
   await updateData(taskPath, task);
-
   const subtaskItem = document.getElementById(`subTaskItem_${subtaskIndex}`);
   subtaskItem.innerHTML = generateEditedSubtaskHTML(taskId, subtaskIndex, newText, status);
   showToDos();
 }
-
 
 async function deleteSubtaskEdit(taskId, subtaskIndex, status) {
   let task;
@@ -601,6 +608,7 @@ async function deleteSubtaskEdit(taskId, subtaskIndex, status) {
     return;
   }
 
+
   task.subtasks.splice(subtaskIndex, 1);
 
   const cleanedEmail = localStorage.getItem('cleanedEmail');
@@ -618,12 +626,11 @@ async function deleteSubtaskEdit(taskId, subtaskIndex, status) {
 }
 
 
-function updateSubtaskUI(taskIndex, subtasks, status) {
+function updateSubtaskUI(taskId, subtasks, status) {
   const subtaskContainer = document.getElementById('subtaskContainerEdit');
   subtaskContainer.innerHTML = '';
-
   for (let i = 0; i < subtasks.length; i++) {
-    const subtaskHTML = generateSubtaskHTML(taskIndex, i, subtasks[i], status);
+    const subtaskHTML = generateSubtaskHTML(taskId, i, subtasks[i], status);
     subtaskContainer.insertAdjacentHTML('beforeend', subtaskHTML);
   }
 }
