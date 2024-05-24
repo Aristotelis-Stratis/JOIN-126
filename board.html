@@ -8,7 +8,6 @@
   <link rel="icon" type="image/x-icon" href="./assets/img/favicon/logo.png">
   <link rel="stylesheet" href="./styles/style.css" />
   <link rel="stylesheet" href="./styles/fonts.css" />
-  <!-- needs to be linked to all htmls-->
   <script src="./script.js"></script>
   <script src="./js/storage.js"></script>
   <script src="./js/board.js"></script>
@@ -22,20 +21,15 @@
 
 <body onload="includeHTML(() => { checkUserLogin(setProfileInitials); }), init();">
   <section class="main-container">
-    <!-- left part of website fixed menu -->
     <div w3-include-html="./assets/templates/nav.html"></div>
-    <!--right part of website (content) -->
     <div class="right-section">
-      <!-- top navbar -->
       <div w3-include-html="./assets/templates/header.html"></div>
-
       <div class="content-board" id="main-content">
         <div class="content-container bd-content">
           <div class="confirm-container">
             <div class="task-confirmation-container" style="display:none" id="add-task-confirmation"></div>
           </div>
           <div class="board-container">
-
             <div class="board-headline-container">
               <div class="board-headline">Board</div>
               <div class="input-button-board-container">
@@ -45,7 +39,6 @@
                     src="./assets/img/icons/add-white.png" alt="White Plus Icon"></button>
               </div>
             </div>
-
             <div class="dragdrop-container">
               <div class="column-properties">
                 <div class="taskflow-board">
@@ -85,14 +78,11 @@
             </div>
           </div>
   </section>
-
   <section id="overlay" class="board-overlay d-none-board" onclick="closePopUp()">
     <div id="pop-up" class="board-pop-up" onclick="doNotClosePopUp(event)"></div>
   </section>
-
   <section id="overlay2" class="board-overlay d-none-board" onclick="closeAddTaskPopUp()">
     <div id="addTaskPopUp" class="add-task-popup" onclick="doNotCloseAddTaskPopUp(event)"></div>
   </section>
 </body>
-
 </html>

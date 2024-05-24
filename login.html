@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,10 +12,10 @@
     <script src="./js/login-reg.js"></script>
     <title>Login</title>
 </head>
+
 <body onload="init()">
     <header class="header"> 
         <a href="./login.html"><img id="main-logo" class="main-logo d-none" src="assets/img/favicon/logo.png" alt="LOGO"></a>
-
         <nav class="signup-nav d-none650px">
             <p class="font-size20px">Not a Join User?</p> 
             <a href="register.html"><button class="signup-btn btn">Sign Up</button></a>
@@ -23,19 +24,16 @@
     <div id="overlay" class="overlay">
         <div class="animated-logo"></div>
     </div>
-
     <section class="main-container d-flex-sb-c d-column"> 
         <form class="form d-flex-c-c d-column" onsubmit="login(); return false;"> 
             <h1 class="login-h1">Log in</h1> 
             <div class="h1-underline"></div> 
-
             <div class="input-main-div d-column"> 
                 <div class="input-div d-flex-sb-c"> 
                     <input data="Provide a valid email address." oninput="hideError('emailErrorField','email')" id="email" type="email" placeholder="Email" class="input" required pattern="[A-Za-z0-9._+\-']+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$">
                     <img class="input-icon" src="assets/img/icons/mail.png" alt="IMG"> 
                 </div>
                 <small id="emailErrorField" class="error"></small> 
-
                 <div class="input-div d-flex-sb-c"> 
                     <input data="Wrong Password Ups! Try again." name="password" oninput="hideError('passwordErrorField','password')" onfocus="changeIcon('password','passwordIcon')" onblur="changeIcon('password','passwordIcon')" id="password" type="password"
                         placeholder="Password" class="input" required>
@@ -43,7 +41,6 @@
                 </div>
                 <small id="passwordErrorField" class="error"></small> 
             </div>
-
             <div class="checkbox-div">
                 <label class="checkbox" onclick="checkCheckbox(getById('rememberCheckbox')); return false;">
                     <input id="rememberCheckbox" type="checkbox" class="checkbox-input">
@@ -51,7 +48,6 @@
                     <p class="checkbox-text">Remember me</p>
                 </label>
             </div>
-
             <div class="login-btns-div d-flex-sb-c d-column650">
                 <button type="submit" class="btn login-btn">Log in</button>
                 <button type="button" onclick="loginAsGuest()" class="btn guest-btn">Guest Log in</button>
@@ -67,7 +63,6 @@
                 <a class="footer-links margin-l24 font-size18px" href="legal_notice.html">Legal notice</a>
             </div>
         </footer>
-            
         </form>
     </section>
 </body>

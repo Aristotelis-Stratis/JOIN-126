@@ -1,3 +1,10 @@
+/**
+ * Generates HTML markup for a todo task.
+ * @param {Object} task - The task object containing details.
+ * @param {string} id - The ID of the task.
+ * @param {string} status - The status of the task.
+ * @returns {string} The HTML markup for the todo task.
+ */
 function generateTodoHTML(task, id, status) {
   let taskName = task.title;
   let taskDescription = task.description;
@@ -42,6 +49,14 @@ function generateTodoHTML(task, id, status) {
 }
 
 
+/**
+ * Generates HTML markup for a popup displaying task details.
+ * @param {Object} task - The task object containing details.
+ * @param {number} index - The index of the task.
+ * @param {string} priority - The priority of the task.
+ * @param {string} status - The status of the task.
+ * @returns {string} The HTML markup for the popup.
+ */
 function generatePopUpHTML(task, index, priority, status) {
   let taskName = task.title;
   let taskDescription = task.description;
@@ -95,6 +110,11 @@ function generatePopUpHTML(task, index, priority, status) {
 }
 
 
+/**
+ * Generates HTML markup for adding a new task.
+ * @param {string} status - The status of the task.
+ * @returns {string} The HTML markup for adding a new task.
+ */
 function generateAddTaskPopUpHTML(status) {
   return `
     <div class="form-container">
@@ -218,16 +238,19 @@ function generateAddTaskPopUpHTML(status) {
 }
 
 
+/**
+ * Generates HTML markup for users assigned to a task.
+ * @param {Array} contacts - Array of contacts assigned to the task.
+ * @returns {string} The HTML markup for assigned users.
+ */
 function generateUserHTMLplusName(contacts) {
   let usersHTML = '';
-
   if (contacts && Array.isArray(contacts)) {
     for (let j = 0; j < contacts.length; j++) {
       const user = contacts[j];
       let userInitials = user.initials;
       let userColor = user.color;
       let userName = user.name;
-
       usersHTML += `
         <div class="username-HTML">
             <span class="contact-icon board-icon" style="background-color: ${userColor};">${userInitials}</span>
@@ -236,14 +259,17 @@ function generateUserHTMLplusName(contacts) {
         `;
     }
   }
-
   return usersHTML;
 }
 
 
+/**
+ * Generates HTML markup for users assigned to a task.
+ * @param {Array} contacts - Array of contacts assigned to the task.
+ * @returns {string} The HTML markup for assigned users.
+ */
 function generateUserHTML(contacts) {
   let usersHTML = '';
-
   if (contacts && Array.isArray(contacts)) {
     for (let j = 0; j < contacts.length; j++) {
       const user = contacts[j];
@@ -255,14 +281,19 @@ function generateUserHTML(contacts) {
           `;
     }
   }
-
   return usersHTML;
 }
 
 
+/**
+ * Generates HTML markup for subtasks of a task.
+ * @param {number} taskIndex - The index of the task.
+ * @param {Array} subtasks - Array of subtasks for the task.
+ * @param {string} status - The status of the task.
+ * @returns {string} The HTML markup for subtasks.
+ */
 function generateSubtasksHTML(taskIndex, subtasks, status) {
   let subtasksHTML = '';
-
   if (subtasks && Array.isArray(subtasks)) {
     for (let i = 0; i < subtasks.length; i++) {
       let subtask = subtasks[i];
@@ -275,11 +306,18 @@ function generateSubtasksHTML(taskIndex, subtasks, status) {
       `;
     }
   }
-
   return subtasksHTML;
 }
 
 
+/**
+ * Generates HTML markup for a single subtask.
+ * @param {string} taskId - The ID of the task.
+ * @param {number} subtaskIndex - The index of the subtask.
+ * @param {Object} subtask - The subtask object containing details.
+ * @param {string} status - The status of the task.
+ * @returns {string} The HTML markup for a single subtask.
+ */
 function generateSubtaskHTML(taskId, subtaskIndex, subtask, status) {
   return `
     <div class="subtask-edit-container" id="subTask_${subtaskIndex}">
@@ -298,6 +336,10 @@ function generateSubtaskHTML(taskId, subtaskIndex, subtask, status) {
 }
 
 
+/**
+ * Handles key down event for subtasks.
+ * @param {Event} event - The keydown event object.
+ */
 function handleSubtaskKeyDown(event) {
   if (event.key === "Enter") {
     event.preventDefault();
@@ -306,6 +348,18 @@ function handleSubtaskKeyDown(event) {
 }
 
 
+/**
+ * Generates HTML markup for editing a task.
+ * @param {Object} task - The task object containing details.
+ * @param {string} date - The due date of the task.
+ * @param {string} usersHTML - The HTML markup for assigned users.
+ * @param {string} category - The category of the task.
+ * @param {Array} subtasks - Array of subtasks for the task.
+ * @param {string} priority - The priority of the task.
+ * @param {number} index - The index of the task.
+ * @param {string} status - The status of the task.
+ * @returns {string} The HTML markup for editing a task.
+ */
 function generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks, priority, index, status) {
   return `
       <div class="form-container-inner">
@@ -395,6 +449,13 @@ function generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks,
 }
 
 
+/**
+ * Generates HTML markup for subtasks of a task.
+ * @param {number} taskIndex - The index of the task.
+ * @param {Array} subtasks - Array of subtasks for the task.
+ * @param {string} status - The status of the task.
+ * @returns {string} The HTML markup for subtasks.
+ */
 function generateSubtasksHTML(taskIndex, subtasks, status) {
   let subtasksHTML = '';
 
@@ -415,11 +476,14 @@ function generateSubtasksHTML(taskIndex, subtasks, status) {
 }
 
 
+/**
+ * Generates HTML markup for editing users assigned to a task.
+ * @param {Array} contacts - Array of contacts assigned to the task.
+ * @returns {string} The HTML markup for editing assigned users.
+ */
 function generateUserHTMLEdit(contacts) {
   let usersHTML = '';
-
   contacts = Array.isArray(contacts) ? contacts : [];
-
   if (contacts.length > 0) {
     for (let j = 0; j < contacts.length; j++) {
       const user = contacts[j];
@@ -431,11 +495,18 @@ function generateUserHTMLEdit(contacts) {
       `;
     }
   }
-
   return usersHTML;
 }
 
 
+/**
+ * Generates HTML markup for editing a subtask.
+ * @param {string} taskId - The ID of the task.
+ * @param {number} subtaskIndex - The index of the subtask.
+ * @param {string} newText - The new text of the subtask.
+ * @param {string} status - The status of the task.
+ * @returns {string} The HTML markup for editing a subtask.
+ */
 function generateEditedSubtaskHTML(taskId, subtaskIndex, newText, status) {
   return `
     <div class="subtask-item-edit" id="subTaskItem_${subtaskIndex}">
@@ -452,6 +523,14 @@ function generateEditedSubtaskHTML(taskId, subtaskIndex, newText, status) {
 }
 
 
+/**
+ * Generates HTML markup for input field to edit a subtask.
+ * @param {string} taskId - The ID of the task.
+ * @param {number} subtaskIndex - The index of the subtask.
+ * @param {string} subtaskText - The text of the subtask.
+ * @param {string} status - The status of the task.
+ * @returns {string} The HTML markup for editing a subtask input field.
+ */
 function generateEditSubtaskInputHTML(taskId, subtaskIndex, subtaskText, status) {
   return `
     <div class="edit-subtask-under-container">

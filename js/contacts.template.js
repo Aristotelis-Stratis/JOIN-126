@@ -1,3 +1,9 @@
+/**
+ * Generates HTML markup for a new contact item.
+ * @param {Object} contact - The contact object containing details.
+ * @param {number} index - The index of the contact.
+ * @returns {string} The HTML markup for the contact item.
+ */
 function createNewContactHTML(contact, index) {
     const initials = contact.initials || '';
     return `
@@ -24,6 +30,12 @@ function createNewContactHTML(contact, index) {
 }
 
 
+/**
+ * Generates HTML markup for displaying contact details.
+ * @param {Object} contact - The contact object containing details.
+ * @param {number} index - The index of the contact.
+ * @returns {string} The HTML markup for contact details.
+ */
 function contactDetailsHTML(contact, index) {
     return `
         <div class="contacts-title-bar">
@@ -93,6 +105,11 @@ function contactDetailsHTML(contact, index) {
 }
 
 
+/**
+ * Generates HTML markup for a letter container.
+ * @param {string} initial - The initial letter for the container.
+ * @returns {string} The HTML markup for the letter container.
+ */
 function createLetterContainerHTML(initial) {
     return `
         <div class="letter-container">

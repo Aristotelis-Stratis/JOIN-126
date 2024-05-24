@@ -16,17 +16,12 @@
     <script src="./js/login-reg.js"></script>
 </head>
 
-<!-- checkAuthentication(); -->
 <body onload="includeHTML(() => { checkUserLogin(setProfileInitials); }),initContacts();">
     <section class="main-container">
-        <!-- left part of website fixed menu -->
         <div w3-include-html="./assets/templates/nav.html"></div>
-        <!--right part of website (content) -->
         <div class="right-section">
             <div w3-include-html="./assets/templates/header.html"></div>
-
             <div class="contacts-content" id="main-content">
-
                 <div class="contact-list" id="contact-list">
                     <div class="add-contact">
                         <button class="add-contact-button" onclick="addNewContact()">
@@ -40,8 +35,7 @@
                         <img src="assets/img/icons/contact_add.png" alt="Add Contact">
                     </button>
                 </div>
-
-                <div class="contacts-text" id="text-content"> <!--render content here-->
+                <div class="contacts-text" id="text-content">
                     <div class="arrow-back" onclick="closeContactDetails()">
                         <img src="assets/img/icons/arrow_blue.png" alt="Back">
                     </div>
@@ -60,7 +54,6 @@
             </div>
         </div>
         </div>
-
         <div class="overlay" id="aco" style="display:none;">
             <div class="add-contact-overlay" id="fly-in-overlay">
                 <div class="aco-left">
@@ -71,12 +64,10 @@
                         <div class="seperator-overlay"></div>
                     </div>
                 </div>
-
                 <div class="aco-right">
                     <div class="aco-right-icon" id="aco-icon">
                         <img src="assets/img/icons/aco_person.png" alt="Avatar">
                     </div>
-
                     <form onsubmit="return false" method="post">
                         <div class="aco-right-input-container">
                             <input class="aco-input input-bg-1" minlength="2" maxlength="30" placeholder="Name"
@@ -97,7 +88,6 @@
                                 contact <img src="assets/img/icons/check.png" alt="Create Contact"></button>
                         </div>
                     </form>
-
                     <div class="aco-close" onclick="closeContactOverlay()">
                         <img src="assets/img/icons/x.png" alt="Close Overlay">
                     </div>
@@ -106,5 +96,4 @@
         </div>
     </section>
 </body>
-
 </html>

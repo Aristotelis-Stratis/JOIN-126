@@ -7,7 +7,7 @@
     <title>Help</title>
     <link rel="icon" type="image/x-icon" href="./assets/img/favicon/logo.png">
     <link rel="stylesheet" href="./styles/style.css">
-    <link rel="stylesheet" href="./styles/fonts.css"> <!-- needs to be linked to all htmls-->
+    <link rel="stylesheet" href="./styles/fonts.css">
     <script src="./script.js"></script>
     <script src="./js/storage.js"></script>
     <script src="./js/templates.js"></script>
@@ -15,15 +15,11 @@
 
 <body onload="includeHTML(() => { checkUserLogin(setProfileInitials); })">
     <section class="main-container">
-        <!-- left part of website fixed menu -->
         <div w3-include-html="./assets/templates/nav.html"></div>
-        <!--right part of website (content) -->
         <div class="right-section">
-            <!-- top navbar -->
             <div w3-include-html="./assets/templates/header.html"></div>
             <div class="content" id="main-content">
                 <div class="content-container" id="text-content">
-                    <!--render content here-->
                     <div class="help">
                         <div class="sub-site-title">
                             <h1>Help</h1>
@@ -114,5 +110,4 @@
             </div>
     </section>
 </body>
-
 </html>

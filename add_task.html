@@ -17,11 +17,8 @@
 
 <body onload="includeHTML(() => { checkUserLogin(setProfileInitials); }),initTasks();">
     <section class="main-container">
-        <!-- left part of website fixed menu -->
         <div w3-include-html="./assets/templates/nav.html"></div>
-        <!--right part of website (content) -->
         <div class="right-section">
-            <!-- top navbar -->
             <div w3-include-html="./assets/templates/header.html"></div>
 
             <div class="contentTask" id="main-content">
@@ -29,7 +26,6 @@
                     <div class="confirm-container">
                         <div class="task-confirmation-container" style="display:none" id="add-task-confirmation"></div>
                     </div>
-
                     <div class="form-container">
                         <div class="task-title">
                             <h1>Add Task</h1>
@@ -46,7 +42,6 @@
                                     <textarea class="no-validate" id="description"
                                         placeholder="Enter a Description"></textarea>
                                 </div>
-                                <!-- assign to list -->
                                 <div class="form-group">
                                     <label for="assignedTo">Assigned to</label>
                                     <div class="drop-down-menu-container" onclick="toggleAssignDropdownMenu()">
@@ -58,25 +53,19 @@
                                             oninput="filterContacts(this.value)">
 
                                         <div id="assign-dropdown-menu" class="dropdown-menu">
-                                            <!-- render contact list here -->
                                             <div class="task-contact-list" id="task-contact-list"></div>
                                         </div>
                                     </div>
                                     <div class="selected-contacts-container" id="selected-contacts-list"></div>
                                 </div>
                             </div>
-
-
                             <div class="form-right">
-                                <!-- Date -->
                                 <div class="form-group">
                                     <label for="dueDate">Due date<span class="form-required-color">*</span></label>
                                     <input type="date" id="dueDate" required onchange="validateDueDate()">
                                     <span id="date-error-message" class="error-message" style="display: none;">This
                                         field is required</span>
                                 </div>
-
-                                <!-- priority buttons -->
                                 <div class="form-group priority">
                                     <label>Prio</label>
                                     <div class="priority-button-container">
@@ -91,7 +80,6 @@
                                                 src="assets/img/icons/low.png" alt="Low Priority"></button>
                                     </div>
                                 </div>
-
                                 <div class="form-group select-container">
                                     <label for="category">Category<span class="form-required-color">*</span></label>
                                     <div class="select-dropdown" id="select-dropdown"
@@ -130,13 +118,11 @@
                                         placeholder="Add new subtask" oninput="toggleAddButtonImage()" onkeydown="handleSubtaskKeyDown(event)">
                                     </div>
                                     <div class="subtask-container" id="subtaskContainer">
-                                        <!-- Hier werden die Subtasks gerendert -->
                                     </div>
                                 </div>
                             </div>
                         </form>
                     </div>
-                    <!-- wrapper -->
                     <div class="add-task-wrapper">
                         <div class="form-below">
                             <div class="aco-button-container">
@@ -155,5 +141,4 @@
         </div>
     </section>
 </body>
-
 </html>
