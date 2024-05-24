@@ -345,30 +345,26 @@ async function updateContactInTasks(contactId, updatedContact) {
     const userId = localStorage.getItem('currentUserId');
     const boardPath = `users/${cleanedEmail}/${userId}/board`;
 
-    try {
-        const boardData = await loadData(boardPath);
-        if (boardData) {
-            const statuses = ['todo', 'inProgress', 'awaitFeedback', 'done'];
 
-            for (const status of statuses) {
-                const tasks = boardData[status] || [];
-                tasks.forEach((task, taskIndex) => {
+    const boardData = await loadData(boardPath);
+    if (boardData) {
+        const statuses = ['todo', 'inProgress', 'awaitFeedback', 'done'];
+
+        for (const status of statuses) {
+            const tasks = boardData[status] || [];
+            tasks.forEach((task, taskIndex) => {
+                if (task.contacts) {
                     const contactIndex = task.contacts.findIndex(contact => contact.id === contactId);
                     if (contactIndex !== -1) {
                         task.contacts[contactIndex] = updatedContact;
                     }
-                });
-                await updateData(`${boardPath}/${status}`, tasks);
-            }
-
-            console.log(`Contact with ID ${contactId} successfully updated in all tasks.`);
-        } else {
-            console.error('No board data found for the current user.');
+                }
+            });
+            await updateData(`${boardPath}/${status}`, tasks);
         }
-    } catch (error) {
-        console.error('Error updating contact in tasks in Firebase:', error);
     }
 }
+
 
 
 async function deleteContact(contactId) {

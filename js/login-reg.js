@@ -227,7 +227,7 @@ async function ensureGuestUserExists() {
                 color: randomColor(),
                 name: "Max Mustermann",
                 email: "max@mustermann.com",
-                number: "1234567890",
+                number: "+4912345690",
                 initials: "MM"
             }],
             board: {
