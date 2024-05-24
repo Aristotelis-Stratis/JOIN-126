@@ -1,7 +1,9 @@
 /**
- * Initializes the application by setting up event listeners, validating animations, ensuring the guest user exists, and loading remembered user data.
+ * Initializes the application by setting up event listeners, validating animations, ensuring the guest user exists,
+ * and loading remembered user data.
  */
 async function init() {
+    console.log('Initialization complete');
     const inputs = document.querySelectorAll('input');
     startEventlistener(inputs);
     animationValidation();
@@ -103,118 +105,110 @@ async function initRegistry() {
     let userExists = await loadData(`users/${btoa(email)}`);
 
     if (!userExists) {
-        let newUser = createNewUser(username, email, password);
+        const initials = getInitials(username);
+
+        let newUser = {
+            name: username,
+            email: email,
+            password: password,
+            contacts: [{
+                id: generateUniqueId(),
+                color: randomColor(),
+                name: username,
+                email: email,
+                number: "",
+                initials: initials
+            }],
+            board: {
+                todo: [
+                    {
+                        id: generateUniqueId(),
+                        title: "TestTask",
+                        description: "TestDescription",
+                        dueDate: "2012-12-12",
+                        priority: "urgent",
+                        contacts: [],
+                        subtasks: [
+                            { text: "TestSubtask", completed: false }
+                        ],
+                        status: "todo",
+                        category: "User Story"
+                    }
+                ],
+                inProgress: [],
+                awaitFeedback: [],
+                done: []
+            },
+            summary: {}
+        };
+
         await postData(`users/${cleanedEmail}`, newUser);
         startSlideInUpAnim();
         window.setTimeout(() => { window.location.href = "login.html"; }, 2500);
+    } else {
+        console.log('Die Emailadresse existiert bereits!');
     }
 }
 
 
-/**
- * Creates a new user object with the provided details.
- * @param {string} username - The username of the new user.
- * @param {string} email - The email of the new user.
- * @param {string} password - The password of the new user.
- * @returns {object} - The new user object.
- */
-function createNewUser(username, email, password) {
-    const initials = getInitials(username);
-
-    return {
-        name: username,
-        email: email,
-        password: password,
-        contacts: [{
-            id: generateUniqueId(),
-            color: randomColor(),
-            name: username,
-            email: email,
-            number: "",
-            initials: initials
-        }],
-        board: {
-            todo: [
-                {
-                    id: generateUniqueId(),
-                    title: "TestTask",
-                    description: "TestDescription",
-                    dueDate: "2012-12-12",
-                    priority: "urgent",
-                    contacts: [],
-                    subtasks: [
-                        { text: "TestSubtask", completed: false }
-                    ],
-                    status: "todo",
-                    category: "User Story"
-                }
-            ],
-            inProgress: [],
-            awaitFeedback: [],
-            done: []
-        },
-        summary: {}
-    };
-}
-
-
-/**
- * Handles user login by validating credentials and setting the current user.
- */
 async function login() {
     let email = document.getElementById('email').value;
     let password = document.getElementById('password').value;
     let cleanedEmail = email.replace(/[^\w\s]/gi, '');
+
     let usersData = await loadData(`users/${cleanedEmail}`);
+    console.log("Geladene Benutzerdaten:", usersData);
+
     if (usersData) {
-        let user = Object.values(usersData)[0];
+        let userKey = Object.keys(usersData)[0];
+        let user = usersData[userKey];
 
         if (user && user.password === password) {
             rememberCheck();
-            await setCurrentUser(user, cleanedEmail);
+            console.log('Login erfolgreich!');
+            await setCurrentUser(user, userKey, cleanedEmail);
             setTimeout(() => {
                 window.location.href = 'summary.html';
-            }, 250);
+            }, 5000);
         } else {
-            showErrorMessages('Invalid email or password.');
+            inputValidation('email', 'emailErrorField', ' ');
+            inputValidation('password', 'passwordErrorField', 'Invalid email or password.');
+            console.log('Login fehlgeschlagen. Bitte überprüfe deine Anmeldedaten und versuche es erneut.');
         }
     } else {
-        showErrorMessages('User not found. Please check your credentials and try again.');
+        inputValidation('email', 'emailErrorField', ' ');
+        console.log('Benutzer nicht gefunden. Bitte überprüfe deine Anmeldedaten und versuche es erneut.');
     }
 }
 
-/**
- * Displays error messages on the login form.
- * @param {string} message - The error message to be displayed.
- */
-function showErrorMessages(message) {
-    inputValidation('email', 'emailErrorField', ' ');
-    inputValidation('password', 'passwordErrorField', message);
-}
 
 
-/**
- * Logs in as a guest user. Fetches guest user data and sets the current user as guest.
- */
 async function loginAsGuest() {
-    let guestEmail = "guest@example.com";
-    let cleanedEmail = guestEmail.replace(/[^\w\s]/gi, '');
-    let guestUserId = "guest";
+    try {
+        let guestEmail = "guest@example.com";
+        let cleanedEmail = guestEmail.replace(/[^\w\s]/gi, '');
+        let guestUserId = "guest";
 
-    let guestUser = await loadData(`users/${cleanedEmail}/${guestUserId}`);
-    localStorage.setItem('currentUserId', guestUserId);
-    localStorage.setItem('cleanedEmail', cleanedEmail);
+        let guestUser = await loadData(`users/${cleanedEmail}/${guestUserId}`);
+        if (guestUser) {
+            console.log('Logged in as guest:', guestUser);
+            localStorage.setItem('currentUserId', guestUserId);
+            localStorage.setItem('cleanedEmail', cleanedEmail);
 
-    await setCurrentUser(guestUser, guestUserId, cleanedEmail);
-    setTimeout(() => {
-        window.location.href = 'contacts.html';
-    }, 250);
+            await setCurrentUser(guestUser, guestUserId, cleanedEmail);
+            setTimeout(() => {
+                window.location.href = 'contacts.html';
+            }, 5000);
+        } else {
+            console.log('Guest user not found. Please check the database setup.');
+        }
+    } catch (error) {
+        console.error('Error logging in as guest:', error);
+    }
 }
 
 
-/**
- * Ensures that a guest user exists in the database. If not, creates a new guest user.
- */
+
 async function ensureGuestUserExists() {
     let guestEmail = "guest@example.com";
     let cleanedEmail = guestEmail.replace(/[^\w\s]/gi, '');
@@ -224,14 +218,51 @@ async function ensureGuestUserExists() {
     let guestUser = await loadData(path);
 
     if (!guestUser || !guestUser.contacts) {
-        let newUser = createNewUser("Guest", guestEmail, "");
+        let newUser = {
+            name: "Guest",
+            email: guestEmail,
+            password: "",
+            contacts: [{
+                id: generateUniqueId(),
+                color: randomColor(),
+                name: "Max Mustermann",
+                email: "max@mustermann.com",
+                number: "1234567890",
+                initials: "MM"
+            }],
+            board: {
+                todo: [
+                    {
+                        id: generateUniqueId(),
+                        title: "TestTask",
+                        description: "TestDescription",
+                        dueDate: "2012-12-12",
+                        priority: "urgent",
+                        contacts: [],
+                        subtasks: [
+                            { text: "TestSubtask", completed: false }
+                        ],
+                        status: "todo",
+                        category: "User Story"
+                    }
+                ],
+                inProgress: [],
+                awaitFeedback: [],
+                done: []
+            },
+            summary: {}
+        };
         let response = await updateData(path, newUser);
+        console.log('Attempt to create/update guest user:', response);
+    } else {
+        console.log('Guest user already exists and is fully initialized:', guestUser);
     }
 }
 
 
 /**
  * Sets the current user in the local storage.
+ *
  * @param {object} user - The user object.
  * @param {string} userId - The user ID.
  * @param {string} cleanedEmail - The cleaned email of the user.
@@ -239,7 +270,8 @@ async function ensureGuestUserExists() {
 async function setCurrentUser(user, userId, cleanedEmail) {
     localStorage.setItem('currentUserId', userId);
     localStorage.setItem('currentUser', JSON.stringify(user));
-    localStorage.setItem('cleanedEmail', cleanedEmail);
+    localStorage.setItem('cleanedEmail', cleanedEmail); // Speichere den cleanedEmail im localStorage
+    console.log('Current user set successfully:', user);
 }
 
 
@@ -385,7 +417,6 @@ function removeOverlay() {
 }
 
 
-
 /**
  * Loads remembered user data (email and password) from localStorage and sets the input fields.
  * If the data is found, it updates the input fields and toggles the password icon.
@@ -394,6 +425,7 @@ function loadRememberData() {
     try {
         let rememberEmail = JSON.parse(localStorage.getItem('email'));
         let rememberPassword = JSON.parse(localStorage.getItem('password'));
+
         if (rememberEmail != null && rememberPassword != null) {
             changeIcon('password', 'passwordIcon');
             getById('email').value = rememberEmail;
@@ -412,6 +444,7 @@ function loadRememberData() {
  */
 function rememberCheck() {
     let checkbox = getById('rememberCheckbox');
+
     if (checkbox.checked) {
         saveUserData();
     } else if (!checkbox.checked) {
