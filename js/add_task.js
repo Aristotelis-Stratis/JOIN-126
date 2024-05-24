@@ -87,10 +87,36 @@ function toggleAssignDropdownMenu() {
 async function createTask() {
     if (validateTaskInputs()) {
         const newTask = constructNewTask();
+        newTask.id = generateUniqueId(); // Eindeutige ID generieren
+
         if (!currentUser) {
             console.error("No current user logged in. Task cannot be added.");
             return;
         }
+
+        // Initialisiere das Board- und Status-Arrays, falls sie nicht existieren
+        if (!currentUser.data.board) {
+            currentUser.data.board = {
+                todo: [],
+                inProgress: [],
+                awaitFeedback: [],
+                done: []
+            };
+        }
+
+        if (!currentUser.data.board.todo) {
+            currentUser.data.board.todo = [];
+        }
+        if (!currentUser.data.board.inProgress) {
+            currentUser.data.board.inProgress = [];
+        }
+        if (!currentUser.data.board.awaitFeedback) {
+            currentUser.data.board.awaitFeedback = [];
+        }
+        if (!currentUser.data.board.done) {
+            currentUser.data.board.done = [];
+        }
+
         const newTaskIndex = currentUser.data.board.todo.length;
         currentUser.data.board.todo[newTaskIndex] = newTask;
 
