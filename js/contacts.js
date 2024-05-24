@@ -275,9 +275,7 @@ async function saveUpdatedContact() {
             initials: getInitials(updatedName)
         };
 
-
         currentUser.data.contacts[contactIndex] = updatedContact;
-
 
         const cleanedEmail = localStorage.getItem('cleanedEmail');
         const userId = localStorage.getItem('currentUserId');
@@ -288,8 +286,10 @@ async function saveUpdatedContact() {
         console.log('Kontakte Pfad:', contactsPath);
 
         try {
-
+         
             await updateData(contactsPath, currentUser.data.contacts);
+            await updateContactInTasks(currentEditingId, updatedContact);
+
             console.log('Kontaktdaten erfolgreich aktualisiert:', updatedContact);
 
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
@@ -303,6 +303,36 @@ async function saveUpdatedContact() {
         }
     } else {
         console.error('Kontaktindex nicht gefunden.');
+    }
+}
+
+async function updateContactInTasks(contactId, updatedContact) {
+    const cleanedEmail = localStorage.getItem('cleanedEmail');
+    const userId = localStorage.getItem('currentUserId');
+    const boardPath = `users/${cleanedEmail}/${userId}/board`;
+
+    try {
+        const boardData = await loadData(boardPath);
+        if (boardData) {
+            const statuses = ['todo', 'inProgress', 'awaitFeedback', 'done'];
+
+            for (const status of statuses) {
+                const tasks = boardData[status] || [];
+                tasks.forEach((task, taskIndex) => {
+                    const contactIndex = task.contacts.findIndex(contact => contact.id === contactId);
+                    if (contactIndex !== -1) {
+                        task.contacts[contactIndex] = updatedContact;
+                    }
+                });
+                await updateData(`${boardPath}/${status}`, tasks);
+            }
+
+            console.log(`Contact with ID ${contactId} successfully updated in all tasks.`);
+        } else {
+            console.error('No board data found for the current user.');
+        }
+    } catch (error) {
+        console.error('Error updating contact in tasks in Firebase:', error);
     }
 }
 
