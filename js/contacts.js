@@ -1,7 +1,10 @@
 let i;
 let currentEditingId = null;
 
-
+/**
+ * Initializes the contacts by including HTML, loading the current user's data, and loading all contacts.
+ * @returns {Promise<void>}
+ */
 async function initContacts() {
     await includeHTML();
     await loadCurrentUser();
@@ -40,6 +43,13 @@ async function createContact() {
 }
 
 
+/**
+ * Creates a contact object with a unique ID, name, email, number, initials, and color.
+ * @param {string} name - The name of the contact.
+ * @param {string} email - The email address of the contact.
+ * @param {string} number - The phone number of the contact.
+ * @returns {Object} The contact object.
+ */
 function createContactObject(name, email, number) {
     return {
         id: generateUniqueId(),
@@ -52,6 +62,11 @@ function createContactObject(name, email, number) {
 }
 
 
+/**
+ * Checks if all input elements in the provided array are valid.
+ * @param {HTMLInputElement[]} inputs - An array of input elements to be validated.
+ * @returns {boolean} True if all inputs are valid, otherwise false.
+ */
 function areInputsValid(inputs) {
     for (const input of inputs) {
         if (!input.checkValidity()) {
@@ -63,68 +78,66 @@ function areInputsValid(inputs) {
 }
 
 
+/**
+ * Saves the current user's contacts and all users' data to storage.
+ * @async
+ * @returns {Promise<void>} A promise that resolves when the data is successfully saved.
+ */
 async function saveToStorage() {
-    if (currentUser && currentUser.data) {
-        currentUser.data.contacts = allContacts;
-        console.log("Speichere aktuelle Benutzerdaten: ", JSON.stringify(currentUser.data));
-        await setItem('currentUserData', JSON.stringify(currentUser.data));
-        await setItem('allUsers', JSON.stringify(allUsers));
-    } else {
-        console.error("Kein aktueller Benutzer oder keine Daten zum Speichern.");
-    }
+    currentUser.data.contacts = allContacts;
+    await setItem('currentUserData', JSON.stringify(currentUser.data));
+    await setItem('allUsers', JSON.stringify(allUsers));
 }
 
 
+/**
+ * Loads contacts from Firebase and updates the current user's data.
+ * @returns {Promise<void>}
+ */
 async function loadContactsFromFirebase() {
     const cleanedEmail = localStorage.getItem('cleanedEmail');
     const userId = localStorage.getItem('currentUserId');
     const contactsPath = `users/${cleanedEmail}/${userId}/contacts`;
-    
     try {
         const contactsData = await loadData(contactsPath);
-        if (contactsData) {
-            currentUser.data.contacts = Object.values(contactsData);
-        } else {
-            currentUser.data.contacts = [];
-        }
-        console.log('Contacts successfully loaded from Firebase:', currentUser.data.contacts);
+        currentUser.data.contacts = contactsData ? Object.values(contactsData) : [];
         renderContacts();
     } catch (error) {
-        console.error('Error loading contacts from Firebase:', error);
         currentUser.data.contacts = [];
     }
 }
 
 
+/**
+ * Loads all contacts for the current user from Firebase and renders them.
+ * @returns {Promise<void>}
+ */
 async function loadAllContacts() {
     await loadContactsFromFirebase();
     if (currentUser && currentUser.data && currentUser.data.contacts) {
         allContacts = currentUser.data.contacts;
-        console.log("Kontakte geladen:", allContacts);
         renderContacts();
-    } else {
-        console.error("Keine Kontaktdaten verfügbar für den aktuellen Benutzer.");
     }
 }
 
 
+/**
+ * Saves the current user's data to the server.
+ * @returns {Promise<void>}
+ */
 async function saveCurrentUser() {
-    try {
-        const userId = localStorage.getItem('currentUserId');
-        const currentUserData = JSON.parse(localStorage.getItem('currentUser'));
-
-        if (userId && currentUserData) {
-            await postData(`users/${userId}`, currentUserData);
-            console.log('Benutzerdaten erfolgreich aktualisiert:', currentUserData);
-        } else {
-            console.error('Fehler: Keine Benutzer-ID oder Benutzerdaten im Local Storage gefunden.');
-        }
-    } catch (error) {
-        console.error('Fehler beim Speichern des aktuellen Benutzers:', error);
+    const userId = localStorage.getItem('currentUserId');
+    const currentUserData = JSON.parse(localStorage.getItem('currentUser'));
+    if (userId && currentUserData) {
+        await postData(`users/${userId}`, currentUserData);
     }
 }
 
 
+/**
+ * Renders the contacts of the current user in the contact list container.
+ * The contacts are sorted alphabetically by last name, and grouped by the first letter of the last name.
+ */
 function renderContacts() {
     const contacts = currentUser.data.contacts;
     const contactListContainer = document.getElementById('contact-container');
@@ -151,6 +164,10 @@ function renderContacts() {
 }
 
 
+/**
+ * Opens the contact details view for the specified contact.
+ * @param {number} index - The index of the contact in the allContacts array.
+ */
 function openContactDetails(index) {
     let contact = allContacts[index];
     let contactContent = document.getElementById('contact-details');
@@ -159,16 +176,20 @@ function openContactDetails(index) {
 }
 
 
-
+/**
+ * Closes the contact details view and returns to the contact list view.
+ */
 function closeContactDetails() {
     let contactContent = document.getElementById('text-content');
     let contactList = document.getElementById('contact-list');
-
     contactContent.style.display = 'none';
     contactList.style.display = 'flex';
 }
 
 
+/**
+ * Toggles the display of the edit sub-menu in the mobile view.
+ */
 function openEditMobileMenu() {
     let editSubMenu = document.getElementById('edit-sub-menu');
     if (editSubMenu.style.display === 'flex') {
@@ -179,6 +200,9 @@ function openEditMobileMenu() {
 }
 
 
+/**
+ * Prepares and displays the form to add a new contact.
+ */
 function addNewContact() {
     clearInputFields();
     document.getElementById('aco').style.display = 'flex';
@@ -187,7 +211,9 @@ function addNewContact() {
 }
 
 
-
+/**
+ * Closes the contact overlay with an animation.
+ */
 function closeContactOverlay() {
     let overlay = document.getElementById('aco');
     let flyInOverlay = document.getElementById('fly-in-overlay');
@@ -200,6 +226,11 @@ function closeContactOverlay() {
 }
 
 
+/**
+ * Retrieves contact data from the UI elements based on the given contact index.
+ * @param {number} contactIndex - The index of the contact.
+ * @returns {Object} An object containing the contact's name, email, and number.
+ */
 function getContactDataFromUI(contactIndex) {
     return {
         name: document.getElementById(`contact-name-${contactIndex}`).innerHTML,
@@ -209,27 +240,30 @@ function getContactDataFromUI(contactIndex) {
 }
 
 
+/**
+ * Sets the provided contact data to the input fields in the UI.
+ * @param {string} name - The name of the contact.
+ * @param {string} email - The email address of the contact.
+ * @param {string} number - The phone number of the contact.
+ */
 function setContactDataToUI(name, email, number) {
     document.getElementById('inputName').value = name;
     document.getElementById('inputEmail').value = email;
     document.getElementById('inputNumber').value = number;
 }
 
-
+/**
+ * Edits the contact with the given contact ID.
+ * Retrieves the contact data from the UI and sets it to the form for editing.
+ * @param {string} contactId - The ID of the contact to be edited.
+ * @returns {Promise<void>} A promise that resolves when the contact data is set to the form.
+ */
 async function editContact(contactId) {
     const contactIndex = currentUser.data.contacts.findIndex(contact => contact.id === contactId);
-
-    if (contactIndex === -1) {
-        console.error("Kontakt nicht gefunden.");
-        return;
-    }
-
     const contact = currentUser.data.contacts[contactIndex];
     currentEditingId = contact.id;
-
     const { name, email, number } = getContactDataFromUI(contactIndex);
     setContactDataToUI(name, email, number);
-
     document.getElementById('aco').style.display = 'flex';
     const acoIcon = document.getElementById('aco-icon');
     acoIcon.innerHTML = `
@@ -240,6 +274,13 @@ async function editContact(contactId) {
 }
 
 
+/**
+ * Updates the contact information displayed in the UI.
+ * @param {number} contactIndex - The index of the contact in the contacts array.
+ * @param {string} name - The updated name of the contact.
+ * @param {string} email - The updated email address of the contact.
+ * @param {string} number - The updated phone number of the contact.
+ */
 function updateContactUI(contactIndex, name, email, number) {
     document.getElementById(`contact-name-${contactIndex}`).innerHTML = name;
     document.getElementById(`contact-email-${contactIndex}`).innerHTML = email;
@@ -247,6 +288,13 @@ function updateContactUI(contactIndex, name, email, number) {
 }
 
 
+/**
+ * Saves the updated contact information to the contacts array and updates the current user's contacts.
+ * @param {number} contactIndex - The index of the contact in the contacts array.
+ * @param {string} name - The updated name of the contact.
+ * @param {string} email - The updated email address of the contact.
+ * @param {string} number - The updated phone number of the contact.
+ */
 function saveContactUpdates(contactIndex, name, email, number) {
     allContacts[contactIndex].name = name;
     allContacts[contactIndex].email = email;
@@ -257,6 +305,7 @@ function saveContactUpdates(contactIndex, name, email, number) {
         saveCurrentUser();
     }
 }
+
 
 
 async function saveUpdatedContact() {
@@ -286,7 +335,7 @@ async function saveUpdatedContact() {
         console.log('Kontakte Pfad:', contactsPath);
 
         try {
-         
+
             await updateData(contactsPath, currentUser.data.contacts);
             await updateContactInTasks(currentEditingId, updatedContact);
 
@@ -305,6 +354,8 @@ async function saveUpdatedContact() {
         console.error('Kontaktindex nicht gefunden.');
     }
 }
+
+
 
 async function updateContactInTasks(contactId, updatedContact) {
     const cleanedEmail = localStorage.getItem('cleanedEmail');
@@ -389,7 +440,7 @@ async function removeContactFromTasks(contactId) {
                     const filteredContacts = task.contacts.filter(contact => contact.id !== contactId);
                     task.contacts = filteredContacts;
                     currentUser.data.board.todo[taskId].contacts = filteredContacts;
-                    await updateData(`${tasksPath}/${taskId}`, task);  // Speichern der aktualisierten Aufgabe in Firebase
+                    await updateData(`${tasksPath}/${taskId}`, task);
                 }
             }
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
@@ -403,6 +454,10 @@ async function removeContactFromTasks(contactId) {
 }
 
 
+/**
+ * Updates the UI content for editing a contact.
+ * Changes the headline, subheadline, and button text to indicate editing mode.
+ */
 function editContactContent() {
     let headline = document.getElementById('headline');
     let subheadline = document.getElementById('sub-headline');
@@ -415,6 +470,10 @@ function editContactContent() {
 }
 
 
+/**
+ * Updates the UI content for adding a new contact.
+ * Changes the headline, subheadline, and button text to indicate adding mode.
+ */
 function addContactContent() {
     let headline = document.getElementById('headline');
     let subheadline = document.getElementById('sub-headline');
@@ -427,6 +486,10 @@ function addContactContent() {
 }
 
 
+/**
+ * Displays a confirmation message indicating that a contact has been successfully created.
+ * Clears the input fields and closes the contact overlay.
+ */
 function showCreationConfirmation() {
     initiateConfirmation('Contact successfully created');
     clearInputFields();
@@ -434,6 +497,10 @@ function showCreationConfirmation() {
 }
 
 
+/**
+ * Displays a confirmation message indicating that a contact has been successfully edited.
+ * Clears the input fields and closes the contact overlay.
+ */
 function showEditConfirmation() {
     initiateConfirmation('Contact successfully edited');
     clearInputFields();
@@ -441,11 +508,18 @@ function showEditConfirmation() {
 }
 
 
+/**
+ * Displays a confirmation message indicating that a contact has been successfully deleted.
+ */
 function showDeleteConfirmation() {
     initiateConfirmation('Contact successfully deleted');
 }
 
 
+/**
+ * Initiates a confirmation message with an animation.
+ * @param {string} message - The confirmation message to display.
+ */
 function initiateConfirmation(message) {
     const confirmation = document.getElementById('confirmation');
     confirmation.innerHTML = message;
@@ -462,18 +536,29 @@ function initiateConfirmation(message) {
 }
 
 
+/**
+ * Updates the initials displayed for a contact based on the updated name.
+ * @param {number} contactIndex - The index of the contact in the contacts array.
+ * @param {string} updatedName - The updated name of the contact.
+ * @returns {Promise<void>} A promise that resolves when the initials are updated in the data store.
+ */
 async function updateInitials(contactIndex, updatedName) {
     let newInitials = getInitials(updatedName);
     let contactIconDiv = document.querySelector(`#contact-item-${contactIndex} .contact-icon`);
     contactIconDiv.innerHTML = `<span>${newInitials.charAt(0)}</span>` + (newInitials.length > 1 ? `<span>${newInitials.charAt(1)}</span>` : '');
     const cleanedEmail = localStorage.getItem('cleanedEmail');
     const userId = localStorage.getItem('currentUserId');
-    const updatedContacts = [...currentUser.data.contacts]; 
-    updatedContacts[contactIndex].initials = newInitials; 
+    const updatedContacts = [...currentUser.data.contacts];
+    updatedContacts[contactIndex].initials = newInitials;
     await updateData(`users/${cleanedEmail}/${userId}`, { contacts: updatedContacts });
 }
 
 
+/**
+ * Sorts the contacts by name.
+ * Contacts are first sorted by the first three characters of their last names.
+ * If the last names are the same, the contacts are then sorted by the first three characters of their first names.
+ */
 function sortContactsByName() {
     allContacts.sort((a, b) => {
         let lastNameA = a.name.split(' ').pop().toUpperCase().substring(0, 3);
@@ -488,6 +573,9 @@ function sortContactsByName() {
 }
 
 
+/**
+ * Adjusts contact content display for responsive design.
+ */
 function responsiveContactContent() {
     let contactList = document.getElementById('contact-list');
     let contactContent = document.getElementById('contact-details');
@@ -503,6 +591,9 @@ function responsiveContactContent() {
 }
 
 
+/**
+ * Clears the input fields for name, email, and number in the form.
+ */
 function clearInputFields() {
     document.getElementById('inputName').value = '';
     document.getElementById('inputEmail').value = '';
