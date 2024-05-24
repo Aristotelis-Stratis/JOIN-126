@@ -1,7 +1,3 @@
-/**
- * Filtered list of contacts.
- * @type {Array}
- */
 let filteredContacts = [];
 
 
