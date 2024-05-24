@@ -938,31 +938,33 @@ function displayFilteredTasks(todoTasks, inProgressTasks, feedbackTasks, doneTas
 
 
 document.addEventListener('DOMContentLoaded', (event) => {
-  document.getElementById('ToDos').addEventListener('dragenter', onDragEnter);
-  document.getElementById('ToDos').addEventListener('dragleave', onDragLeave);
-  document.getElementById('ToDos').addEventListener('drop', (event) => {
-    moveTo('todo');
-    event.currentTarget.classList.remove('highlight');
-  });
+  if (window.location.pathname.endsWith('board.html')) {
+    document.getElementById('ToDos').addEventListener('dragenter', onDragEnter);
+    document.getElementById('ToDos').addEventListener('dragleave', onDragLeave);
+    document.getElementById('ToDos').addEventListener('drop', (event) => {
+      moveTo('todo');
+      event.currentTarget.classList.remove('highlight');
+    });
 
-  document.getElementById('progress-container').addEventListener('dragenter', onDragEnter);
-  document.getElementById('progress-container').addEventListener('dragleave', onDragLeave);
-  document.getElementById('progress-container').addEventListener('drop', (event) => {
-    moveTo('inprogress');
-    event.currentTarget.classList.remove('highlight');
-  });
+    document.getElementById('progress-container').addEventListener('dragenter', onDragEnter);
+    document.getElementById('progress-container').addEventListener('dragleave', onDragLeave);
+    document.getElementById('progress-container').addEventListener('drop', (event) => {
+      moveTo('inprogress');
+      event.currentTarget.classList.remove('highlight');
+    });
 
-  document.getElementById('feedback-container').addEventListener('dragenter', onDragEnter);
-  document.getElementById('feedback-container').addEventListener('dragleave', onDragLeave);
-  document.getElementById('feedback-container').addEventListener('drop', (event) => {
-    moveTo('awaitfeedback');
-    event.currentTarget.classList.remove('highlight');
-  });
+    document.getElementById('feedback-container').addEventListener('dragenter', onDragEnter);
+    document.getElementById('feedback-container').addEventListener('dragleave', onDragLeave);
+    document.getElementById('feedback-container').addEventListener('drop', (event) => {
+      moveTo('awaitfeedback');
+      event.currentTarget.classList.remove('highlight');
+    });
 
-  document.getElementById('done-container').addEventListener('dragenter', onDragEnter);
-  document.getElementById('done-container').addEventListener('dragleave', onDragLeave);
-  document.getElementById('done-container').addEventListener('drop', (event) => {
-    moveTo('done');
-    event.currentTarget.classList.remove('highlight');
-  });
+    document.getElementById('done-container').addEventListener('dragenter', onDragEnter);
+    document.getElementById('done-container').addEventListener('dragleave', onDragLeave);
+    document.getElementById('done-container').addEventListener('drop', (event) => {
+      moveTo('done');
+      event.currentTarget.classList.remove('highlight');
+    });
+  }
 });
