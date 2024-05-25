@@ -1,6 +1,7 @@
 async function initSummary() {
     await loadCurrentUserBoard();
     updateSummary();
+    displayGreeting();
 }
 
 
@@ -22,9 +23,31 @@ function updateSummary() {
         let test = getById('urgentDate').innerHTML = formatDate(sortTasksByDueDate(urgent)[0]['dueDate']);
         console.log(test);
         console.log(currentUser);
+        displayUsername(path);
     } catch (error) {
         getById('upcomDeadline').innerHTML = '';
     }
+}
+
+function greeting() {
+    const now = new Date();
+    const hours = now.getHours();
+
+    if (hours < 12) {
+        return "Good morning,";
+    } else if (hours < 18) {
+        return "Good afternoon,";
+    } else {
+        return "Good evening,";
+    }
+}
+
+function displayGreeting() {
+    document.getElementById('greeting').innerHTML = greeting();
+}
+
+function displayUsername() {
+    document.getElementById('username').innerText = currentUser.data.name;
 }
 
 
