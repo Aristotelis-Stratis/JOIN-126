@@ -23,7 +23,6 @@ function updateSummary() {
         console.log(test);
         console.log(currentUser);
     } catch (error) {
-        console.log('Nope, du hast keine fucking Urgent Tasks, Bitch!');
         getById('upcomDeadline').innerHTML = '';
     }
 }
