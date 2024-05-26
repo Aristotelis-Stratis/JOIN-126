@@ -1176,11 +1176,12 @@ h3 {
 }
 
 .add-task-wrapper-board {
-    position: relative;
     display: flex;
     flex-direction: row-reverse;
     justify-content: space-between;
-    width: 100%;
+    position: absolute;
+    bottom: 50px;
+    width: 90%;
 }
 
 .select-container {
@@ -2535,6 +2536,12 @@ input[type=submit]:hover {
     .task-title-popup h1 {
         font-size: 40px;
     }
+
+    .add-task-wrapper-board {
+        position: relative;
+        bottom: 0px;
+        width: 100%;
+    }
 }
 
 @media (max-width: 1200px) {
@@ -2816,10 +2823,6 @@ input[type=submit]:hover {
         width: 100%;
     }
 
-    .add-task-wrapper-board {
-        position: relative;
-    }
-
     .add-task-wrapper {
         position: absolute;
     }
@@ -3094,7 +3097,7 @@ input[type=submit]:hover {
     .task-title-popup h1 {
         font-size: 32px;
     }
-    
+
     .username-HTML {
         width: unset;
     }
