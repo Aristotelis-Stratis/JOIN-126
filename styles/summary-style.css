@@ -66,13 +66,13 @@ body {
 }
 
 .greet-container span {
-    font-size: 36px;
+    font-size: 32px;
     height: 48px;
     width: 300px;
 }
 
 .greet-container h2 {
-    font-size: 53px;
+    font-size: 45px;
     margin: 0px;
     color: #29ABE2;
 }
@@ -216,6 +216,25 @@ h2 {
         height: 140px;
     }
 
+    .greeting-overlay {
+        z-index: 999;
+        position: absolute;
+        inset: 0 0 0 0;
+        background-color: white;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        animation: opacityAnim 0.750s ease-in-out  1s forwards;
+    }
+
+    .greet-container span {
+        text-align: center;
+    }
+    
+    .greet-container h2 {
+        text-align: center;
+    }
+
     .d-none1300 {
         display: none;
     }
@@ -224,6 +243,7 @@ h2 {
         display: flex;
     }
 }
+
 
 @media(max-width: 600px) {
 
@@ -282,11 +302,11 @@ h2 {
         line-height: 8px;
     }
     
-    .sum-container { /*  <------*/
+    .sum-container {
         margin-top: 8px;
     }
 
-    .container { /*  <------*/
+    .container {
         height: 80px;
     }
 
@@ -296,11 +316,11 @@ h2 {
         margin-top: 16px;
     }
 
-    .width-560px { /*  <------*/
+    .width-560px {
         width: 320px;
     }
     
-    .sec-2-container { /*  <------*/
+    .sec-2-container {
         width: 288px;
     }
     
@@ -308,7 +328,7 @@ h2 {
         width: 80px;
     }
 
-    .sum-img { /*  <------*/
+    .sum-img { 
         height: 32px;
         width: 32px;
     }
@@ -327,5 +347,19 @@ h2 {
 
     .padding-b8px {
         padding-bottom: 8px;
+    }
+
+    .greet-container span {
+        font-size: 32px;
+    }
+    
+    .greet-container h2 {
+        font-size: 40px;
+    }
+}
+
+@keyframes opacityAnim {
+    to {
+        opacity: 0;
     }
 }

@@ -1,7 +1,9 @@
 async function initSummary() {
     await loadCurrentUserBoard();
     updateSummary();
-    displayGreeting();
+    displayGreeting('greeting');
+    displayGreeting('resp-greeting');
+    animationValidation();
 }
 
 
@@ -23,9 +25,12 @@ function updateSummary() {
         let test = getById('urgentDate').innerHTML = formatDate(sortTasksByDueDate(urgent)[0]['dueDate']);
         console.log(test);
         console.log(currentUser);
-        displayUsername(path);
+        displayUsername('username');
+        displayUsername('resp-username');
     } catch (error) {
         getById('upcomDeadline').innerHTML = '';
+        displayUsername('username');
+        displayUsername('resp-username');
     }
 }
 
@@ -42,12 +47,12 @@ function greeting() {
     }
 }
 
-function displayGreeting() {
-    document.getElementById('greeting').innerHTML = greeting();
+function displayGreeting(id) {
+    document.getElementById(id).innerHTML = greeting();
 }
 
-function displayUsername() {
-    document.getElementById('username').innerText = currentUser.data.name;
+function displayUsername(id) {
+    document.getElementById(id).innerHTML = currentUser.data.name;
 }
 
 
@@ -57,7 +62,7 @@ function getUrgentTaskData(path) {
 
 
 function countUrgentTasks(path) {
-    return Object.values(path).flat().filter(task => task.priority === 'urgent').length;
+    return Object.values(path).flat().filter(task => task.priority === 'urgent' && task.status !== 'done').length;
 }
 
 function sortTasksByDueDate(tasks) {
@@ -72,4 +77,29 @@ function formatDate(dateStr) {
 function getById(id) {
     let element = document.getElementById(id);
     return element;
+}
+
+/**
+ * Validates if the overlay exists and removes it. Returns false if the overlay doesn't exist.
+ * @returns {boolean} - Returns false if the overlay doesn't exist.
+ */
+function animationValidation() {
+    if (document.getElementById('greeting-overlay')) {
+        removeOverlay();
+    } else {
+        return false;
+    }
+}
+
+
+/**
+ * Removes the overlay element after a delay and displays the main logo.
+ */
+function removeOverlay() {
+    let overlay = document.getElementById('greeting-overlay');
+
+
+    setTimeout(() => {
+        overlay.classList.remove('d-flex1300');
+    }, 1750);
 }
