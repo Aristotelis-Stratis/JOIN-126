@@ -31,44 +31,24 @@ function showToDos() {
     return;
   }
 
-  let todoTasks = currentUser.data.board.todo || [];
-  let inProgressTasks = currentUser.data.board.inProgress || [];
-  let feedbackTasks = currentUser.data.board.awaitFeedback || [];
-  let doneTasks = currentUser.data.board.done || [];
+  const board = currentUser.data.board;
 
-  let todoContainer = document.getElementById('ToDos');
-  let inProgressContainer = document.getElementById('progress-container');
-  let feedbackContainer = document.getElementById('feedback-container');
-  let doneContainer = document.getElementById('done-container');
+  const taskTypes = [
+    { tasks: board.todo || [], containerId: 'ToDos', type: 'todo' },
+    { tasks: board.inProgress || [], containerId: 'progress-container', type: 'inProgress' },
+    { tasks: board.awaitFeedback || [], containerId: 'feedback-container', type: 'awaitFeedback' },
+    { tasks: board.done || [], containerId: 'done-container', type: 'done' }
+  ];
 
-  todoContainer.innerHTML = '';
-  inProgressContainer.innerHTML = '';
-  feedbackContainer.innerHTML = '';
-  doneContainer.innerHTML = '';
+  taskTypes.forEach(({ tasks, containerId, type }) => {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
 
-  for (let i = 0; i < todoTasks.length; i++) {
-    const task = todoTasks[i];
-    const todoHTML = generateTodoHTML(task, i, 'todo');
-    todoContainer.innerHTML += todoHTML;
-  }
+    tasks.forEach((task, i) => {
+      container.innerHTML += generateTodoHTML(task, i, type);
+    });
+  });
 
-  for (let i = 0; i < inProgressTasks.length; i++) {
-    const task = inProgressTasks[i];
-    const inProgressHTML = generateTodoHTML(task, i, 'inProgress');
-    inProgressContainer.innerHTML += inProgressHTML;
-  }
-
-  for (let i = 0; i < feedbackTasks.length; i++) {
-    const task = feedbackTasks[i];
-    const awaitFeedbackHTML = generateTodoHTML(task, i, 'awaitFeedback');
-    feedbackContainer.innerHTML += awaitFeedbackHTML;
-  }
-
-  for (let i = 0; i < doneTasks.length; i++) {
-    const task = doneTasks[i];
-    const doneHTML = generateTodoHTML(task, i, 'done');
-    doneContainer.innerHTML += doneHTML;
-  }
   updateNoTaskPlaceholders();
 }
 
@@ -105,32 +85,14 @@ function setPriority(priority) {
 
 
 async function toggleSubtaskCheck(taskId, subtaskIndex, status) {
-  let task;
-  let boardStatusArray;
+  const boardStatusArray = getStatusArray(status.toLowerCase());
 
-  switch (status.toLowerCase()) {
-    case "todo":
-      boardStatusArray = currentUser.data.board.todo;
-      break;
-    case "inprogress":
-      boardStatusArray = currentUser.data.board.inProgress;
-      break;
-    case "awaitfeedback":
-      boardStatusArray = currentUser.data.board.awaitFeedback;
-      break;
-    case "done":
-      boardStatusArray = currentUser.data.board.done;
-      break;
-    default:
-      return;
-  }
+  if (!boardStatusArray) return;
 
   const taskIndex = boardStatusArray.findIndex(t => t.id === taskId);
-  task = boardStatusArray[taskIndex];
+  const task = boardStatusArray[taskIndex];
 
-  if (!task || !task.subtasks || !Array.isArray(task.subtasks)) {
-    return;
-  }
+  if (!task || !task.subtasks || !Array.isArray(task.subtasks)) return;
 
   task.subtasks[subtaskIndex].completed = !task.subtasks[subtaskIndex].completed;
 
@@ -145,37 +107,23 @@ async function toggleSubtaskCheck(taskId, subtaskIndex, status) {
 
 
 function updateProgressBar(taskId, status) {
-  let task;
-  let boardStatusArray;
+  const boardStatusArray = getStatusArray(status.toLowerCase());
 
-  switch (status.toLowerCase()) {
-    case "todo":
-      boardStatusArray = currentUser.data.board.todo;
-      break;
-    case "inprogress":
-      boardStatusArray = currentUser.data.board.inProgress;
-      break;
-    case "awaitfeedback":
-      boardStatusArray = currentUser.data.board.awaitFeedback;
-      break;
-    case "done":
-      boardStatusArray = currentUser.data.board.done;
-      break;
-    default:
-      return;
-  }
+  if (!boardStatusArray) return;
 
   const taskIndex = boardStatusArray.findIndex(t => t.id === taskId);
-  task = boardStatusArray[taskIndex];
+  const task = boardStatusArray[taskIndex];
 
-  if (!task || !task.subtasks || !Array.isArray(task.subtasks)) {
-    return;
-  }
+  if (!task || !task.subtasks || !Array.isArray(task.subtasks)) return;
 
   const totalTasks = task.subtasks.length;
   const completedTasks = task.subtasks.filter(subtask => subtask.completed).length;
   const completionPercentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
+  updateProgressUI(taskId, status, completionPercentage, completedTasks, totalTasks);
+}
+
+function updateProgressUI(taskId, status, completionPercentage, completedTasks, totalTasks) {
   const taskElement = document.querySelector(`[data-task-id="${taskId}"][data-task-status="${status}"]`);
   if (taskElement) {
     const progressBar = taskElement.querySelector('.filled-subtask-bar');
@@ -200,28 +148,9 @@ function showOverlayAndPopUp() {
 
 
 function showPopUp(id, status) {
-  let task;
+  const task = findTaskByIdAndStatus(id, status.toLowerCase());
 
-  switch (status.toLowerCase()) {
-    case "todo":
-      task = currentUser.data.board.todo.find(task => task.id === id);
-      break;
-    case "inprogress":
-      task = currentUser.data.board.inProgress.find(task => task.id === id);
-      break;
-    case "awaitfeedback":
-      task = currentUser.data.board.awaitFeedback.find(task => task.id === id);
-      break;
-    case "done":
-      task = currentUser.data.board.done.find(task => task.id === id);
-      break;
-    default:
-      return;
-  }
-
-  if (!task) {
-    return;
-  }
+  if (!task) return;
 
   const priority = task.priority || 'low';
   const popUpHTML = generatePopUpHTML(task, id, priority, status);
@@ -231,36 +160,33 @@ function showPopUp(id, status) {
   updateProgressBar(id, status);
 }
 
+function findTaskByIdAndStatus(id, status) {
+  switch (status) {
+    case "todo":
+      return currentUser.data.board.todo.find(task => task.id === id);
+    case "inprogress":
+      return currentUser.data.board.inProgress.find(task => task.id === id);
+    case "awaitfeedback":
+      return currentUser.data.board.awaitFeedback.find(task => task.id === id);
+    case "done":
+      return currentUser.data.board.done.find(task => task.id === id);
+    default:
+      return null;
+  }
+}
+
 
 async function deleteCard(taskId, status) {
-  if (!currentUser || !currentUser.data || !currentUser.data.board) {
-    return;
-  }
+  if (!currentUser || !currentUser.data || !currentUser.data.board) return;
 
-  let taskList;
-  switch (status.toLowerCase()) {
-    case "todo":
-      taskList = currentUser.data.board.todo;
-      break;
-    case "inprogress":
-      taskList = currentUser.data.board.inProgress;
-      break;
-    case "awaitfeedback":
-      taskList = currentUser.data.board.awaitFeedback;
-      break;
-    case "done":
-      taskList = currentUser.data.board.done;
-      break;
-    default:
-      return;
-  }
+  const taskList = getStatusArray(status.toLowerCase());
+  if (!taskList) return;
 
   const taskIndex = taskList.findIndex(task => task.id === taskId);
-  if (taskIndex === -1) {
-    return;
-  }
+  if (taskIndex === -1) return;
 
   taskList.splice(taskIndex, 1);
+
   const cleanedEmail = localStorage.getItem('cleanedEmail');
   const userId = localStorage.getItem('currentUserId');
   const boardPath = `users/${cleanedEmail}/${userId}/board`;
@@ -269,6 +195,21 @@ async function deleteCard(taskId, status) {
   closePopUp();
   showToDos();
   updateNoTaskPlaceholders();
+}
+
+function getStatusArray(status) {
+  switch (status) {
+    case "todo":
+      return currentUser.data.board.todo;
+    case "inprogress":
+      return currentUser.data.board.inProgress;
+    case "awaitfeedback":
+      return currentUser.data.board.awaitFeedback;
+    case "done":
+      return currentUser.data.board.done;
+    default:
+      return null;
+  }
 }
 
 
@@ -320,57 +261,31 @@ function doNotCloseAddTaskPopUp(event) {
 
 
 async function createTaskOnBoard(status) {
-  if (validateTaskInputs()) {
-    const newTask = constructNewTask();
-    newTask.status = status.toLowerCase();
-    newTask.id = generateUniqueId();
+  if (!validateTaskInputs()) return;
 
-    if (!currentUser || !currentUser.data) {
-      return;
-    }
+  const newTask = constructNewTask();
+  newTask.status = status.toLowerCase();
+  newTask.id = generateUniqueId();
 
-    if (!currentUser.data.board) {
-      currentUser.data.board = {
-        todo: [],
-        inProgress: [],
-        awaitFeedback: [],
-        done: []
-      };
-    }
+  if (!currentUser || !currentUser.data) return;
 
-    currentUser.data.board.todo = currentUser.data.board.todo || [];
-    currentUser.data.board.inProgress = currentUser.data.board.inProgress || [];
-    currentUser.data.board.awaitFeedback = currentUser.data.board.awaitFeedback || [];
-    currentUser.data.board.done = currentUser.data.board.done || [];
+  ensureBoardInitialization();
 
-    switch (newTask.status) {
-      case 'todo':
-        currentUser.data.board.todo.push(newTask);
-        break;
-      case 'inprogress':
-        currentUser.data.board.inProgress.push(newTask);
-        break;
-      case 'awaitfeedback':
-        currentUser.data.board.awaitFeedback.push(newTask);
-        break;
-      case 'done':
-        currentUser.data.board.done.push(newTask);
-        break;
-      default:
-        return;
-    }
+  const taskList = getStatusArray(newTask.status);
+  if (!taskList) return;
 
-    const cleanedEmail = localStorage.getItem('cleanedEmail');
-    const userId = localStorage.getItem('currentUserId');
-    const boardPath = `users/${cleanedEmail}/${userId}/board`;
+  taskList.push(newTask);
 
-    await updateData(boardPath, currentUser.data.board);
-    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-    resetUI();
-    showToDos();
-    closeAddTaskPopUp();
-    initiateConfirmationOnBoard('Task added to <img class="add-task-icon-board" src="assets/img/icons/board.png" alt="Board">');
-  }
+  const cleanedEmail = localStorage.getItem('cleanedEmail');
+  const userId = localStorage.getItem('currentUserId');
+  const boardPath = `users/${cleanedEmail}/${userId}/board`;
+
+  await updateData(boardPath, currentUser.data.board);
+  localStorage.setItem('currentUser', JSON.stringify(currentUser));
+  resetUI();
+  showToDos();
+  closeAddTaskPopUp();
+  initiateConfirmationOnBoard('Task added to <img class="add-task-icon-board" src="assets/img/icons/board.png" alt="Board">');
 }
 
 
@@ -393,28 +308,9 @@ function initiateConfirmationOnBoard(message) {
 }
 
 async function showAddTaskPopUpEdit(id, status) {
-  let task;
+  const task = findTaskByIdAndStatus(id, status.toLowerCase());
 
-  switch (status.toLowerCase()) {
-    case "todo":
-      task = currentUser.data.board.todo.find(task => task.id === id);
-      break;
-    case "inprogress":
-      task = currentUser.data.board.inProgress.find(task => task.id === id);
-      break;
-    case "awaitfeedback":
-      task = currentUser.data.board.awaitFeedback.find(task => task.id === id);
-      break;
-    case "done":
-      task = currentUser.data.board.done.find(task => task.id === id);
-      break;
-    default:
-      return;
-  }
-
-  if (!task) {
-    return;
-  }
+  if (!task) return;
 
   task.contacts = Array.isArray(task.contacts) ? task.contacts : [];
   selectedContacts = [...task.contacts];
@@ -450,57 +346,58 @@ async function addSubtaskToEditWindow(taskId) {
   ensureBoardInitialization();
 
   let newSubtaskText = document.getElementById('subTaskInputEdit').value.trim();
+  if (newSubtaskText === '') return;
 
-  if (newSubtaskText !== '') {
-    let task;
-    let taskIndex = -1;
-    let status;
+  const { task, taskIndex, status } = findTaskAndIndexById(taskId);
+  if (!task) return;
 
-    if (currentUser && currentUser.data && currentUser.data.board) {
-      const allTasks = [
-        ...currentUser.data.board.todo,
-        ...currentUser.data.board.inProgress,
-        ...currentUser.data.board.awaitFeedback,
-        ...currentUser.data.board.done
-      ];
-
-      taskIndex = allTasks.findIndex(t => t.id === taskId);
-      task = allTasks[taskIndex];
-
-      if (taskIndex < currentUser.data.board.todo.length) {
-        status = 'todo';
-      } else if (taskIndex < currentUser.data.board.todo.length + currentUser.data.board.inProgress.length) {
-        status = 'inProgress';
-      } else if (taskIndex < currentUser.data.board.todo.length + currentUser.data.board.inProgress.length + currentUser.data.board.awaitFeedback.length) {
-        status = 'awaitFeedback';
-      } else {
-        status = 'done';
-      }
-    }
-
-    if (!task) {
-      return;
-    }
-
-    if (!task.subtasks || !Array.isArray(task.subtasks)) {
-      task.subtasks = [];
-    }
-
-    const newSubtask = { text: newSubtaskText, completed: false, status: task.status };
-    task.subtasks.push(newSubtask);
-
-    const cleanedEmail = localStorage.getItem('cleanedEmail');
-    const userId = localStorage.getItem('currentUserId');
-    const subtaskPath = `users/${cleanedEmail}/${userId}/board/${status}/${taskIndex}/subtasks`;
-    const boardPath = `users/${cleanedEmail}/${userId}/board`;
-
-    await updateData(subtaskPath, task.subtasks);
-    await updateData(boardPath, currentUser.data.board);
-
-    updateSubtaskUI(task.id, task.subtasks, task.status);
-    document.getElementById('subTaskInputEdit').value = '';
-    showToDos();
+  if (!task.subtasks || !Array.isArray(task.subtasks)) {
+    task.subtasks = [];
   }
+
+  const newSubtask = { text: newSubtaskText, completed: false, status: task.status };
+  task.subtasks.push(newSubtask);
+
+  const cleanedEmail = localStorage.getItem('cleanedEmail');
+  const userId = localStorage.getItem('currentUserId');
+  const subtaskPath = `users/${cleanedEmail}/${userId}/board/${status}/${taskIndex}/subtasks`;
+  const boardPath = `users/${cleanedEmail}/${userId}/board`;
+
+  await updateData(subtaskPath, task.subtasks);
+  await updateData(boardPath, currentUser.data.board);
+
+  updateSubtaskUI(task.id, task.subtasks, task.status);
+  document.getElementById('subTaskInputEdit').value = '';
+  showToDos();
+}
+
+function findTaskAndIndexById(taskId) {
+  if (!currentUser || !currentUser.data || !currentUser.data.board) return {};
+
+  const allTasks = getAllTasks();
+  const taskIndex = allTasks.findIndex(t => t.id === taskId);
+  const task = allTasks[taskIndex];
+  const status = getStatusByIndex(taskIndex);
+
+  return { task, taskIndex, status };
+}
+
+function getAllTasks() {
+  return [
+    ...currentUser.data.board.todo,
+    ...currentUser.data.board.inProgress,
+    ...currentUser.data.board.awaitFeedback,
+    ...currentUser.data.board.done
+  ];
+}
+
+function getStatusByIndex(taskIndex) {
+  const { todo, inProgress, awaitFeedback } = currentUser.data.board;
+
+  if (taskIndex < todo.length) return 'todo';
+  if (taskIndex < todo.length + inProgress.length) return 'inProgress';
+  if (taskIndex < todo.length + inProgress.length + awaitFeedback.length) return 'awaitFeedback';
+  return 'done';
 }
 
 
@@ -562,71 +459,35 @@ function editSubtaskEdit(taskId, subtaskIndex, status) {
 async function saveEditedSubtask(taskId, subtaskIndex, status) {
   const subtaskInput = document.getElementById(`subTask_${subtaskIndex}_input`);
   const newText = subtaskInput.value.trim();
-  let task;
-  let boardStatusArray;
+  if (!newText) return;
 
-  switch (status.toLowerCase()) {
-    case "todo":
-      boardStatusArray = currentUser.data.board.todo;
-      break;
-    case "inprogress":
-      boardStatusArray = currentUser.data.board.inProgress;
-      break;
-    case "awaitfeedback":
-      boardStatusArray = currentUser.data.board.awaitFeedback;
-      break;
-    case "done":
-      boardStatusArray = currentUser.data.board.done;
-      break;
-    default:
-      return;
-  }
-
-  const taskIndex = boardStatusArray.findIndex(t => t.id === taskId);
-  task = boardStatusArray[taskIndex];
-
-  if (!task || !task.subtasks || !Array.isArray(task.subtasks)) {
-    return;
-  }
+  const { task, taskIndex } = findTaskAndIndexByIdAndStatus(taskId, status.toLowerCase());
+  if (!task || !task.subtasks || !Array.isArray(task.subtasks)) return;
 
   task.subtasks[subtaskIndex].text = newText;
+
   const cleanedEmail = localStorage.getItem('cleanedEmail');
   const userId = localStorage.getItem('currentUserId');
   const taskPath = `users/${cleanedEmail}/${userId}/board/${status}/${taskIndex}`;
   await updateData(taskPath, task);
+
   const subtaskItem = document.getElementById(`subTaskItem_${subtaskIndex}`);
   subtaskItem.innerHTML = generateEditedSubtaskHTML(taskId, subtaskIndex, newText, status);
   showToDos();
 }
 
-async function deleteSubtaskEdit(taskId, subtaskIndex, status) {
-  let task;
-  let boardStatusArray;
-
-  switch (status.toLowerCase()) {
-    case "todo":
-      boardStatusArray = currentUser.data.board.todo;
-      break;
-    case "inprogress":
-      boardStatusArray = currentUser.data.board.inProgress;
-      break;
-    case "awaitfeedback":
-      boardStatusArray = currentUser.data.board.awaitFeedback;
-      break;
-    case "done":
-      boardStatusArray = currentUser.data.board.done;
-      break;
-    default:
-      return;
-  }
+function findTaskAndIndexByIdAndStatus(taskId, status) {
+  const boardStatusArray = getStatusArray(status);
+  if (!boardStatusArray) return {};
 
   const taskIndex = boardStatusArray.findIndex(t => t.id === taskId);
-  task = boardStatusArray[taskIndex];
+  const task = boardStatusArray[taskIndex];
+  return { task, taskIndex };
+}
 
-  if (!task || !task.subtasks || !Array.isArray(task.subtasks)) {
-    return;
-  }
-
+async function deleteSubtaskEdit(taskId, subtaskIndex, status) {
+  const { task, taskIndex } = findTaskAndIndexByIdAndStatus(taskId, status.toLowerCase());
+  if (!task || !task.subtasks || !Array.isArray(task.subtasks)) return;
 
   task.subtasks.splice(subtaskIndex, 1);
 
@@ -656,44 +517,28 @@ function updateSubtaskUI(taskId, subtasks, status) {
 
 
 async function updateSubtaskEdit(id, status) {
-  let taskList;
+  const { task, taskIndex } = findTaskAndIndexByIdAndStatus(id, status.toLowerCase());
+  if (!task || taskIndex === -1) return;
 
-  switch (status.toLowerCase()) {
-    case "todo":
-      taskList = currentUser.data.board.todo;
-      break;
-    case "inprogress":
-      taskList = currentUser.data.board.inProgress;
-      break;
-    case "awaitfeedback":
-      taskList = currentUser.data.board.awaitFeedback;
-      break;
-    case "done":
-      taskList = currentUser.data.board.done;
-      break;
-    default:
-      return;
-  }
+  const updatedTask = getUpdatedTaskData(task);
+  if (!updatedTask) return;
 
-  if (!taskList || !Array.isArray(taskList)) {
-    return;
-  }
+  const cleanedEmail = localStorage.getItem('cleanedEmail');
+  const userId = localStorage.getItem('currentUserId');
+  const taskPath = `users/${cleanedEmail}/${userId}/board/${status}/${taskIndex}`;
 
-  const taskIndex = taskList.findIndex(t => t.id === id);
-  const task = taskList[taskIndex];
+  await updateData(taskPath, updatedTask);
+  showPopUp(id, status);
+  showToDos();
+}
 
-  if (taskIndex === -1 || !task) {
-    return;
-  }
-
+function getUpdatedTaskData(task) {
   const titleElement = document.getElementById('title');
   const descriptionElement = document.getElementById('description');
   const dueDateElement = document.getElementById('dueDate');
   const priorityElement = document.querySelector('.priority-button.active');
 
-  if (!titleElement || !descriptionElement || !dueDateElement || !priorityElement) {
-    return;
-  }
+  if (!titleElement || !descriptionElement || !dueDateElement || !priorityElement) return null;
 
   task.title = titleElement.value;
   task.description = descriptionElement.value;
@@ -701,13 +546,7 @@ async function updateSubtaskEdit(id, status) {
   task.priority = priorityElement.getAttribute('data-priority');
   task.contacts = selectedContacts;
 
-  const cleanedEmail = localStorage.getItem('cleanedEmail');
-  const userId = localStorage.getItem('currentUserId');
-  const taskPath = `users/${cleanedEmail}/${userId}/board/${status}/${taskIndex}`;
-
-  await updateData(taskPath, task);
-  showPopUp(id, status);
-  showToDos();
+  return task;
 }
 
 
@@ -754,90 +593,37 @@ function allowDrop(ev) {
 async function moveTo(newStatus) {
   ensureBoardInitialization();
 
-  const currentContainer = document.getElementById(currentDraggedElement.status.toLowerCase() + '-container');
-  const targetContainer = document.getElementById(newStatus.toLowerCase() + '-container');
+  const currentContainer = document.getElementById(`${currentDraggedElement.status.toLowerCase()}-container`);
+  const targetContainer = document.getElementById(`${newStatus.toLowerCase()}-container`);
 
-  if (currentContainer) {
-    currentContainer.classList.remove('highlight');
-  }
+  if (currentContainer) currentContainer.classList.remove('highlight');
+  if (targetContainer) targetContainer.classList.add('highlight');
 
-  if (targetContainer) {
-    targetContainer.classList.add('highlight');
-  }
+  const { id, status: currentStatus } = currentDraggedElement;
 
-  let { id, status: currentStatus } = currentDraggedElement;
+  const { task, taskIndex } = findTaskAndIndexByIdAndStatus(id, currentStatus.toLowerCase());
+  if (!task || taskIndex === -1) return;
 
-  currentStatus = currentStatus.toLowerCase();
-  newStatus = newStatus.toLowerCase();
-
-  let taskIndex;
-  let task;
-
-  switch (currentStatus) {
-    case "todo":
-      taskIndex = currentUser.data.board.todo.findIndex(task => task.id === id);
-      task = currentUser.data.board.todo[taskIndex];
-      if (taskIndex > -1) {
-        currentUser.data.board.todo.splice(taskIndex, 1);
-      }
-      break;
-    case "inprogress":
-      taskIndex = currentUser.data.board.inProgress.findIndex(task => task.id === id);
-      task = currentUser.data.board.inProgress[taskIndex];
-      if (taskIndex > -1) {
-        currentUser.data.board.inProgress.splice(taskIndex, 1);
-      }
-      break;
-    case "awaitfeedback":
-      taskIndex = currentUser.data.board.awaitFeedback.findIndex(task => task.id === id);
-      task = currentUser.data.board.awaitFeedback[taskIndex];
-      if (taskIndex > -1) {
-        currentUser.data.board.awaitFeedback.splice(taskIndex, 1);
-      }
-      break;
-    case "done":
-      taskIndex = currentUser.data.board.done.findIndex(task => task.id === id);
-      task = currentUser.data.board.done[taskIndex];
-      if (taskIndex > -1) {
-        currentUser.data.board.done.splice(taskIndex, 1);
-      }
-      break;
-    default:
-      return;
-  }
-
-  if (!task) {
-    return;
-  }
-
-  task.status = newStatus;
-
-  if (!currentUser.data.board[newStatus]) {
-    currentUser.data.board[newStatus] = [];
-  }
-
-  switch (newStatus) {
-    case "todo":
-      currentUser.data.board.todo.push(task);
-      break;
-    case "inprogress":
-      currentUser.data.board.inProgress.push(task);
-      break;
-    case "awaitfeedback":
-      currentUser.data.board.awaitFeedback.push(task);
-      break;
-    case "done":
-      currentUser.data.board.done.push(task);
-      break;
-    default:
-      return;
-  }
+  removeTaskFromStatusArray(currentStatus.toLowerCase(), taskIndex);
+  task.status = newStatus.toLowerCase();
+  addTaskToStatusArray(newStatus.toLowerCase(), task);
 
   await saveBoard();
   showToDos();
+  if (targetContainer) targetContainer.classList.remove('highlight');
+}
 
-  if (targetContainer) {
-    targetContainer.classList.remove('highlight');
+function removeTaskFromStatusArray(status, taskIndex) {
+  const taskArray = getStatusArray(status);
+  if (taskArray && taskIndex > -1) {
+    taskArray.splice(taskIndex, 1);
+  }
+}
+
+function addTaskToStatusArray(status, task) {
+  const taskArray = getStatusArray(status);
+  if (taskArray) {
+    taskArray.push(task);
   }
 }
 
@@ -893,97 +679,58 @@ function updateNoTaskPlaceholders() {
 
 function filterTasks() {
   const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+  const taskTypes = ['todo', 'inProgress', 'awaitFeedback', 'done'];
 
-  const todoTasks = (currentUser.data.board.todo || []).filter(task =>
-    task.title.toLowerCase().includes(searchTerm) || task.description.toLowerCase().includes(searchTerm)
-  );
-  const inProgressTasks = (currentUser.data.board.inProgress || []).filter(task =>
-    task.title.toLowerCase().includes(searchTerm) || task.description.toLowerCase().includes(searchTerm)
-  );
-  const feedbackTasks = (currentUser.data.board.awaitFeedback || []).filter(task =>
-    task.title.toLowerCase().includes(searchTerm) || task.description.toLowerCase().includes(searchTerm)
-  );
-  const doneTasks = (currentUser.data.board.done || []).filter(task =>
-    task.title.toLowerCase().includes(searchTerm) || task.description.toLowerCase().includes(searchTerm)
+  const filteredTasks = taskTypes.map(type => 
+    (currentUser.data.board[type] || []).filter(task =>
+      task.title.toLowerCase().includes(searchTerm) || task.description.toLowerCase().includes(searchTerm)
+    )
   );
 
-  displayFilteredTasks(todoTasks, inProgressTasks, feedbackTasks, doneTasks);
+  displayFilteredTasks(...filteredTasks);
 }
 
 
 function displayFilteredTasks(todoTasks, inProgressTasks, feedbackTasks, doneTasks) {
-  let todoContainer = document.getElementById('ToDos');
-  let inProgressContainer = document.getElementById('progress-container');
-  let feedbackContainer = document.getElementById('feedback-container');
-  let doneContainer = document.getElementById('done-container');
+  const taskContainers = [
+    { tasks: todoTasks, containerId: 'ToDos', type: 'todo' },
+    { tasks: inProgressTasks, containerId: 'progress-container', type: 'inProgress' },
+    { tasks: feedbackTasks, containerId: 'feedback-container', type: 'awaitFeedback' },
+    { tasks: doneTasks, containerId: 'done-container', type: 'done' }
+  ];
 
-  todoContainer.innerHTML = '';
-  inProgressContainer.innerHTML = '';
-  feedbackContainer.innerHTML = '';
-  doneContainer.innerHTML = '';
+  taskContainers.forEach(({ tasks, containerId, type }) => {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
 
-  if (todoTasks.length === 0) {
-    todoContainer.innerHTML = '<div class="no-task-box">No tasks found</div>';
-  } else {
-    todoTasks.forEach((task) => {
-      todoContainer.innerHTML += generateTodoHTML(task, task.id, 'todo');
-    });
-  }
-
-  if (inProgressTasks.length === 0) {
-    inProgressContainer.innerHTML = '<div class="no-task-box">No tasks found</div>';
-  } else {
-    inProgressTasks.forEach((task) => {
-      inProgressContainer.innerHTML += generateTodoHTML(task, task.id, 'inProgress');
-    });
-  }
-
-  if (feedbackTasks.length === 0) {
-    feedbackContainer.innerHTML = '<div class="no-task-box">No tasks found</div>';
-  } else {
-    feedbackTasks.forEach((task) => {
-      feedbackContainer.innerHTML += generateTodoHTML(task, task.id, 'awaitFeedback');
-    });
-  }
-
-  if (doneTasks.length === 0) {
-    doneContainer.innerHTML = '<div class="no-task-box">No tasks found</div>';
-  } else {
-    doneTasks.forEach((task) => {
-      doneContainer.innerHTML += generateTodoHTML(task, task.id, 'done');
-    });
-  }
+    if (tasks.length === 0) {
+      container.innerHTML = '<div class="no-task-box">No tasks found</div>';
+    } else {
+      tasks.forEach(task => {
+        container.innerHTML += generateTodoHTML(task, task.id, type);
+      });
+    }
+  });
 }
 
 
-document.addEventListener('DOMContentLoaded', (event) => {
+document.addEventListener('DOMContentLoaded', () => {
   if (window.location.pathname.endsWith('board.html')) {
-    document.getElementById('ToDos').addEventListener('dragenter', onDragEnter);
-    document.getElementById('ToDos').addEventListener('dragleave', onDragLeave);
-    document.getElementById('ToDos').addEventListener('drop', (event) => {
-      moveTo('todo');
-      event.currentTarget.classList.remove('highlight');
-    });
+    const containers = [
+      { id: 'ToDos', status: 'todo' },
+      { id: 'progress-container', status: 'inprogress' },
+      { id: 'feedback-container', status: 'awaitfeedback' },
+      { id: 'done-container', status: 'done' }
+    ];
 
-    document.getElementById('progress-container').addEventListener('dragenter', onDragEnter);
-    document.getElementById('progress-container').addEventListener('dragleave', onDragLeave);
-    document.getElementById('progress-container').addEventListener('drop', (event) => {
-      moveTo('inprogress');
-      event.currentTarget.classList.remove('highlight');
-    });
-
-    document.getElementById('feedback-container').addEventListener('dragenter', onDragEnter);
-    document.getElementById('feedback-container').addEventListener('dragleave', onDragLeave);
-    document.getElementById('feedback-container').addEventListener('drop', (event) => {
-      moveTo('awaitfeedback');
-      event.currentTarget.classList.remove('highlight');
-    });
-
-    document.getElementById('done-container').addEventListener('dragenter', onDragEnter);
-    document.getElementById('done-container').addEventListener('dragleave', onDragLeave);
-    document.getElementById('done-container').addEventListener('drop', (event) => {
-      moveTo('done');
-      event.currentTarget.classList.remove('highlight');
+    containers.forEach(({ id, status }) => {
+      const container = document.getElementById(id);
+      container.addEventListener('dragenter', onDragEnter);
+      container.addEventListener('dragleave', onDragLeave);
+      container.addEventListener('drop', (event) => {
+        moveTo(status);
+        event.currentTarget.classList.remove('highlight');
+      });
     });
   }
 });
