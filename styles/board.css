@@ -1,0 +1,731 @@
+.content-board {
+    width: 100%;
+    height: calc(100% - 96px);
+    position: sticky;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+}
+
+.board-container {
+    width: 100%;
+}
+
+.board-headline-container {
+    width: 100%;
+    height: 73px;
+    padding-bottom: 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+
+}
+
+.board-headline {
+    width: 176px;
+    height: 73px;
+    font-weight: 700;
+    font-size: 61px;
+
+}
+
+.input-button-board-container {
+    width: 504px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.board-input {
+    width: 312px !important;
+    height: 48px !important;
+    border-radius: 10px !important;
+    border: 1px solid #A8A8A8 !important;
+    cursor: pointer;
+}
+
+.board-input:hover {
+    border: 2px solid #A8A8A8;
+}
+
+.board-input::placeholder {
+    width: 100px;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 24px;
+}
+
+.search-png {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    position: relative;
+    top: 8px;
+    right: 44px;
+    cursor: pointer;
+}
+
+.add-task-btn {
+    width: 160px;
+    height: 48px;
+    border-radius: 10px;
+    border: 1px;
+    background-color: #2A3647;
+    color: white;
+    padding: 8px 16px 8px 16px;
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 25.2px;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.add-task-btn:hover {
+    background-color: #29ABE2;
+}
+
+.plus-sign-white {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+.to-do-container {
+    width: 100%;
+    height: 24px;
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 7.5px;
+
+}
+
+.taskflow-board {
+    width: 252px;
+    height: 24px;
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 24px;
+}
+
+.taskflow-board img {
+    height: 24px;
+    width: 24px;
+    cursor: pointer;
+}
+
+.taskflow-board img:hover {
+    content: url('../assets/img/icons/plus_button_blue.png');
+}
+
+.taskflow-board span {
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 24px;
+    color: #42526e;
+}
+
+.dragdrop-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 26px;
+}
+
+
+.column-titles {
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 24px;
+    color: #42526e;
+}
+
+.no-task-box {
+    width: 100%;
+    height: 48px;
+    border-radius: 24px;
+    border: 1px dashed #A8A8A8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'open sans';
+    font-weight: 400;
+    color: #818181;
+    background-color: rgba(168, 168, 168, 0.25);
+}
+
+.cardA {
+    width: 220px;
+    height: 220px;
+    border-radius: 24px;
+    padding: 16px;
+    box-shadow: 0px 0 6px 0 rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+.task-name {
+    line-break: anywhere;
+}
+
+.task-name,
+.card-middle-part,
+.subtasks,
+.asigned-to-flex,
+.asigned-to,
+.asigned-to-image-container,
+.asigned-to-image-container img,
+.task-description,
+.cardA,
+.subtasks span {
+    background-color: #f7f6f8 !important;
+}
+
+
+
+#ToDos,
+#progress-container,
+#feedback-container,
+#done-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 95%;
+    min-height: 600px;
+    border-radius: 24px;
+}
+
+
+.highlight {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.task-category-board {
+    border-radius: 8px;
+    padding: 4px 16px 4px 16px;
+    background-color: #038ff0;
+    color: white;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.task-description {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: flex;
+    max-width: 100%;
+}
+
+.task-category-board-alternative {
+    border-radius: 8px;
+    padding: 4px 16px 4px 16px;
+    background-color: #1FD7C1;
+    color: white;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.subtasks {
+    padding-top: 24px;
+    width: 220px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.subtasks span {
+    font-weight: 400;
+    font-size: 12px;
+}
+
+.subtask-bar {
+    width: 128px;
+    height: 8px;
+    background-color: lightgrey;
+}
+
+.filled-subtask-bar {
+    width: 20%;
+    height: 8px;
+    border-radius: 16px;
+    background-color: #4589FF;
+}
+
+.asigned-to-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.asigned-to {
+    width: 150px;
+    height: 75px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    overflow-y: scroll;
+    overflow-y: hidden;
+    box-sizing: border-box;
+}
+
+.asigned-to::-webkit-scrollbar {
+    height: 4px;
+}
+
+.asigned-to-image-container {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.asigned-to-icons {
+    display: flex;
+    padding-left: 4px;
+    box-sizing: border-box;
+}
+
+.asigned-to-icons::-webkit-scrollbar {
+    display: none;
+}
+
+.board-overlay {
+    width: 100%;
+    height: 100vh;
+    z-index: 2001;
+    position: fixed;
+    top: 0;
+    background-color: rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.board-pop-up {
+    width: 525px;
+    height: auto;
+    max-height: 75vh;
+    box-sizing: border-box;
+    padding: 48px 40px 48px 40px;
+    border-radius: 30px;
+    background-color: #f7f6f8;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: absolute;
+    overflow: hidden;
+}
+
+.board-pop-up-inner {
+    width: 100%;
+    height: auto;
+    max-height: 75vh;
+    padding-right: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.add-task-popup {
+    width: 70%;
+    max-height: 75vh;
+    height: 90%;
+    padding: 0px 40px 48px 40px;
+    gap: 24px;
+    border-radius: 30px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: absolute;
+    background-color: #f7f6f8;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(300%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(300%);
+    }
+}
+
+.slide-in-animation {
+    animation-name: slideIn;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+}
+
+.closing-animation {
+    animation-name: slideOut;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+}
+
+.board-pop-up-headline {
+    background-color: rgba(0, 56, 255, 1);
+    color: white;
+    border-radius: 8px;
+    padding: 4px 24px 4px 24px;
+    font-weight: 400;
+    font-size: 23px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.board-task-pop-up-headline {
+    font-weight: 700;
+    font-size: 42px;
+    line-break: anywhere;
+}
+
+.board-pop-up-description {
+    width: 100%;
+    font-weight: 400;
+    font-size: 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.board-pop-up-description span {
+    line-break: anywhere;
+}
+
+.popup-date-container {
+    display: flex;
+    justify-content: flex-start;
+    gap: 25px;
+}
+
+.popup-blue-span {
+    font-weight: 400;
+    font-size: 20px;
+    color: rgba(42, 54, 71, 1);
+}
+
+.popup-prio-container {
+    display: flex;
+    justify-content: flex-start;
+    gap: 25px;
+}
+
+.popup-medium-image {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    text-transform: capitalize;
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.popup-medium-image img {
+    width: 17px;
+    object-fit: contain;
+}
+
+.popup-assignedto-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.popup-names-container {
+    overflow-y: auto;
+    max-height: 215px;
+    min-height: 50px;
+    margin-top: 8px;
+}
+
+.popup-names {
+    flex-wrap: wrap;
+    display: flex;
+    gap: 15px;
+    padding-left: 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.username-HTML {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 180px;
+}
+
+.popup-subtask-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.popup-subtasks {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-left: 16px;
+    margin-top: 8px;
+    padding: 4px;
+}
+
+.popup-subtasks:hover {
+    background-color: rgba(238, 238, 238, 0.8);
+    border-radius: 8px;
+    padding: 4px;
+}
+
+.popup-subtasks img {
+    cursor: pointer;
+}
+
+.popup-del-edit-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.popup-delete-and-edit {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    width: 81px;
+}
+
+.popup-delete-and-edit img {
+    width: 24px;
+    height: 24px;
+    object-fit: cover;
+}
+
+.weight-700:hover {
+    font-weight: 700;
+}
+
+
+.popup-edit {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    font-weight: 400;
+    font-size: 16px;
+    color: rgba(42, 54, 71, 1);
+    width: 50px;
+}
+
+
+.popup-edit img {
+    width: 24px;
+    height: 24px;
+}
+
+.popup-delete-and-edit span {
+    font-weight: 400;
+    font-size: 16px;
+    color: rgba(42, 54, 71, 1);
+}
+
+.popup-delete-and-edit:hover {
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.pop-up-headline-flex {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    object-fit: cover;
+}
+
+.pop-up-headline-flex img {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    padding: 4px;
+
+}
+
+.pop-up-headline-flex img:hover {
+    border-radius: 50px;
+    background-color: lightgray;
+    padding: 4px;
+}
+
+.task-title-popup {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.task-title-popup h1 {
+    font-size: 61px;
+}
+
+.task-title-popup img {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.task-title-popup img:hover {
+    border-radius: 50px;
+    background-color: lightgray;
+    padding: 4px;
+}
+
+.on-edit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    font-family: 'Inter' !important;
+    padding: 16px 10px;
+    font-size: 16px;
+    font-weight: 400;
+    width: 33.3%;
+    border: none;
+    background-color: white;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.task-form-edit {
+    flex-direction: column;
+}
+
+.form-left-edit {
+    border: none;
+    padding: 0;
+    width: 100%;
+
+}
+
+.form-right-edit {
+    border: none;
+    padding: 0;
+    width: 100%;
+}
+
+.task-title-popup-edit {
+    display: flex;
+    justify-content: space-between;
+}
+
+.task-title-popup-edit img {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.task-title-popup-edit img:hover {
+    border-radius: 50px;
+    background-color: lightgray;
+    padding: 4px;
+}
+
+.subtask-container-edit {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    height: 100px;
+}
+
+.edit-btn-position {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.users-edit-flex {
+    padding-top: 12px;
+    display: flex;
+}
+
+.edit-icon {
+    margin: 0;
+}
+
+.form-group-edit {
+    margin-bottom: 16px;
+}
+
+.subtask-edit-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.subtask-item-edit {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    width: 100%;
+    height: 35px;
+}
+
+.edit-input {
+    border-radius: 6px !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+.edit-subtask-under-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sub-image-container-edit {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 4px;
+    margin-right: 3px;
+}
+
+.sub-image-container-edit img {
+    width: 22px;
+    height: 22px;
+}
+
+.subtask-seperator-edit {
+    width: 1px;
+    background-color: rgba(209, 209, 209, 1);
+}
+
+.selected-contacts-container-edit {
+    display: flex;
+}
+
+.board-dropdown {
+    overflow-y: scroll;
+    height: 170px;
+}
