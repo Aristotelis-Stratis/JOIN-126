@@ -369,9 +369,28 @@ async function createTaskOnBoard(status) {
     resetUI();
     showToDos();
     closeAddTaskPopUp();
+    initiateConfirmationOnBoard('Task added to <img class="add-task-icon-board" src="assets/img/icons/board.png" alt="Board">');
   }
 }
 
+
+/**
+* Initiates and displays a confirmation window with a specified message.
+* @param {string} message - The message to be displayed in the confirmation window.
+*/
+function initiateConfirmationOnBoard(message) {
+  const confirmation = document.getElementById('add-task-confirmation');
+  confirmation.innerHTML = message;
+  confirmation.style.display = 'flex';
+  confirmation.style.animation = `slideInUp 0.5s ease-in-out forwards`;
+
+  setTimeout(() => {
+      confirmation.style.animation = `slideOutDown 0.5s ease-in-out forwards`;
+      confirmation.addEventListener('animationend', () => {
+          confirmation.style.display = 'none';
+      }, { once: true });
+  }, 2000);
+}
 
 async function showAddTaskPopUpEdit(id, status) {
   let task;
