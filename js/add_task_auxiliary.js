@@ -280,8 +280,8 @@ function handleSubtaskKeyDown(event) {
  */
 function handleEditKeyDown(event, subtaskIndex) {
     if (event.key === "Enter") {
-        event.preventDefault();  // Verhindern Sie das Standardverhalten des Formulars
-        updateSubtask(subtaskIndex);  // Funktion, die die aktualisierte Subtask speichert
+        event.preventDefault();
+        updateSubtask(subtaskIndex);
     }
 }
 
