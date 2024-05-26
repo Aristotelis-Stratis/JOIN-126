@@ -303,133 +303,283 @@ function saveContactUpdates(contactIndex, name, email, number) {
 }
 
 
-
+/**
+ * Save the updated contact information.
+ */
 async function saveUpdatedContact() {
-    const updatedName = document.getElementById('inputName').value;
-    const updatedEmail = document.getElementById('inputEmail').value;
-    const updatedNumber = document.getElementById('inputNumber').value;
-
-    const contactIndex = currentUser.data.contacts.findIndex(contact => contact.id === currentEditingId);
+    const updatedContactDetails = getUpdatedContactDetails();
+    const contactIndex = findContactIndex(currentEditingId);
 
     if (contactIndex !== -1) {
-        const updatedContact = {
-            ...currentUser.data.contacts[contactIndex],
-            name: updatedName,
-            email: updatedEmail,
-            number: updatedNumber,
-            initials: getInitials(updatedName)
-        };
-
+        const updatedContact = createUpdatedContact(currentUser.data.contacts[contactIndex], updatedContactDetails);
         currentUser.data.contacts[contactIndex] = updatedContact;
 
-        const cleanedEmail = localStorage.getItem('cleanedEmail');
-        const userId = localStorage.getItem('currentUserId');
-        const basePath = `users/${cleanedEmail}/${userId}`;
-        const contactsPath = `${basePath}/contacts`;
-
+        const contactsPath = getContactsPath();
         await updateData(contactsPath, currentUser.data.contacts);
         await updateContactInTasks(currentEditingId, updatedContact);
 
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
-        updateContactUI(contactIndex, updatedName, updatedEmail, updatedNumber);
-        renderContacts();
-        openContactDetails(contactIndex);
-        showEditConfirmation();
+        updateUI(contactIndex, updatedContactDetails);
     }
 }
 
 
+/**
+ * Retrieve the updated contact details from the input fields.
+ * @returns {Object} An object containing the updated contact details.
+ */
+function getUpdatedContactDetails() {
+    return {
+        name: document.getElementById('inputName').value,
+        email: document.getElementById('inputEmail').value,
+        number: document.getElementById('inputNumber').value,
+    };
+}
 
-async function updateContactInTasks(contactId, updatedContact) {
+
+/**
+ * Find the index of a contact by its ID.
+ * @param {string} contactId - The ID of the contact to find.
+ * @returns {number} The index of the contact, or -1 if not found.
+ */
+function findContactIndex(contactId) {
+    return currentUser.data.contacts.findIndex(contact => contact.id === contactId);
+}
+
+
+/**
+ * Create an updated contact object by merging original and updated details.
+ * @param {Object} originalContact - The original contact object.
+ * @param {Object} updatedDetails - The updated contact details.
+ * @returns {Object} The updated contact object.
+ */
+function createUpdatedContact(originalContact, updatedDetails) {
+    return {
+        ...originalContact,
+        name: updatedDetails.name,
+        email: updatedDetails.email,
+        number: updatedDetails.number,
+        initials: getInitials(updatedDetails.name),
+    };
+}
+
+
+/**
+ * Get the path to the contacts data storage.
+ * @returns {string} The path to the contacts data storage.
+ */
+function getContactsPath() {
     const cleanedEmail = localStorage.getItem('cleanedEmail');
     const userId = localStorage.getItem('currentUserId');
-    const boardPath = `users/${cleanedEmail}/${userId}/board`;
+    const basePath = `users/${cleanedEmail}/${userId}`;
+    return `${basePath}/contacts`;
+}
 
 
+/**
+ * Update the UI to reflect the updated contact details.
+ * @param {number} contactIndex - The index of the updated contact.
+ * @param {Object} updatedDetails - The updated contact details.
+ */
+function updateUI(contactIndex, updatedDetails) {
+    updateContactUI(contactIndex, updatedDetails.name, updatedDetails.email, updatedDetails.number);
+    renderContacts();
+    openContactDetails(contactIndex);
+    showEditConfirmation();
+}
+
+
+/**
+ * Update the contact information in tasks.
+ * @param {string} contactId - The ID of the contact to update.
+ * @param {Object} updatedContact - The updated contact information.
+ */
+async function updateContactInTasks(contactId, updatedContact) {
+    const boardPath = getBoardPath();
     const boardData = await loadData(boardPath);
+
     if (boardData) {
         const statuses = ['todo', 'inProgress', 'awaitFeedback', 'done'];
-
         for (const status of statuses) {
-            const tasks = boardData[status] || [];
-            tasks.forEach((task, taskIndex) => {
-                if (task.contacts) {
-                    const contactIndex = task.contacts.findIndex(contact => contact.id === contactId);
-                    if (contactIndex !== -1) {
-                        task.contacts[contactIndex] = updatedContact;
-                    }
-                }
-            });
-            await updateData(`${boardPath}/${status}`, tasks);
+            await updateTasksWithContact(boardData, status, contactId, updatedContact, boardPath);
         }
     }
 }
 
 
+/**
+ * Get the path to the board data storage.
+ * @returns {string} The path to the board data storage.
+ */
+function getBoardPath() {
+    const cleanedEmail = localStorage.getItem('cleanedEmail');
+    const userId = localStorage.getItem('currentUserId');
+    return `users/${cleanedEmail}/${userId}/board`;
+}
 
+
+/**
+ * Updates tasks with the new contact information.
+ * @param {Object} boardData - The board data.
+ * @param {string} status - The task status category.
+ * @param {string} contactId - The ID of the contact to update.
+ * @param {Object} updatedContact - The updated contact information.
+ * @param {string} boardPath - The path to the board data storage.
+ */
+async function updateTasksWithContact(boardData, status, contactId, updatedContact, boardPath) {
+    const tasks = boardData[status] || [];
+    tasks.forEach((task, taskIndex) => {
+        if (task.contacts) {
+            updateContactInTask(task, contactId, updatedContact);
+        }
+    });
+    await updateData(`${boardPath}/${status}`, tasks);
+}
+
+
+/**
+ * Updates a contact within a task.
+ * @param {Object} task - The task object.
+ * @param {string} contactId - The ID of the contact to update.
+ * @param {Object} updatedContact - The updated contact information.
+ */
+function updateContactInTask(task, contactId, updatedContact) {
+    const contactIndex = task.contacts.findIndex(contact => contact.id === contactId);
+    if (contactIndex !== -1) {
+        task.contacts[contactIndex] = updatedContact;
+    }
+}
+
+
+/**
+ * Deletes a contact.
+ * @param {string} contactId - The ID of the contact to delete.
+ */
 async function deleteContact(contactId) {
-    if (!currentUser || !currentUser.data || !currentUser.data.contacts) {
-        console.error("Keine gültigen Kontaktinformationen verfügbar.");
-        return;
-    }
-    console.log("Aktuelle Kontakt-IDs im currentUser:", currentUser.data.contacts.map(c => c.id));
-    const contactIndex = currentUser.data.contacts.findIndex(contact => contact.id === contactId);
-    console.log("Gefundener Index für Kontakt-ID", contactId, "ist", contactIndex);
+    if (!areContactInfosValid()) return;
 
-    if (contactIndex === -1) {
-        console.error("Kontakt nicht gefunden.");
-        return;
-    }
+    const contactIndex = findContactIndex(contactId);
+    if (contactIndex === -1) return;
 
+    removeContactFromUserData(contactIndex);
+    await removeContactFromTasks(contactId);
+    await updateContactsInDatabase();
+    finalizeContactDeletion();
+
+}
+
+
+/**
+ * Check if the contact information is valid.
+ * @returns {boolean} True if the contact information is valid, otherwise false.
+ */
+function areContactInfosValid() {
+    return currentUser && currentUser.data && currentUser.data.contacts;
+}
+
+
+/**
+ * Find the index of a contact by its ID.
+ * @param {string} contactId - The ID of the contact to find.
+ * @returns {number} The index of the contact, or -1 if not found.
+ */
+function findContactIndex(contactId) {
+    return currentUser.data.contacts.findIndex(contact => contact.id === contactId);
+}
+
+
+/**
+ * Remove a contact from the user's data.
+ * @param {number} contactIndex - The index of the contact to remove.
+ */
+function removeContactFromUserData(contactIndex) {
     currentUser.data.contacts.splice(contactIndex, 1);
+}
 
+
+/**
+ * Update the contacts in the database.
+ */
+async function updateContactsInDatabase() {
     const cleanedEmail = localStorage.getItem('cleanedEmail');
     const userId = localStorage.getItem('currentUserId');
     const basePath = `users/${cleanedEmail}/${userId}`;
+    await updateData(`${basePath}/contacts`, currentUser.data.contacts);
+}
 
-    try {
 
-        await removeContactFromTasks(contactId);
-
-        await updateData(`${basePath}/contacts`, currentUser.data.contacts);
-        console.log('Kontakt erfolgreich gelöscht und Kontaktliste aktualisiert');
-
-        localStorage.setItem('currentUser', JSON.stringify(currentUser));
-        renderContacts();
-        showDeleteConfirmation();
-    } catch (error) {
-        console.error("Fehler beim Löschen des Kontakts:", error);
-    }
+/**
+ * Finalize the contact deletion process.
+ */
+function finalizeContactDeletion() {
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    renderContacts();
+    showDeleteConfirmation();
     document.getElementById('contact-overview').innerHTML = '';
 }
 
 
+
+/**
+ * Remove a contact from all tasks.
+ * @param {string} contactId - The ID of the contact to remove.
+ */
 async function removeContactFromTasks(contactId) {
+    const boardData = await loadBoardData();
+    if (!boardData) return;
+
+    const statuses = ['todo', 'inProgress', 'awaitFeedback', 'done'];
+    for (const status of statuses) {
+        const tasks = boardData[status] || [];
+        filterContactsFromTasks(tasks, contactId);
+        await updateTasksInDatabase(status, tasks);
+    }
+}
+
+
+/**
+ * Load the board data.
+ * @returns {Object|null} The board data or null if loading fails.
+ */
+async function loadBoardData() {
     const cleanedEmail = localStorage.getItem('cleanedEmail');
     const userId = localStorage.getItem('currentUserId');
-    const tasksPath = `users/${cleanedEmail}/${userId}/board/todo`;
+    const boardPath = `users/${cleanedEmail}/${userId}/board`;
 
     try {
-        const tasksData = await loadData(tasksPath);
-        if (tasksData) {
-            const tasks = Object.entries(tasksData);
-
-            for (const [taskId, task] of tasks) {
-                if (task && Array.isArray(task.contacts)) {
-                    const filteredContacts = task.contacts.filter(contact => contact.id !== contactId);
-                    task.contacts = filteredContacts;
-                    currentUser.data.board.todo[taskId].contacts = filteredContacts;
-                    await updateData(`${tasksPath}/${taskId}`, task);
-                }
-            }
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            console.log(`Contact with ID ${contactId} successfully removed from all tasks.`);
-        } else {
-            console.error('No tasks found for the current user.');
-        }
+        const boardData = await loadData(boardPath);
+        return boardData || null;
     } catch (error) {
-        console.error('Error removing contact from tasks in Firebase:', error);
+        console.error('Error loading board data from Firebase:', error);
+        return null;
     }
+}
+
+
+/**
+ * Filter out a specific contact from tasks.
+ * @param {Array} tasks - The array of tasks.
+ * @param {string} contactId - The ID of the contact to remove.
+ */
+function filterContactsFromTasks(tasks, contactId) {
+    tasks.forEach(task => {
+        if (task.contacts) {
+            task.contacts = task.contacts.filter(contact => contact.id !== contactId);
+        }
+    });
+}
+
+
+/**
+ * Update tasks in the database.
+ * @param {string} status - The task status category.
+ * @param {Array} tasks - The array of tasks to update.
+ */
+async function updateTasksInDatabase(status, tasks) {
+    const cleanedEmail = localStorage.getItem('cleanedEmail');
+    const userId = localStorage.getItem('currentUserId');
+    const statusPath = `users/${cleanedEmail}/${userId}/board/${status}`;
+    await updateData(statusPath, tasks);
 }
 
 
