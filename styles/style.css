@@ -341,11 +341,12 @@ body {
 }
 
 .board-headline {
+    display: flex;
     width: 176px;
     height: 73px;
     font-weight: 700;
     font-size: 61px;
-
+    align-items: center;
 }
 
 .input-button-board-container {
@@ -484,6 +485,74 @@ body {
     cursor: pointer;
 }
 
+.cardA-title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.drag-icon {
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+    display: none;
+}
+
+.drag-icon:hover {
+    background-color: #c5c5c5;
+    border-radius: 50%;
+}
+
+
+
+.overlay-drag {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2001;
+}
+
+.overlay-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 30px;
+    text-align: center;
+}
+
+.overlay-content h2 {
+    margin-bottom: 20px;
+}
+
+.overlay-content button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 10px;
+    background-color: #2A3647;
+    color: white;
+    font-size: 16px;
+}
+
+.overlay-content button:hover {
+    background-color: #29ABE2;
+}
+
+
+
+
+
+
+
+
+
 .task-name {
     line-break: anywhere;
 }
@@ -580,7 +649,7 @@ body {
 }
 
 .asigned-to {
-    width: 150px;
+    width: 155px;
     height: 75px;
     display: flex;
     justify-content: space-between;
@@ -629,7 +698,7 @@ body {
 .board-pop-up {
     width: 525px;
     height: auto;
-    max-height: 75vh;
+    max-height: 90vh;
     box-sizing: border-box;
     padding: 48px 40px 48px 40px;
     border-radius: 30px;
@@ -2480,6 +2549,10 @@ h3 {
         top: 5px;
     }
 
+    .drag-icon {
+        display: block;
+    }
+
     #ToDos,
     #progress-container,
     #feedback-container,
@@ -3115,7 +3188,8 @@ h3 {
 
     .task-title h1,
     .privacy-policy h1,
-    .legal-notice h1 {
+    .legal-notice h1,
+    .board-headline {
         font-size: 44px;
     }
 

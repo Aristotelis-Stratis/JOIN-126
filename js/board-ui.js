@@ -223,3 +223,47 @@ function closeAddTaskPopUp() {
 function doNotCloseAddTaskPopUp(event) {
     event.stopPropagation();
 }
+
+
+/**
+ * Opens the drag menu overlay and sets the current dragged element.
+ * @param {Event} event - The click event that triggered the function.
+ * @param {string} taskId - The ID of the task being dragged.
+ * @param {string} status - The current status of the task.
+ */
+function openDragMenu(event, taskId, status) {
+    event.stopPropagation();
+    currentDraggedElement = { id: taskId, status: status };
+    document.getElementById('dragOverlay').style.display = 'flex';
+}
+
+
+/**
+ * Closes the drag menu overlay.
+ */
+function closeDragMenu() {
+    document.getElementById('dragOverlay').style.display = 'none';
+}
+
+
+/**
+ * Moves the current dragged task to a new status.
+ * @param {string} newStatus - The new status to move the task to.
+ */
+async function moveTask(newStatus) {
+    ensureBoardInitialization();
+    if (!currentDraggedElement) return;
+
+    const { id, status: currentStatus } = currentDraggedElement;
+
+    const { task, taskIndex } = findTaskAndIndexByIdAndStatus(id, currentStatus.toLowerCase());
+    if (!task || taskIndex === -1) return;
+
+    removeTaskFromStatusArray(currentStatus.toLowerCase(), taskIndex);
+    task.status = newStatus.toLowerCase();
+    addTaskToStatusArray(newStatus.toLowerCase(), task);
+
+    await saveBoard();
+    showToDos();
+    closeDragMenu();
+}

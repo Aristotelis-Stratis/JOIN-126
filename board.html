@@ -87,5 +87,16 @@
   <section id="overlay2" class="board-overlay d-none-board" onclick="closeAddTaskPopUp()">
     <div id="addTaskPopUp" class="add-task-popup" onclick="doNotCloseAddTaskPopUp(event)"></div>
   </section>
+
+  <div id="dragOverlay" class="overlay-drag">
+    <div class="overlay-content">
+        <h2>Move Task To</h2>
+        <button onclick="moveTask('todo')">To Do</button>
+        <button onclick="moveTask('inprogress')">In Progress</button>
+        <button onclick="moveTask('awaitfeedback')">Await Feedback</button>
+        <button onclick="moveTask('done')">Done</button>
+        <button onclick="closeDragMenu()">Cancel</button>
+    </div>
+</div>
 </body>
 </html>

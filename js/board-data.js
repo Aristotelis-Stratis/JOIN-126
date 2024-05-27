@@ -89,6 +89,7 @@ function getStatusArray(status) {
         case "done":
             return currentUser.data.board.done;
         default:
+            console.error(`Invalid status: ${status}`);
             return null;
     }
 }
