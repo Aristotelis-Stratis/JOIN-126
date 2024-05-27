@@ -103,15 +103,10 @@ async function initRegistry() {
     let userExists = await loadData(`users/${cleanedEmail}`);
 
     if (!userExists) {
-<<<<<<< HEAD
-        const initials = getInitials(username);
-        userDontExistTemp(username, email, password, initials, cleanedEmail);
-=======
         let newUser = createNewUser(username, email, password);
         await postData(`users/${cleanedEmail}`, newUser);
         startSlideInUpAnim();
         window.setTimeout(() => { window.location.href = "login.html"; }, 1500);
->>>>>>> 0a95c9dec5395945eadfb0e62ef39cfcc5f29416
     } else {
         inputValidation('reg-email', 'reg-emailErrorField', 'The email already exists.');
     }
@@ -175,20 +170,11 @@ async function login() {
     let cleanedEmail = email.replace(/[^\w\s]/gi, '');
     let usersData = await loadData(`users/${cleanedEmail}`);
 
-    loginValidation(usersData, password, cleanedEmail);
-}
-
-async function loginValidation(usersData, password, cleanedEmail) {
     if (usersData) {
         let userKey = Object.keys(usersData)[0];
         let user = usersData[userKey];
 
         if (user && user.password === password) {
-<<<<<<< HEAD
-            await successfullLoginTemp(user, userKey, cleanedEmail);
-        } else {
-            inputLoginValidation();
-=======
             rememberCheck();
             await setCurrentUser(user, userKey, cleanedEmail);
             setTimeout(() => {
@@ -197,17 +183,12 @@ async function loginValidation(usersData, password, cleanedEmail) {
         } else {
             inputValidation('email', 'emailErrorField', ' ');
             inputValidation('password', 'passwordErrorField', 'Invalid email or password.');
->>>>>>> 0a95c9dec5395945eadfb0e62ef39cfcc5f29416
         }
     } else {
         inputValidation('email', 'emailErrorField', ' ');
     }
 }
 
-function inputLoginValidation() {
-    inputValidation('email', 'emailErrorField', ' ');
-    inputValidation('password', 'passwordErrorField', 'Invalid email or password.');
-}
 
 /**
  * Handles the guest user login process. It sets the guest user as the current user
@@ -230,12 +211,9 @@ async function loginAsGuest() {
 }
 
 
-<<<<<<< HEAD
-=======
 /**
  * Ensures that a guest user exists in the system. If not, creates a new guest user.
  */
->>>>>>> 0a95c9dec5395945eadfb0e62ef39cfcc5f29416
 async function ensureGuestUserExists() {
     let guestEmail = "guest@example.com";
     let cleanedEmail = guestEmail.replace(/[^\w\s]/gi, '');
