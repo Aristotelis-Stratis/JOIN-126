@@ -106,45 +106,7 @@ async function initRegistry() {
 
     if (!userExists) {
         const initials = getInitials(username);
-
-        let newUser = {
-            name: username,
-            email: email,
-            password: password,
-            contacts: [{
-                id: generateUniqueId(),
-                color: randomColor(),
-                name: username,
-                email: email,
-                number: "",
-                initials: initials
-            }],
-            board: {
-                todo: [
-                    {
-                        id: generateUniqueId(),
-                        title: "TestTask",
-                        description: "TestDescription",
-                        dueDate: "2012-12-12",
-                        priority: "urgent",
-                        contacts: [],
-                        subtasks: [
-                            { text: "TestSubtask", completed: false }
-                        ],
-                        status: "todo",
-                        category: "User Story"
-                    }
-                ],
-                inProgress: [],
-                awaitFeedback: [],
-                done: []
-            },
-            summary: {}
-        };
-
-        await postData(`users/${cleanedEmail}`, newUser);
-        startSlideInUpAnim();
-        window.setTimeout(() => { window.location.href = "login.html"; }, 2500);
+        userDontExistTemp(username, email, password, initials, cleanedEmail);
     } else {
         inputValidation('reg-email', 'reg-emailErrorField', 'The email already exists.');
     }
@@ -155,32 +117,30 @@ async function login() {
     let email = document.getElementById('email').value;
     let password = document.getElementById('password').value;
     let cleanedEmail = email.replace(/[^\w\s]/gi, '');
-
     let usersData = await loadData(`users/${cleanedEmail}`);
-    console.log("Geladene Benutzerdaten:", usersData);
 
+    loginValidation(usersData, password, cleanedEmail);
+}
+
+async function loginValidation(usersData, password, cleanedEmail) {
     if (usersData) {
         let userKey = Object.keys(usersData)[0];
         let user = usersData[userKey];
 
         if (user && user.password === password) {
-            rememberCheck();
-            console.log('Login erfolgreich!');
-            await setCurrentUser(user, userKey, cleanedEmail);
-            setTimeout(() => {
-                window.location.href = 'summary.html';
-            }, 5000);
+            await successfullLoginTemp(user, userKey, cleanedEmail);
         } else {
-            inputValidation('email', 'emailErrorField', ' ');
-            inputValidation('password', 'passwordErrorField', 'Invalid email or password.');
-            console.log('Login fehlgeschlagen. Bitte überprüfe deine Anmeldedaten und versuche es erneut.');
+            inputLoginValidation();
         }
     } else {
         inputValidation('email', 'emailErrorField', ' ');
-        console.log('Benutzer nicht gefunden. Bitte überprüfe deine Anmeldedaten und versuche es erneut.');
     }
 }
 
+function inputLoginValidation() {
+    inputValidation('email', 'emailErrorField', ' ');
+    inputValidation('password', 'passwordErrorField', 'Invalid email or password.');
+}
 
 
 async function loginAsGuest() {
@@ -206,7 +166,6 @@ async function loginAsGuest() {
         console.error('Error logging in as guest:', error);
     }
 }
-
 
 
 async function ensureGuestUserExists() {
