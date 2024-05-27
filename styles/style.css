@@ -1235,6 +1235,7 @@ body {
 }
 
 .contact-container:hover {
+    color:black;
     transform: scale(1.01);
 }
 
@@ -1292,6 +1293,11 @@ body {
 .contact-item {
     contain: content;
     border-radius: 10px;
+}
+
+.highlighted-contact {
+    background-color: #2A3647;
+    color:white;
 }
 
 .contacts-title-bar {

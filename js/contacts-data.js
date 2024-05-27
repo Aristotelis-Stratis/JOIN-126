@@ -169,6 +169,14 @@ function openContactDetails(index) {
     let contactContent = document.getElementById('contact-details');
     contactContent.innerHTML = contactDetailsHTML(contact, index);
     responsiveContactContent();
+
+    // Entfernt das Highlighting von allen Kontakten
+    let contactItems = document.querySelectorAll('.contact-item');
+    contactItems.forEach(item => item.classList.remove('highlighted-contact'));
+
+    // Fügt das Highlighting dem ausgewählten Kontakt hinzu
+    let selectedContact = document.getElementById(`contact-item-${index}`);
+    selectedContact.classList.add('highlighted-contact');
 }
 
 
@@ -180,6 +188,10 @@ function closeContactDetails() {
     let contactList = document.getElementById('contact-list');
     contactContent.style.display = 'none';
     contactList.style.display = 'flex';
+
+    // Entfernt das Highlighting von allen Kontakten
+    let contactItems = document.querySelectorAll('.contact-item');
+    contactItems.forEach(item => item.classList.remove('highlighted-contact'));
 }
 
 
