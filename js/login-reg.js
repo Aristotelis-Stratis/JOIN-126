@@ -52,9 +52,9 @@ function eventListenerKeyup(inputs) {
  */
 function checkButton() {
     if (enableButtonRequirement()) {
-        document.getElementById('register').disabled = false;
+        getById('register').disabled = false;
     } else {
-        document.getElementById('register').disabled = true;
+        getById('register').disabled = true;
     }
 }
 
@@ -75,7 +75,7 @@ function enableButtonRequirement() {
  * @returns {string} - The value of the input element.
  */
 function getValue(id) {
-    let element = document.getElementById(id).value;
+    let element = getById(id).value;
     return element;
 }
 
@@ -96,9 +96,9 @@ function getById(id) {
  * checking for existing users, and creating a new user if necessary.
  */
 async function initRegistry() {
-    let username = document.getElementById('name').value;
-    let email = document.getElementById('reg-email').value;
-    let password = document.getElementById('reg-password').value;
+    let username = getById('name').value;
+    let email = getById('reg-email').value;
+    let password = getById('reg-password').value;
     let cleanedEmail = email.replace(/[^\w\s]/gi, '');
     let userExists = await loadData(`users/${cleanedEmail}`);
 
@@ -165,8 +165,8 @@ function createNewUser(username, email, password) {
  * and redirects to the summary page if successful.
  */
 async function login() {
-    let email = document.getElementById('email').value;
-    let password = document.getElementById('password').value;
+    let email = getById('email').value;
+    let password = getById('password').value;
     let cleanedEmail = email.replace(/[^\w\s]/gi, '');
     let usersData = await loadData(`users/${cleanedEmail}`);
 
@@ -292,8 +292,8 @@ async function setCurrentUser(user, userId, cleanedEmail) {
  * @param {string} inputIcon - The ID of the icon element.
  */
 function changeIcon(inputField, inputIcon) {
-    let input = document.getElementById(inputField);
-    let icon = document.getElementById(inputIcon);
+    let input = getById(inputField);
+    let icon = getById(inputIcon);
 
     if (input.value == '' && input.type === 'password') {
         icon.classList.add('disabled');
@@ -319,8 +319,8 @@ function changeIcon(inputField, inputIcon) {
  * @param {string} inputIcon - The ID of the icon element.
  */
 function showPassword(inputField, inputIcon) {
-    let input = document.getElementById(inputField);
-    let icon = document.getElementById(inputIcon);
+    let input = getById(inputField);
+    let icon = getById(inputIcon);
 
     if (input.type === 'password') {
         input.setAttribute('type', 'text');
@@ -339,13 +339,13 @@ function showPassword(inputField, inputIcon) {
  * @param {string} errorMessage - The error message to be displayed if the input is not empty.
  */
 function inputValidation(inputId, messageFieldId, errorMessage) {
-    let input = document.getElementById(inputId);
+    let input = getById(inputId);
 
     if (input.value === '') {
-        document.getElementById(messageFieldId).innerHTML = 'This Field is required!';
+        getById(messageFieldId).innerHTML = 'This Field is required!';
         input.parentNode.classList.add('error-div');
     } else {
-        document.getElementById(messageFieldId).innerHTML = errorMessage;
+        getById(messageFieldId).innerHTML = errorMessage;
         input.parentNode.classList.add('error-div');
     }
 }
@@ -355,17 +355,17 @@ function inputValidation(inputId, messageFieldId, errorMessage) {
  * Checks if the password and confirm password fields match and displays an error message if they don't.
  */
 function checkPassword() {
-    let passwordInput = document.getElementById('reg-password').value;
-    let confirmInput = document.getElementById('confirmPassword').value;
+    let passwordInput = getById('reg-password').value;
+    let confirmInput = getById('confirmPassword').value;
 
     if (passwordInput != confirmInput && confirmInput !== '') {
         inputValidation('reg-password', 'reg-passwordErrorField', '');
         inputValidation('confirmPassword', 'confirmPasswordErrorField', "Ups! Your password don't match.");
     } else {
-        document.getElementById('reg-passwordErrorField').innerHTML = '';
-        document.getElementById('reg-password').parentNode.classList.remove('error-div');
-        document.getElementById('confirmPasswordErrorField').innerHTML = '';
-        document.getElementById('confirmPassword').parentNode.classList.remove('error-div');
+        getById('reg-passwordErrorField').innerHTML = '';
+        getById('reg-password').parentNode.classList.remove('error-div');
+        getById('confirmPasswordErrorField').innerHTML = '';
+        getById('confirmPassword').parentNode.classList.remove('error-div');
     }
 }
 
@@ -376,8 +376,8 @@ function checkPassword() {
  * @param {string} inputId - The ID of the input field.
  */
 function hideError(messageFieldId, inputId) {
-    document.getElementById(messageFieldId).textContent = '';
-    document.getElementById(inputId).parentNode.classList.remove('error-div');
+    getById(messageFieldId).textContent = '';
+    getById(inputId).parentNode.classList.remove('error-div');
 }
 
 
@@ -385,7 +385,7 @@ function hideError(messageFieldId, inputId) {
  * Checks the state of the privacy policy checkbox and updates the button state accordingly.
  */
 function privacyPolicyCheck() {
-    let checkbox = document.getElementById('checkbox');
+    let checkbox = getById('checkbox');
     checkCheckbox(checkbox);
     checkButton();
 }
@@ -409,7 +409,7 @@ function checkCheckbox(checkbox) {
  * @returns {boolean} - Returns false if the overlay doesn't exist.
  */
 function animationValidation() {
-    if (document.getElementById('overlay')) {
+    if (getById('overlay')) {
         removeOverlay();
     } else {
         return false;
@@ -421,8 +421,8 @@ function animationValidation() {
  * Removes the overlay element after a delay and displays the main logo.
  */
 function removeOverlay() {
-    let overlay = document.getElementById('overlay');
-    let logo = document.getElementById('main-logo');
+    let overlay = getById('overlay');
+    let logo = getById('main-logo');
 
     setTimeout(() => {
         overlay.classList.add('d-none');

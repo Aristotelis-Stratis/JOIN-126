@@ -135,7 +135,7 @@ function greeting() {
  * @param {string} id - The id of the HTML element where the greeting message will be displayed.
  */
 function displayGreeting(id) {
-    document.getElementById(id).innerHTML = greeting();
+    getById(id).innerHTML = greeting();
 }
 
 
@@ -144,7 +144,7 @@ function displayGreeting(id) {
  * @param {string} id - The id of the HTML element where the user's name will be displayed.
  */
 function displayUsername(id) {
-    document.getElementById(id).innerHTML = currentUser.data.name;
+    getById(id).innerHTML = currentUser.data.name;
 }
 
 /**
@@ -203,7 +203,7 @@ function getById(id) {
  * @returns {boolean} - Returns false if the overlay doesn't exist.
  */
 function animationValidation() {
-    if (document.getElementById('greeting-overlay')) {
+    if (getById('greeting-overlay')) {
         removeOverlay();
     } else {
         return false;
@@ -215,7 +215,7 @@ function animationValidation() {
  * Removes the overlay element after a delay and displays the main logo.
  */
 function removeOverlay() {
-    let overlay = document.getElementById('greeting-overlay');
+    let overlay = getById('greeting-overlay');
 
 
     setTimeout(() => {
