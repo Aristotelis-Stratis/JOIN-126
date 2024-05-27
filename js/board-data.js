@@ -105,7 +105,7 @@ async function createTaskOnBoard(status) {
     const newTask = constructNewTask();
     newTask.status = status.toLowerCase();
     newTask.id = generateUniqueId();
-
+    newTask.priority = selectedPriority[0];
     if (!currentUser || !currentUser.data) return;
 
     ensureBoardInitialization();

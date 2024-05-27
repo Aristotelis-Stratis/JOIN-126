@@ -8,9 +8,25 @@ let currentDraggedElement;
 async function init() {
     includeHTML();
     await loadCurrentUserBoard();
+    setDefaultPriority();
     showToDos();
 }
 
+
+/**
+ * Sets the default priority to medium.
+ */
+function setDefaultPriority() {
+    const priorityButtons = document.querySelectorAll('.priority-button');
+    priorityButtons.forEach(button => {
+        button.classList.remove('active');
+    });
+    const mediumButton = document.getElementById('priority-medium');
+    if (mediumButton) {
+        mediumButton.classList.add('active');
+        selectedPriority = ["medium"];
+    }
+}
 
 /**
  * Displays tasks on the board based on their status.
@@ -197,6 +213,7 @@ function showAddTaskPopUp(status = 'todo') {
     overlay.classList.remove('d-none-board');
     addTaskPopUp.classList.remove('closing-animation');
     addTaskPopUp.classList.add('slide-in-animation');
+    setDefaultPriority();
 }
 
 
