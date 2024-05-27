@@ -3,7 +3,6 @@
  * and loading remembered user data.
  */
 async function init() {
-    console.log('Initialization complete');
     const inputs = document.querySelectorAll('input');
     startEventlistener(inputs);
     animationValidation();
@@ -39,7 +38,6 @@ function eventListenerKeyup(inputs) {
     if (getById('checkbox')) {
         inputs.forEach((input) => {
             input.addEventListener('keyup', (evt) => {
-                console.log('Event funktioniert on keyup!');
                 checkButton();
             });
         });
@@ -94,8 +92,8 @@ function getById(id) {
 
 
 /**
- * Initializes the registry process for a new user. Checks if the user already exists,
- * creates a new user if not, and redirects to the login page after a short animation.
+ * Initializes the user registry process by collecting user input,
+ * checking for existing users, and creating a new user if necessary.
  */
 async function initRegistry() {
     let username = document.getElementById('name').value;
@@ -105,59 +103,72 @@ async function initRegistry() {
     let userExists = await loadData(`users/${cleanedEmail}`);
 
     if (!userExists) {
-        const initials = getInitials(username);
-
-        let newUser = {
-            name: username,
-            email: email,
-            password: password,
-            contacts: [{
-                id: generateUniqueId(),
-                color: randomColor(),
-                name: username,
-                email: email,
-                number: "",
-                initials: initials
-            }],
-            board: {
-                todo: [
-                    {
-                        id: generateUniqueId(),
-                        title: "TestTask",
-                        description: "TestDescription",
-                        dueDate: "2012-12-12",
-                        priority: "urgent",
-                        contacts: [],
-                        subtasks: [
-                            { text: "TestSubtask", completed: false }
-                        ],
-                        status: "todo",
-                        category: "User Story"
-                    }
-                ],
-                inProgress: [],
-                awaitFeedback: [],
-                done: []
-            },
-            summary: {}
-        };
-
+        let newUser = createNewUser(username, email, password);
         await postData(`users/${cleanedEmail}`, newUser);
         startSlideInUpAnim();
-        window.setTimeout(() => { window.location.href = "login.html"; }, 2500);
+        window.setTimeout(() => { window.location.href = "login.html"; }, 1500);
     } else {
         inputValidation('reg-email', 'reg-emailErrorField', 'The email already exists.');
     }
 }
 
+/**
+ * Creates a new user object based on the provided username, email, and password.
+ * 
+ * @param {string} username - The username of the new user.
+ * @param {string} email - The email of the new user.
+ * @param {string} password - The password of the new user.
+ * @returns {Object} The new user object.
+ */
+function createNewUser(username, email, password) {
+    const initials = getInitials(username);
 
+    return {
+        name: username,
+        email: email,
+        password: password,
+        contacts: [{
+            id: generateUniqueId(),
+            color: randomColor(),
+            name: username,
+            email: email,
+            number: "",
+            initials: initials
+        }],
+        board: {
+            todo: [
+                {
+                    id: generateUniqueId(),
+                    title: "TestTask",
+                    description: "TestDescription",
+                    dueDate: "2012-12-12",
+                    priority: "urgent",
+                    contacts: [],
+                    subtasks: [
+                        { text: "TestSubtask", completed: false }
+                    ],
+                    status: "todo",
+                    category: "User Story"
+                }
+            ],
+            inProgress: [],
+            awaitFeedback: [],
+            done: []
+        },
+        summary: {}
+    };
+}
+
+
+/**
+ * Handles the user login process. It validates the user credentials
+ * and redirects to the summary page if successful.
+ */
 async function login() {
     let email = document.getElementById('email').value;
     let password = document.getElementById('password').value;
     let cleanedEmail = email.replace(/[^\w\s]/gi, '');
-
     let usersData = await loadData(`users/${cleanedEmail}`);
-    console.log("Geladene Benutzerdaten:", usersData);
 
     if (usersData) {
         let userKey = Object.keys(usersData)[0];
@@ -165,50 +176,44 @@ async function login() {
 
         if (user && user.password === password) {
             rememberCheck();
-            console.log('Login erfolgreich!');
             await setCurrentUser(user, userKey, cleanedEmail);
             setTimeout(() => {
                 window.location.href = 'summary.html';
-            }, 5000);
+            }, 125);
         } else {
             inputValidation('email', 'emailErrorField', ' ');
             inputValidation('password', 'passwordErrorField', 'Invalid email or password.');
-            console.log('Login fehlgeschlagen. Bitte überprüfe deine Anmeldedaten und versuche es erneut.');
         }
     } else {
         inputValidation('email', 'emailErrorField', ' ');
-        console.log('Benutzer nicht gefunden. Bitte überprüfe deine Anmeldedaten und versuche es erneut.');
     }
 }
 
 
-
+/**
+ * Handles the guest user login process. It sets the guest user as the current user
+ * and redirects to the contacts page.
+ */
 async function loginAsGuest() {
-    try {
-        let guestEmail = "guest@example.com";
-        let cleanedEmail = guestEmail.replace(/[^\w\s]/gi, '');
-        let guestUserId = "guest";
+    let guestEmail = "guest@example.com";
+    let cleanedEmail = guestEmail.replace(/[^\w\s]/gi, '');
+    let guestUserId = "guest";
+    let guestUser = await loadData(`users/${cleanedEmail}/${guestUserId}`);
+    if (guestUser) {
+        localStorage.setItem('currentUserId', guestUserId);
+        localStorage.setItem('cleanedEmail', cleanedEmail);
 
-        let guestUser = await loadData(`users/${cleanedEmail}/${guestUserId}`);
-        if (guestUser) {
-            console.log('Logged in as guest:', guestUser);
-            localStorage.setItem('currentUserId', guestUserId);
-            localStorage.setItem('cleanedEmail', cleanedEmail);
-
-            await setCurrentUser(guestUser, guestUserId, cleanedEmail);
-            setTimeout(() => {
-                window.location.href = 'contacts.html';
-            }, 5000);
-        } else {
-            console.log('Guest user not found. Please check the database setup.');
-        }
-    } catch (error) {
-        console.error('Error logging in as guest:', error);
+        await setCurrentUser(guestUser, guestUserId, cleanedEmail);
+        setTimeout(() => {
+            window.location.href = 'contacts.html';
+        }, 125);
     }
 }
 
 
-
+/**
+ * Ensures that a guest user exists in the system. If not, creates a new guest user.
+ */
 async function ensureGuestUserExists() {
     let guestEmail = "guest@example.com";
     let cleanedEmail = guestEmail.replace(/[^\w\s]/gi, '');
@@ -218,51 +223,58 @@ async function ensureGuestUserExists() {
     let guestUser = await loadData(path);
 
     if (!guestUser || !guestUser.contacts) {
-        let newUser = {
-            name: "Guest",
-            email: guestEmail,
-            password: "",
-            contacts: [{
-                id: generateUniqueId(),
-                color: randomColor(),
-                name: "Max Mustermann",
-                email: "max@mustermann.com",
-                number: "+4912345690",
-                initials: "MM"
-            }],
-            board: {
-                todo: [
-                    {
-                        id: generateUniqueId(),
-                        title: "TestTask",
-                        description: "TestDescription",
-                        dueDate: "2012-12-12",
-                        priority: "urgent",
-                        contacts: [],
-                        subtasks: [
-                            { text: "TestSubtask", completed: false }
-                        ],
-                        status: "todo",
-                        category: "User Story"
-                    }
-                ],
-                inProgress: [],
-                awaitFeedback: [],
-                done: []
-            },
-            summary: {}
-        };
+        let newUser = createGuestUser(guestEmail);
         let response = await updateData(path, newUser);
-        console.log('Attempt to create/update guest user:', response);
-    } else {
-        console.log('Guest user already exists and is fully initialized:', guestUser);
     }
 }
 
 
 /**
+ * Creates a new guest user object with predefined details.
+ * 
+ * @param {string} email - The email of the guest user.
+ * @returns {Object} The new guest user object.
+ */
+function createGuestUser(email) {
+    return {
+        name: "Guest",
+        email: email,
+        password: "",
+        contacts: [{
+            id: generateUniqueId(),
+            color: randomColor(),
+            name: "Max Mustermann",
+            email: "max@mustermann.com",
+            number: "+4912345690",
+            initials: "MM"
+        }],
+        board: {
+            todo: [
+                {
+                    id: generateUniqueId(),
+                    title: "TestTask",
+                    description: "TestDescription",
+                    dueDate: "2012-12-12",
+                    priority: "urgent",
+                    contacts: [],
+                    subtasks: [
+                        { text: "TestSubtask", completed: false }
+                    ],
+                    status: "todo",
+                    category: "User Story"
+                }
+            ],
+            inProgress: [],
+            awaitFeedback: [],
+            done: []
+        },
+        summary: {}
+    };
+}
+
+
+/**
  * Sets the current user in the local storage.
- *
  * @param {object} user - The user object.
  * @param {string} userId - The user ID.
  * @param {string} cleanedEmail - The cleaned email of the user.
@@ -270,8 +282,7 @@ async function ensureGuestUserExists() {
 async function setCurrentUser(user, userId, cleanedEmail) {
     localStorage.setItem('currentUserId', userId);
     localStorage.setItem('currentUser', JSON.stringify(user));
-    localStorage.setItem('cleanedEmail', cleanedEmail); // Speichere den cleanedEmail im localStorage
-    console.log('Current user set successfully:', user);
+    localStorage.setItem('cleanedEmail', cleanedEmail);
 }
 
 
