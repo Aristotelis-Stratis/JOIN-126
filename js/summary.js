@@ -11,35 +11,6 @@ async function initSummary() {
 }
 
 
-// function updateSummary() {
-//     let path = currentUser.data.board
-
-//     let todo = getById('todos').innerHTML = path.todo.length;
-//     let done = getById('done').innerHTML = path.done.length;
-//     let inProgress = getById('inProgress').innerHTML = path.inProgress.length;
-//     let feedback =  getById('feedback').innerHTML = path.awaitFeedback.length;
-//     let urgent = getUrgentTaskData(path);
-
-//     let sum = todo + done + inProgress + feedback;
-
-//     getById('allTasks').innerHTML = sum;
-//     getById('urgent').innerHTML = countUrgentTasks(path);
-
-//     try {
-//         let test = getById('urgentDate').innerHTML = formatDate(sortTasksByDueDate(urgent)[0]['dueDate']);
-//         console.log(test);
-//         console.log(currentUser);
-//         displayUsername('username');
-//         displayUsername('resp-username');
-//     } catch (error) {
-//         getById('upcomDeadline').innerHTML = '';
-//         displayUsername('username');
-//         displayUsername('resp-username');
-//     }
-// }
-
-
-
 /**
  * Updates the summary by loading task counts, urgent tasks, and the username.
  */
@@ -106,12 +77,6 @@ function setInnerHtmlById(id, value) {
 }
 
 
-
-
-
-//     }
-// }
-
 /**
  * Returns a greeting message based on the current time.
  * @returns {string} A greeting message ("Good morning," "Good afternoon," or "Good evening,")
@@ -146,6 +111,7 @@ function displayGreeting(id) {
 function displayUsername(id) {
     getById(id).innerHTML = currentUser.data.name;
 }
+
 
 /**
  * Retrieves urgent tasks that are not done from a given path object.
@@ -197,6 +163,7 @@ function getById(id) {
     let element = document.getElementById(id);
     return element;
 }
+
 
 /**
  * Validates if the overlay exists and removes it. Returns false if the overlay doesn't exist.
