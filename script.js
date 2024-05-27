@@ -1,28 +1,12 @@
 let allContacts = [];
 let selectedContacts = [];
-let selectedPriority = [];
+let selectedPriority = ["medium"];
 let currentUser;
-
-// let allUsers = [];
-// let allTasks = [];
 let subtasks = [];
-// const guestUser = {
-//     id: 'guest',
-//     name: 'Guest User',
-//     email: 'guest@example.com',
-//     password: '',
-//     data: {
-//         contacts: [],
-//         tasks: [],
-//         board: {},
-//         summary: {}
-//     }
-// };
 
 
 /**
  * Loads the current user from local storage and fetches user data.
- * 
  * @returns {Object|null} - The current user object or null if not found.
  */
 async function loadCurrentUser() {

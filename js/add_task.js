@@ -1,6 +1,5 @@
 let filteredContacts = [];
 
-
 /**
  * Initializes tasks by including HTML, loading the current user, loading all contacts, 
  * and rendering the task contact list.
@@ -11,6 +10,8 @@ async function initTasks() {
     await loadAllContacts();
     filteredContacts = currentUser.data.contacts;
     renderTaskContactList(filteredContacts);
+    document.getElementById('priority-medium').classList.add('active');
+    selectedPriority = ["medium"];
 }
 
 
@@ -92,6 +93,8 @@ function resetUI() {
     document.querySelectorAll('.priority-button.active').forEach(button => {
         button.classList.remove('active');
     });
+    document.getElementById('priority-medium').classList.add('active'); // Ensure medium priority is active
+    selectedPriority = ["medium"]; // Ensure selectedPriority is reset to medium
     document.getElementById('title').value = '';
     document.getElementById('description').value = '';
     document.getElementById('selected-option').textContent = 'Select task category';
