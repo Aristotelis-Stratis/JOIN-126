@@ -214,7 +214,7 @@ function generateAddTaskPopUpHTML(status) {
                       onclick="clearInputField(), toggleAddButtonImage()" alt="" style="display:none;">
                   </div>
   
-                  <input class="no-validate subtask" type="text" id="subTaskInput" maxlength="15"
+                  <input class="no-validate subtask" type="text" id="subTaskInput" maxlength="20"
                     placeholder="Add new subtask" oninput="toggleAddButtonImage()" onkeydown="handleSubtaskKeyDown(event)">
                 </div>
                 <div class="subtask-container" id="subtaskContainer">
@@ -435,7 +435,7 @@ function generateAddTaskPopUpEditHTML(task, date, usersHTML, category, subtasks,
                                   <div id="sub-seperator" class="subtask-seperator" style="display:none;"></div>
                                   <img id="closeBtn" src="assets/img/icons/close.png" onclick="clearInputFieldEdit(), toggleAddButtonImageEdit()" alt="" style="display:none;">
                               </div>
-                              <input class="no-validate subtask" type="text" id="subTaskInputEdit" maxlength="15" placeholder="Add new subtask" onkeypress="handleKeyPress(event, '${index}')" oninput="toggleAddButtonImageEdit()">
+                              <input class="no-validate subtask" type="text" id="subTaskInputEdit" maxlength="20" placeholder="Add new subtask" onkeypress="handleKeyPress(event, '${index}')" oninput="toggleAddButtonImageEdit()">
                           </div>
                           <div class="subtask-container-edit" id="subtaskContainerEdit">
                               ${subtasks}

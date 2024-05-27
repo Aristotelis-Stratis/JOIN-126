@@ -205,7 +205,7 @@ async function loginAsGuest() {
 
         await setCurrentUser(guestUser, guestUserId, cleanedEmail);
         setTimeout(() => {
-            window.location.href = 'contacts.html';
+            window.location.href = 'summary.html';
         }, 125);
     }
 }

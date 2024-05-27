@@ -536,7 +536,7 @@ body {
     margin-bottom: 10px;
     border: none;
     border-radius: 10px;
-    background-color: #2A3647;
+    background-color: rgb(42, 54, 71);
     color: white;
     font-size: 16px;
 }
@@ -544,14 +544,6 @@ body {
 .overlay-content button:hover {
     background-color: #29ABE2;
 }
-
-
-
-
-
-
-
-
 
 .task-name {
     line-break: anywhere;
@@ -785,7 +777,6 @@ body {
 .board-task-pop-up-headline {
     font-weight: 700;
     font-size: 42px;
-    line-break: anywhere;
 }
 
 .board-pop-up-description {
@@ -794,10 +785,6 @@ body {
     font-size: 20px;
     overflow-y: auto;
     overflow-x: hidden;
-}
-
-.board-pop-up-description span {
-    line-break: anywhere;
 }
 
 .popup-date-container {
@@ -3020,7 +3007,7 @@ h3 {
 
 @media (max-width: 600px) {
     .board-pop-up {
-        width: 70%;
+        width: 90%;
         padding: 20px 20px;
     }
 
@@ -3242,6 +3229,10 @@ h3 {
     .username-HTML div {
         font-size: 0px;
     }
+
+    .subtask-item {
+        padding: 5px 10px;
+    }
 }
 
 @media (max-width: 375px) {
@@ -3263,6 +3254,19 @@ h3 {
     .contact-email {
         font-size: 12px;
     }
+
+    .subtask-item,
+    .subtask-item-edit span {
+        font-size: 12px !important;
+    }
+
+    input[type=text],
+    input[type=date],
+    textarea,
+    #selected-option {
+        font-size: 12px;
+    }
+
 }
 
 @media (max-width:350px) {
