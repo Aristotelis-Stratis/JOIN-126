@@ -91,7 +91,7 @@ function contactDetailsHTML(contact, index) {
         <button class="edit-mobile" onclick="openEditMobileMenu()">
         <img src="assets/img/icons/more.png" alt="Add Contact">
         <div class="edit-menu d-none" id="edit-sub-menu">
-            <div class="edit-menu-choice" onclick="editContact(${index})">
+            <div class="edit-menu-choice" onclick="editContact('${contact.id}')">
                 <img class="tw" src="assets/img/icons/edit_white.png" alt="Edit">
                 <span class="edit-menu-1-text">Edit</span>
             </div>
