@@ -66,7 +66,7 @@ function checkButton() {
  * @returns {boolean} - True if all requirements are met, otherwise false.
  */
 function enableButtonRequirement() {
-    let requirement = getById('checkbox').checked && getValue('name') !== '' && getValue('email') !== '' && getValue('password') !== '' && getValue('confirmPassword') !== '';
+    let requirement = getById('checkbox').checked && getValue('name') !== '' && getValue('reg-email') !== '' && getValue('reg-password') !== '' && getValue('confirmPassword') !== '';
     return requirement;
 }
 
@@ -99,10 +99,10 @@ function getById(id) {
  */
 async function initRegistry() {
     let username = document.getElementById('name').value;
-    let email = document.getElementById('email').value;
-    let password = document.getElementById('password').value;
+    let email = document.getElementById('reg-email').value;
+    let password = document.getElementById('reg-password').value;
     let cleanedEmail = email.replace(/[^\w\s]/gi, '');
-    let userExists = await loadData(`users/${btoa(email)}`);
+    let userExists = await loadData(`users/${cleanedEmail}`);
 
     if (!userExists) {
         const initials = getInitials(username);
@@ -146,7 +146,7 @@ async function initRegistry() {
         startSlideInUpAnim();
         window.setTimeout(() => { window.location.href = "login.html"; }, 2500);
     } else {
-        console.log('Die Emailadresse existiert bereits!');
+        inputValidation('reg-email', 'reg-emailErrorField', 'The email already exists.');
     }
 }
 
@@ -344,12 +344,15 @@ function inputValidation(inputId, messageFieldId, errorMessage) {
  * Checks if the password and confirm password fields match and displays an error message if they don't.
  */
 function checkPassword() {
-    let passwordInput = document.getElementById('password').value;
+    let passwordInput = document.getElementById('reg-password').value;
     let confirmInput = document.getElementById('confirmPassword').value;
 
-    if (passwordInput != confirmInput || passwordInput === '') {
+    if (passwordInput != confirmInput && confirmInput !== '') {
+        inputValidation('reg-password', 'reg-passwordErrorField', '');
         inputValidation('confirmPassword', 'confirmPasswordErrorField', "Ups! Your password don't match.");
     } else {
+        document.getElementById('reg-passwordErrorField').innerHTML = '';
+        document.getElementById('reg-password').parentNode.classList.remove('error-div');
         document.getElementById('confirmPasswordErrorField').innerHTML = '';
         document.getElementById('confirmPassword').parentNode.classList.remove('error-div');
     }
